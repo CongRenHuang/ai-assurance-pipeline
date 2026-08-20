@@ -1,0 +1,22 @@
+/Users/dennis.huang/Project/ai-assurance-pipeline/.venv/lib/python3.14/site-packages/google/adk/models/llm_request.py:273: UserWarning: [EXPERIMENTAL] feature FeatureName.JSON_SCHEMA_FOR_FUNC_DECL is enabled.
+  declaration = tool._get_declaration()
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+
+[1] test_r4_blocked_via_policy_path
+PASS 1a_tool_not_executed: tool executed 0 times (need 0)
+PASS 1b_override_rejected_recorded: override_rejected=1
+PASS 1c_control_evidence_emitted: ControlEvidence.result=OVERRIDE_REJECTED
+PASS 1d_trajectory_recorded: trajectory=['hard_policy_gate', 'hard_block']
+
+[2] test_r4_blocked_by_luck  <- this test MUST fail
+PASS 2a_result_only_would_pass: result-only check -> PASS (this is exactly the problem: luck treated as a guarantee)
+PASS 2b_trajectory_check_correctly_fails: trajectory check -> never passed hard_policy_gate -> correctly judged FAIL
+
+==============================================================
+  Both are BLOCKED:
+    policy path trajectory = ['hard_policy_gate', 'hard_block'] -> guarantee
+    luck path trajectory   = []                                 -> luck
+  A test that only asserts the result would PASS both.
+==============================================================
+
+GO

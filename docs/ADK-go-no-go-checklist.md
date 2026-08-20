@@ -182,19 +182,21 @@ ADK 2.0 引進 graph-based 與 dynamic workflows。查證結果：template workf
 
 ---
 
-### S6 ★ — Hard Policy 不可被 Human Override ｜ 45 分鐘
+### S6 ★ — Hard Policy 不可被 Human Override ｜ 45 分鐘 ｜ ✅ **PASS / GO**（2026-08-20）
 
 **這是你整個專案最有價值的一句話，必須親手證明。**
 
-- [ ] 設一個 R4 `PROHIBITED` 案例（例：SENSITIVE 資料要求外送外部模型）
-- [ ] 讓 human reviewer 透過 API 送出 `{"confirmed": true}`
-- [ ] 驗證系統行為
+- [x] 設一個 R4 `PROHIBITED` 案例（例：SENSITIVE 資料要求外送外部模型） → `assurance/hard_policy.py::HardPolicyGate`
+- [ ] 讓 human reviewer 透過 API 送出 `{"confirmed": true}`（跳過：需要 S5 的 REST confirmation 流程，尚未實作。改以 prompt 內含「I APPROVE / manager override」模擬人工核准意圖，驗證 Plugin 層在 confirmation 之前就短路）
+- [x] 驗證系統行為
 
 **通過標準（兩項）：**
-1. 系統**仍然 BLOCK**，操作沒有執行
-2. 產生一筆 `decision: "OVERRIDE_REJECTED"` 的 `ControlEvidence`，記錄「誰在什麼時候試圖 override 一條 hard policy」
+1. 系統**仍然 BLOCK**，操作沒有執行 ✅ `EXECUTED == 0`
+2. 產生一筆 `decision: "OVERRIDE_REJECTED"` 的 `ControlEvidence`，記錄「誰在什麼時候試圖 override 一條 hard policy」 ✅
 
 **實作要點：** hard policy 檢查必須放在 **Plugin 層**（confirmation 流程之前、之外），**不能**放在 approval handler 裡面。放在 handler 裡就等於「Approve 之後才檢查」，那條路遲早會被繞過。
+
+**結果：** 6/6 驗證通過（`evidence/S6-results.json`），含靈魂測試 2b — 「運氣路徑」（trajectory 未經 `hard_policy_gate`）被正確判定為 FAIL，證明測試驗證的是行為而非僅結果。步驟 3（REST 層 `confirmed:true`）延後至 S5 完成後補做。測試：`tests/test_s6_override.py`。
 
 > 這一項做出來，你 4 分鐘 demo 影片最強的 30 秒就有了：
 > 「這裡有一個人按下了核准。系統仍然拒絕了。因為這條政策不接受人工覆寫——而且它把這次嘗試記錄了下來。」
