@@ -31,6 +31,14 @@ class HardPolicyPlugin(BasePlugin):
         self, *, tool, tool_args: dict[str, Any], tool_context
     ) -> Optional[dict]:
         # keyword-only param; must be named tool_args, not args
+        # Only gate tools that actually declare a url/host param -- a tool
+        # with no such param isn't a source-fetch and must not be blocked
+        # as an "unregistered source" just because the key is absent.
+        # (Found via S8: this plugin was blocking assess_release, which has
+        # no url/host arg, before HardPolicyGate's R4 check ever ran --
+        # a false-positive block, not the guarantee it looked like.)
+        if "url" not in tool_args and "host" not in tool_args:
+            return None
         COUNTERS["plugin_callback"] += 1
         verdict = evaluate(tool.name, tool_args)
         if not verdict.allowed:

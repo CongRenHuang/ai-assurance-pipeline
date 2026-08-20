@@ -1,0 +1,9 @@
+/Users/dennis.huang/Project/ai-assurance-pipeline/.venv/lib/python3.14/site-packages/google/adk/models/llm_request.py:273: UserWarning: [EXPERIMENTAL] feature FeatureName.JSON_SCHEMA_FOR_FUNC_DECL is enabled.
+  declaration = tool._get_declaration()
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+PASS 1_app_wired_hard_block: override_rejected=1 (need 1)
+PASS 2_tool_result_absent_from_output: output='The assessment release for **ASMT-R4-777** with risk tier **R4** was rejected. \n' (tool's own success marker must not appear)
+PASS 3_source_gate_wired: blocked=1 (need >=1)
+
+GO

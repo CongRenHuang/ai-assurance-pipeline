@@ -1,0 +1,17 @@
+[
+  {
+    "test": "1_app_wired_hard_block",
+    "passed": true,
+    "detail": "override_rejected=1 (need 1)"
+  },
+  {
+    "test": "2_tool_result_absent_from_output",
+    "passed": true,
+    "detail": "output='The assessment release for **ASMT-R4-777** with risk tier **R4** was rejected. \\n' (tool's own success marker must not appear)"
+  },
+  {
+    "test": "3_source_gate_wired",
+    "passed": true,
+    "detail": "blocked=1 (need >=1)"
+  }
+]

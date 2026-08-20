@@ -1,0 +1,5 @@
+google-adk>=2.7.1
+python-dotenv
+openinference-instrumentation-google-adk
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http

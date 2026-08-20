@@ -242,18 +242,26 @@ GoogleADKInstrumentor().instrument(tracer_provider=tracer_provider)
 
 ---
 
-### S8 — Cloud Run 部署 ｜ 60 分鐘
+### S8 — Cloud Run 部署 ｜ 60 分鐘 ｜ 🟡 **資產已備妥，尚未實際部署**（2026-08-20）
 
 **必須在第一週打通，不要留到最後三天。** Hackathon 硬性要求 hosted URL，而部署問題永遠比預期久。
 
-- [ ] Cloud Secret Manager 存 `GOOGLE_API_KEY`
-- [ ] 授予 Cloud Build 與 Secret Manager 權限給 service account
-- [ ] 確認 agent 檔案結構符合要求（`agent.py` 內含 `root_agent` 變數）
-- [ ] `adk deploy cloud_run --project=... --region=... --with_ui [AGENT_PATH]`
+- [ ] Cloud Secret Manager 存 `GOOGLE_API_KEY`（需要真實 GCP project + `gcloud auth login`，待使用者確認要動用雲端資源才執行）
+- [ ] 授予 Cloud Build 與 Secret Manager 權限給 service account（同上）
+- [x] 確認 agent 檔案結構符合要求（`agent.py` 內含 `root_agent` 變數）→ `deploy_agent/agent.py`（**不是**沿用 `spike_agent/`，見下方說明）
+- [ ] `adk deploy cloud_run --project=... --region=... --with_ui [AGENT_PATH]`（未執行，屬會建立/計費雲端資源的動作，需先確認 `PROJECT_ID`）
 - [ ] 用公開 URL 跑完一次完整流程
 
 **通過標準：** 拿到可公開存取的 URL，端到端流程可執行
 **失敗處理：** 改用 `gcloud run deploy` + 自製 Dockerfile。成本 +2 小時，不影響 GO。
+
+**目前進度：** 部署資產已備妥並在本機驗證，尚未觸碰任何 gcloud/雲端資源。
+
+- `deploy_agent/agent.py`：獨立於 `spike_agent/`（S1/S6 測試 fixture，不可更動）的正式部署進入點。用 `App(name=..., root_agent=..., plugins=[...])` 而非 `root_agent` 單一變數——ADK loader（`agent_loader.py`）優先找模組層級的 `app`，這是**唯一**能讓 `HardPolicyPlugin`/`EgressGatePlugin`/`HardPolicyGate` 在 hosted 服務上真正生效的方式（deploy 不像本機測試走 `InMemoryRunner(plugins=[...])`）。
+- `requirements.txt`、`Dockerfile`（fallback，`python:3.13-slim`）、`.dockerignore` 已建立。
+- **★ 意外抓到一個真的 bug：** 把三個 plugin 一起掛到 `App` 後本機煙霧測試（`tests/test_s8_deploy_agent.py`）發現 `HardPolicyPlugin`（S1，來源白名單檢查）會攔截**所有**工具呼叫，包括沒有 `url`/`host` 參數的 `assess_release`——因為缺參數被當成 `UNKNOWN` 來源，R4 在到達 `HardPolicyGate`（S6）之前就先被 `HardPolicyPlugin` 擋下，形成「結果正確但保證來源錯誤」。已修正 `assurance/plugin.py::HardPolicyPlugin`，只在 `tool_args` 含 `url`/`host` 時才介入。修正後 S1/S2/S6 既有測試全數重跑通過，`evidence/S8-app-smoke.json` 三項驗證通過。
+- 過程中也踩到一次「相信回應文字」的反例：煙霧測試原本斷言 `"BLOCKED" in txt`，LLM 改用小寫 paraphrase 導致誤判為失敗——這正是 S2 強調過的陷阱，已改為斷言 tool 的成功標記（`"ASSESSED"`）未出現在輸出中。
+- **尚未執行：** `gcloud auth login`、Secret Manager、實際 `adk deploy cloud_run`——這些會建立/計費真實雲端資源，待使用者提供 `PROJECT_ID` 並確認才動手。
 
 ---
 
