@@ -1,0 +1,22 @@
+[
+  {
+    "test": "1_llm_never_called",
+    "passed": true,
+    "detail": "generate_content called 0 times (need 0)"
+  },
+  {
+    "test": "2_gate_triggered",
+    "passed": true,
+    "detail": "model_blocked=1"
+  },
+  {
+    "test": "3_blocked_in_output",
+    "passed": true,
+    "detail": "output='BLOCKED by FIN-AI-003: sensitive content must not be sent to an external model. '"
+  },
+  {
+    "test": "4_normal_passes",
+    "passed": true,
+    "detail": "generate_content called 1 times (need >=1)"
+  }
+]

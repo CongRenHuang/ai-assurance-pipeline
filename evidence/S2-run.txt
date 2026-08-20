@@ -1,0 +1,8 @@
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+Direct use of automatic function calling (AFC) in AsyncModels.generate_content is not recommended. Instead, we recommend to use AFC in AsyncChat.send_message. Similarly, direct use of AFC in AsyncModels.generate_content_stream is not recommended. Instead, we recommend to use AFC in AsyncChat.send_message_stream.
+PASS 1_llm_never_called: generate_content called 0 times (need 0)
+PASS 2_gate_triggered: model_blocked=1
+PASS 3_blocked_in_output: output='BLOCKED by FIN-AI-003: sensitive content must not be sent to an external model. '
+PASS 4_normal_passes: generate_content called 1 times (need >=1)
+
+GO

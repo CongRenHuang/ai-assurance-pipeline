@@ -106,16 +106,20 @@ ADK 2.0 引進 graph-based 與 dynamic workflows。查證結果：template workf
 
 ---
 
-### S2 ★ — Egress Gate（LLM 呼叫攔截）｜ 30 分鐘
+### S2 ★ — Egress Gate（LLM 呼叫攔截）｜ 30 分鐘 ｜ ✅ **PASS / GO**（2026-08-20）
 
 這是你 Stage 1 「SENSITIVE 資料禁止外送」的 ADK 版本。
 
-- [ ] Plugin 實作 `before_model_callback`
-- [ ] 偵測 `llm_request` 內含 SENSITIVE 標記時回傳 Content，阻擋呼叫
+- [x] Plugin 實作 `before_model_callback` → `assurance/plugin.py::EgressGatePlugin`
+- [x] 偵測 `llm_request` 內含 SENSITIVE 標記時回傳，阻擋呼叫 → 回傳型別為 `LlmResponse`，非文件所述 `Content`（見下方版本漂移說明）
 
 **通過標準：** 用 **API 端的 token 計數或 Cloud Console 的 API log** 驗證 LLM 完全沒被呼叫。**不可以只看回應文字判斷**——回應文字看起來對，不代表請求沒送出去。這一項的驗證方式本身就是你要寫進文章的內容。
 
 **失敗處理：** 若 `before_model_callback` 無法在請求送出前攔截 → NO-GO（egress governance 是你 Stage 1 已完成的東西，不能在新架構倒退）
+
+**結果：** 4/4 驗證通過（`evidence/S2-results.json`），用 `CountingGemini` 包裝計數 `generate_content` 實際呼叫次數，非讀回應文字。對照組（一般內容）正常呼叫，證明非無差別封鎖。
+
+**★ 版本漂移發現：** ADK 2.7.1 實測 `before_model_callback` 回傳型別為 `Optional[LlmResponse]`（見 `plugins/plugin_manager.py:240-248`），不是原 checklist/文件所述 `Optional[Content]`。已改用 `LlmResponse(content=types.Content(...))`。測試：`tests/counting_model.py`、`tests/test_s2_egress_gate.py`。
 
 ---
 
