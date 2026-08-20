@@ -1,0 +1,85 @@
+{
+  "results": [
+    {
+      "test": "1_three_layers_present",
+      "passed": true,
+      "detail": "spans=['eval.citation_coverage', 'policy.source_governance', 'policy.hard_block', 'release_assessment']"
+    },
+    {
+      "test": "2_guardrail_kind",
+      "passed": true,
+      "detail": "GUARDRAIL span 數=2"
+    },
+    {
+      "test": "3_evaluator_kind",
+      "passed": true,
+      "detail": "EVALUATOR span 數=1"
+    },
+    {
+      "test": "4_six_custom_attrs",
+      "passed": true,
+      "detail": "缺少=[]"
+    },
+    {
+      "test": "5_override_rejected_traced",
+      "passed": true,
+      "detail": "override_rejected=True 的 span 數=1"
+    },
+    {
+      "test": "6_span_tree_intact",
+      "passed": true,
+      "detail": "root 底下有 3 個子 span（S9 從此抽 trajectory）"
+    },
+    {
+      "test": "7_guardrail_has_plugin_attr",
+      "passed": true,
+      "detail": "r4_span={'name': 'policy.hard_block', 'attributes': {'openinference.span.kind': 'GUARDRAIL', 'assurance.policy_id': 'FIN-AI-004', 'assurance.risk_tier': 'R4', 'assurance.decision': 'BLOCK', 'assurance.override_rejected': True, 'assurance.plugin': 'HardPolicyGate', 'assurance.plugin_index': 2}, 'parent_id': 4767440121703770942, 'span_id': 13954669229651557654}"
+    },
+    {
+      "test": "8_r4_blocked_by_r4_policy_not_by_source_governance",
+      "passed": true,
+      "detail": "正確結果 + 錯誤原因 = 仍然是 bug。"
+    }
+  ],
+  "spans": [
+    {
+      "name": "eval.citation_coverage",
+      "attributes": {
+        "openinference.span.kind": "EVALUATOR",
+        "assurance.evaluation": "citation_coverage",
+        "assurance.score": 0.96,
+        "assurance.status": "PASS"
+      }
+    },
+    {
+      "name": "policy.source_governance",
+      "attributes": {
+        "openinference.span.kind": "GUARDRAIL",
+        "assurance.policy_id": "FIN-AI-001",
+        "assurance.risk_tier": "R3",
+        "assurance.decision": "HUMAN_REVIEW",
+        "assurance.override_rejected": false,
+        "assurance.plugin": "HardPolicyPlugin",
+        "assurance.plugin_index": 0
+      }
+    },
+    {
+      "name": "policy.hard_block",
+      "attributes": {
+        "openinference.span.kind": "GUARDRAIL",
+        "assurance.policy_id": "FIN-AI-004",
+        "assurance.risk_tier": "R4",
+        "assurance.decision": "BLOCK",
+        "assurance.override_rejected": true,
+        "assurance.plugin": "HardPolicyGate",
+        "assurance.plugin_index": 2
+      }
+    },
+    {
+      "name": "release_assessment",
+      "attributes": {
+        "openinference.span.kind": "CHAIN"
+      }
+    }
+  ]
+}

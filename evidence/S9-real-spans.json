@@ -1,0 +1,17 @@
+[
+  {
+    "step": "eval.citation_coverage",
+    "kind": "EVALUATOR"
+  },
+  {
+    "step": "policy.hard_block",
+    "kind": "GUARDRAIL",
+    "policy_id": "FIN-AI-004",
+    "plugin": "HardPolicyGate",
+    "decision": "BLOCK"
+  },
+  {
+    "step": "release_assessment",
+    "kind": "CHAIN"
+  }
+]

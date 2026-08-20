@@ -1,0 +1,134 @@
+
+--- 1. 強制檢查點 ---
+PASS 1a_good_has_checkpoint: invariant 成立
+PASS 1b_lucky_missing_checkpoint: 運氣路徑沒有經過 hard_block -> 正確判 FAIL
+
+--- 2. 歸因正確（S8 bug 的 regression）---
+PASS 2a_good_attribution: invariant 成立
+PASS 2b_misattributed_detected: R4 未被 HardPolicyGate 決定 -> 正確判 FAIL
+
+--- 3. 必要前驅 ---
+PASS 3a_approve_after_check: invariant 成立
+PASS 3b_approve_without_check: 核准前未經 hard policy 檢查 -> 正確判 FAIL
+
+--- 4. 副作用基數 ---
+PASS 4a_within_limit: invariant 成立
+PASS 4b_exceeds_limit: 外送 2 次 > 上限 1 -> 正確判 FAIL
+
+--- 5. 禁止轉移 ---
+PASS 5a_no_forbidden: invariant 成立
+PASS 5b_forbidden_detected: UNKNOWN 來源直接接外部模型 -> 正確判 FAIL
+
+--- 6. 只看結果 vs 看軌跡 ---
+PASS 6a_result_only_all_pass: 只斷言最終狀態 -> 三條路徑全部 PASS（問題所在）
+PASS 6b_trajectory_only_good_passes: 看軌跡 -> 只有 ['GOOD'] 通過
+
+================================================================
+  三條路徑最終狀態都是 BLOCKED。
+  只斷言 result 的測試：三條全 PASS。
+  斷言 trajectory 的測試：只有 GOOD 通過。
+================================================================
+
+PASS
+{
+    "name": "eval.citation_coverage",
+    "context": {
+        "trace_id": "0xae801b31d1ea3978426427818306335c",
+        "span_id": "0x713a7a5bba906530",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0xbed3a339590a34e7",
+    "start_time": "2026-08-20T10:23:02.303057Z",
+    "end_time": "2026-08-20T10:23:02.303068Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "EVALUATOR",
+        "assurance.evaluation": "citation_coverage",
+        "assurance.score": 0.96,
+        "assurance.status": "PASS"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "e284b58f-dc18-4465-b1c8-6f4a4553fce4",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+{
+    "name": "policy.hard_block",
+    "context": {
+        "trace_id": "0xae801b31d1ea3978426427818306335c",
+        "span_id": "0x62adfd5b0ae5f7ab",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0xbed3a339590a34e7",
+    "start_time": "2026-08-20T10:23:02.303227Z",
+    "end_time": "2026-08-20T10:23:02.303236Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "GUARDRAIL",
+        "assurance.policy_id": "FIN-AI-004",
+        "assurance.risk_tier": "R4",
+        "assurance.decision": "BLOCK",
+        "assurance.override_rejected": true,
+        "assurance.plugin": "HardPolicyGate",
+        "assurance.plugin_index": 2
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "e284b58f-dc18-4465-b1c8-6f4a4553fce4",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+{
+    "name": "release_assessment",
+    "context": {
+        "trace_id": "0xae801b31d1ea3978426427818306335c",
+        "span_id": "0xbed3a339590a34e7",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-08-20T10:23:02.302999Z",
+    "end_time": "2026-08-20T10:23:02.303295Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "CHAIN"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "e284b58f-dc18-4465-b1c8-6f4a4553fce4",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+抽出的軌跡： ['eval.citation_coverage', 'policy.hard_block', 'release_assessment']
+invariant 全部成立
+-> evidence/S9-real-spans.json

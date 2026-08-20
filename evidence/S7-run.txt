@@ -1,0 +1,145 @@
+{
+    "name": "eval.citation_coverage",
+    "context": {
+        "trace_id": "0xe195e2766d489c317c788a880c27c075",
+        "span_id": "0x08bcc29647918990",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0x422959881e192b3e",
+    "start_time": "2026-08-20T10:19:19.541150Z",
+    "end_time": "2026-08-20T10:19:19.541160Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "EVALUATOR",
+        "assurance.evaluation": "citation_coverage",
+        "assurance.score": 0.96,
+        "assurance.status": "PASS"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "f76abdfa-fe20-45b5-b36c-eed6fd88bc4a",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+{
+    "name": "policy.source_governance",
+    "context": {
+        "trace_id": "0xe195e2766d489c317c788a880c27c075",
+        "span_id": "0x21268084b23a1eda",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0x422959881e192b3e",
+    "start_time": "2026-08-20T10:19:19.541313Z",
+    "end_time": "2026-08-20T10:19:19.541322Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "GUARDRAIL",
+        "assurance.policy_id": "FIN-AI-001",
+        "assurance.risk_tier": "R3",
+        "assurance.decision": "HUMAN_REVIEW",
+        "assurance.override_rejected": false,
+        "assurance.plugin": "HardPolicyPlugin",
+        "assurance.plugin_index": 0
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "f76abdfa-fe20-45b5-b36c-eed6fd88bc4a",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+{
+    "name": "policy.hard_block",
+    "context": {
+        "trace_id": "0xe195e2766d489c317c788a880c27c075",
+        "span_id": "0xc1a8f1bab7747d16",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0x422959881e192b3e",
+    "start_time": "2026-08-20T10:19:19.541396Z",
+    "end_time": "2026-08-20T10:19:19.541403Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "GUARDRAIL",
+        "assurance.policy_id": "FIN-AI-004",
+        "assurance.risk_tier": "R4",
+        "assurance.decision": "BLOCK",
+        "assurance.override_rejected": true,
+        "assurance.plugin": "HardPolicyGate",
+        "assurance.plugin_index": 2
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "f76abdfa-fe20-45b5-b36c-eed6fd88bc4a",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+{
+    "name": "release_assessment",
+    "context": {
+        "trace_id": "0xe195e2766d489c317c788a880c27c075",
+        "span_id": "0x422959881e192b3e",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-08-20T10:19:19.541100Z",
+    "end_time": "2026-08-20T10:19:19.541441Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "openinference.span.kind": "CHAIN"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.44.0",
+            "service.instance.id": "f76abdfa-fe20-45b5-b36c-eed6fd88bc4a",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}
+✅ 1_three_layers_present: spans=['eval.citation_coverage', 'policy.source_governance', 'policy.hard_block', 'release_assessment']
+✅ 2_guardrail_kind: GUARDRAIL span 數=2
+✅ 3_evaluator_kind: EVALUATOR span 數=1
+✅ 4_six_custom_attrs: 缺少=[]
+✅ 5_override_rejected_traced: override_rejected=True 的 span 數=1
+✅ 6_span_tree_intact: root 底下有 3 個子 span（S9 從此抽 trajectory）
+✅ 7_guardrail_has_plugin_attr: r4_span={'name': 'policy.hard_block', 'attributes': {'openinference.span.kind': 'GUARDRAIL', 'assurance.policy_id': 'FIN-AI-004', 'assurance.risk_tier': 'R4', 'assurance.decision': 'BLOCK', 'assurance.override_rejected': True, 'assurance.plugin': 'HardPolicyGate', 'assurance.plugin_index': 2}, 'parent_id': 4767440121703770942, 'span_id': 13954669229651557654}
+✅ 8_r4_blocked_by_r4_policy_not_by_source_governance: 正確結果 + 錯誤原因 = 仍然是 bug。
+
+PASS

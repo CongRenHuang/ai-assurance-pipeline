@@ -1,0 +1,94 @@
+{
+  "results": [
+    {
+      "test": "1a_good_has_checkpoint",
+      "passed": true,
+      "detail": "invariant 成立"
+    },
+    {
+      "test": "1b_lucky_missing_checkpoint",
+      "passed": true,
+      "detail": "運氣路徑沒有經過 hard_block -> 正確判 FAIL"
+    },
+    {
+      "test": "2a_good_attribution",
+      "passed": true,
+      "detail": "invariant 成立"
+    },
+    {
+      "test": "2b_misattributed_detected",
+      "passed": true,
+      "detail": "R4 未被 HardPolicyGate 決定 -> 正確判 FAIL"
+    },
+    {
+      "test": "3a_approve_after_check",
+      "passed": true,
+      "detail": "invariant 成立"
+    },
+    {
+      "test": "3b_approve_without_check",
+      "passed": true,
+      "detail": "核准前未經 hard policy 檢查 -> 正確判 FAIL"
+    },
+    {
+      "test": "4a_within_limit",
+      "passed": true,
+      "detail": "invariant 成立"
+    },
+    {
+      "test": "4b_exceeds_limit",
+      "passed": true,
+      "detail": "外送 2 次 > 上限 1 -> 正確判 FAIL"
+    },
+    {
+      "test": "5a_no_forbidden",
+      "passed": true,
+      "detail": "invariant 成立"
+    },
+    {
+      "test": "5b_forbidden_detected",
+      "passed": true,
+      "detail": "UNKNOWN 來源直接接外部模型 -> 正確判 FAIL"
+    },
+    {
+      "test": "6a_result_only_all_pass",
+      "passed": true,
+      "detail": "只斷言最終狀態 -> 三條路徑全部 PASS（問題所在）"
+    },
+    {
+      "test": "6b_trajectory_only_good_passes",
+      "passed": true,
+      "detail": "看軌跡 -> 只有 ['GOOD'] 通過"
+    }
+  ],
+  "good_trajectory": [
+    {
+      "step": "release_assessment",
+      "kind": "CHAIN"
+    },
+    {
+      "step": "eval.citation_coverage",
+      "kind": "EVALUATOR"
+    },
+    {
+      "step": "policy.hard_block",
+      "kind": "GUARDRAIL",
+      "policy_id": "FIN-AI-004",
+      "plugin": "HardPolicyGate",
+      "decision": "BLOCK"
+    }
+  ],
+  "misattributed_trajectory": [
+    {
+      "step": "release_assessment",
+      "kind": "CHAIN"
+    },
+    {
+      "step": "policy.source_governance",
+      "kind": "GUARDRAIL",
+      "policy_id": "FIN-AI-001",
+      "plugin": "HardPolicyPlugin",
+      "decision": "BLOCK"
+    }
+  ]
+}
