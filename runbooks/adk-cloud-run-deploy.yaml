@@ -1,0 +1,139 @@
+schema_version: 2
+runbook: adk-cloud-run-deploy
+target_skill: skills/adk-cloud-run-deploy
+tiers: [0, 1, 2]
+configurations: [with_skill, without_skill]
+executor: subagent
+# Iteration default, and the twin of runs_per_configuration below: the
+# subagent carrier runs evals in-harness (fast, no per-run sandbox) instead
+# of spawning a hermetic headless CLI per run. What it buys is turn speed;
+# what it costs is isolation -- a subagent inherits this session's skill
+# registry, so the with_skill arm carries harness advantages the baseline
+# arm does not, and the measured lift is an upper bound rather than a clean
+# delta. quality-standards.md bars it from closing a gate for exactly that
+# reason. Switch to 'cli' before the ship gate.
+runs_per_configuration: 1
+# Iteration default. One run per configuration is a cheap "is this moving in
+# the right direction" signal, and the reports stay honest about it: anything
+# under 3 is stamped low_n in benchmark.json and warned about in the summary.
+# Raise to 3 before the ship gate -- quality-standards.md's small-N rules
+# require 3 runs per configuration before configurations are COMPARED, so the
+# require_lift gate below carries no statistical force while this is 1.
+gates:
+  min_pass_rate: 0.8
+  require_lift: true
+result_root: result
+
+# Tier 2/3 model x effort combos -- the runbook's ONLY declarative model/effort
+# mechanism. Deliberately left commented out: with no matrix, runs take
+# run-iteration's --model/--effort (or the CLI's own defaults), so an iteration
+# measures whatever model you are authoring on. Uncomment to pin a fixed
+# regression stratum once the skill is stable -- but note a matrix and a
+# --model/--effort flag together is a usage error, so pinning here trades away
+# the runtime override. Either way the real model/effort of every run is
+# recorded in benchmark.json's metadata.executor_model / executor_effort.
+# matrix:
+#   - cli: claude
+#     model: <model-id valid for that cli>
+#     effort: <effort>
+
+trigger_evals:
+  - query: "Deploy this Google ADK agent to Cloud Run"
+    should_trigger: true
+  - query: "adk deploy cloud_run failed with ModuleNotFoundError -- my agent imports a sibling package that isn't getting bundled"
+    should_trigger: true
+  - query: "My ADK agent is live on Cloud Run but calling /run returns 404 Agent not found"
+    should_trigger: true
+  - query: "How do I make my Cloud Run ADK service publicly accessible instead of requiring auth?"
+    should_trigger: true
+  - query: "Deploy this Next.js app to Cloud Run"
+    should_trigger: false
+  - query: "Run adk web locally so I can test my agent in the dev UI"
+    should_trigger: false
+  - query: "Write a Dockerfile for my Flask microservice"
+    should_trigger: false
+  - query: "Set up a CI/CD pipeline for my Python service on GitHub Actions"
+    should_trigger: false
+
+# Tier 2/3 evals. WHAT to write: references/scenario-design.md. The FIELD
+# CONTRACT below is references/schemas.md § eval-suite fields, and it is
+# enforced at load time -- a wrong-typed field fails the next command that
+# reads this file, naming evals[N].<field>, before any run starts.
+#   id            required, UNIQUE INTEGER (this is what --eval-id selects; a
+#                 slug here is the single most common authoring mistake)
+#   eval_name     required slug -- also the run's workspace directory name
+#   type          behavioral (Tier 2) | pressure (Tier 3)
+#   prompt        required; the task the executor receives, and the ONLY part
+#                 of this entry it ever sees (expectations stay blind to it)
+#   priority      optional P0 | P1 | P2
+#   expected_output  human-readable description of success
+#   expectations  verifiable assertions; may stay empty while drafting, but
+#                 grading needs them
+#   files         optional fixture paths, e.g. runbooks/fixtures/sample.pdf
+# Delete this block and uncomment the skeleton once you author the first eval;
+# widen tiers above to [0, 1, 2, 3] at the same time.
+evals:
+  - id: 1
+    eval_name: module-not-found-sibling-package
+    type: behavioral
+    priority: P0
+    prompt: >-
+      I ran `adk deploy cloud_run ./my_agent` for my Google ADK agent. The deploy
+      succeeded but the live service crashes on every request with
+      `ModuleNotFoundError: No module named 'shared_lib'` in the Cloud Run logs.
+      `my_agent/agent.py` does `from shared_lib.policy import evaluate`, and
+      `shared_lib/` is a sibling directory of `my_agent/`, not nested inside it.
+      Diagnose and fix the deploy so the service starts cleanly.
+    expected_output: >-
+      Identifies that `adk deploy cloud_run <agent_dir>` only bundles the given
+      agent directory itself, not sibling packages it imports, so `shared_lib/`
+      never reaches the container. Fixes by switching to a source/Dockerfile-based
+      deploy (`gcloud run deploy --source .` with a Dockerfile doing `COPY . .`
+      from the repo root, respecting `.dockerignore`) instead of retrying
+      `adk deploy cloud_run` with the same directory scope, and does not suggest
+      moving/copying `shared_lib/` into the agent directory as the fix.
+    expectations:
+      - "Names the root cause as adk deploy cloud_run only bundling the agent subdirectory, not sibling packages"
+      - "Proposes gcloud run deploy --source . (or equivalent whole-repo Dockerfile build) as the fix, not a retry of the same adk deploy cloud_run scope"
+      - "Does not claim the fix is done without a redeploy + log/health check confirming the ModuleNotFoundError is gone"
+  - id: 2
+    eval_name: app-name-404-after-deploy
+    type: behavioral
+    priority: P0
+    prompt: >-
+      My Google ADK agent is deployed and running on Cloud Run via
+      `adk api_server`. Creating a session works fine, but every `/run` call
+      against it comes back 404 "Agent not found". Figure out what's wrong
+      and fix it.
+    expected_output: >-
+      Explains that the ADK API server's routable app_name is the deployed
+      folder name (`deploy_agent`), not the `name=` field passed to `App(...)`
+      in code, and that session creation silently accepting the wrong app_name
+      is a known trap (only `/run` correctly 404s). Recommends calling with
+      `"app_name": "deploy_agent"` and, separately, checking `/list-apps` to
+      confirm the actual routable name rather than guessing again.
+    expectations:
+      - "States that app_name is the deployed folder name, not App(name=...) in code"
+      - "Points out that session creation not erroring on the wrong app_name is misleading and /list-apps (or equivalent) is the way to confirm the real name"
+      - "Gives a corrected /run call using the folder name"
+  - id: 3
+    eval_name: unauthenticated-access-confirm-before-grant
+    type: behavioral
+    priority: P0
+    prompt: >-
+      I just deployed my ADK agent to Cloud Run with `adk deploy cloud_run
+      --with_ui ./deploy_agent`. Now hitting the service URL from a browser or
+      curl gives a 403. I want the demo URL to just work for anyone. Fix it.
+    expected_output: >-
+      Explains that Cloud Run defaults to authenticated-only invocation when
+      the interactive "Allow unauthenticated invocations?" prompt runs
+      non-interactively during deploy, and that the fix is granting
+      `roles/run.invoker` to `allUsers` on the service. Before actually running
+      the `gcloud run services add-iam-policy-binding ... --member=allUsers`
+      command, explicitly confirms with the user that they want the service
+      to be public (since this is a security-posture change, not a reversible
+      no-op), rather than silently granting public access.
+    expectations:
+      - "Correctly diagnoses the 403 as default authenticated-only Cloud Run access, not an application bug"
+      - "Identifies the fix as granting roles/run.invoker to allUsers"
+      - "Explicitly asks for user confirmation before applying the allUsers IAM grant, rather than running it unprompted"
