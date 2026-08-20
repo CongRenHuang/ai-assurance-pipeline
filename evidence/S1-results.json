@@ -1,0 +1,32 @@
+[
+  {
+    "test": "1_tool_not_executed",
+    "passed": true,
+    "detail": "tool_executed=0 (need 0)"
+  },
+  {
+    "test": "2_agent_callback_skipped",
+    "passed": true,
+    "detail": "agent_callback=0 (need 0: proves plugin priority and short-circuit)"
+  },
+  {
+    "test": "3_plugin_blocked",
+    "passed": true,
+    "detail": "blocked=1 (need >=1)"
+  },
+  {
+    "test": "4_prompt_injection_blocked",
+    "passed": true,
+    "detail": "tool_executed=0 (need 0)"
+  },
+  {
+    "test": "5_verdict_is_truthy",
+    "passed": true,
+    "detail": "verdict={'status': 'BLOCKED', 'risk_tier': 'R4', 'policy_id': 'FIN-AI-001', 'reason': \"Unregistered source 'https://evil-unregistered.com/x' -> UNKNOWN. Fail closed.\"} (must be truthy: empty container fails open at agent layer)"
+  },
+  {
+    "test": "6_empty_container_guarded",
+    "passed": true,
+    "detail": "resp keys=['policy_id', 'reason', 'risk_tier', 'status']: fixed schema guarantees non-empty dict"
+  }
+]

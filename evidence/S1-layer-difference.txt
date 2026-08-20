@@ -1,0 +1,9 @@
+Plugin layer short-circuit condition:
+    if result is not None:
+
+Agent layer short-circuit condition:
+    if function_response:
+    if function_response:
+
+-> Plugin uses `is not None` (empty dict blocks)
+-> Agent uses truthy (empty dict does not block)
