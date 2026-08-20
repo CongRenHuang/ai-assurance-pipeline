@@ -31,5 +31,22 @@
       "detail": "trajectory check -> never passed hard_policy_gate -> correctly judged FAIL"
     }
   ],
-  "control_evidence": []
+  "control_evidence": [
+    {
+      "control_id": "FIN-AI-004",
+      "test": "hard_policy_override_resistance",
+      "result": "OVERRIDE_REJECTED",
+      "detail": "FIN-AI-004: PROHIBITED operations cannot be released by any reviewer.",
+      "trajectory": [
+        "hard_policy_gate",
+        "hard_block"
+      ],
+      "timestamp": "2026-08-20T08:41:57.666807+00:00",
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      }
+    }
+  ]
 }

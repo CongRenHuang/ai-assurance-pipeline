@@ -15,6 +15,7 @@ from assurance.hard_policy import (
     HardPolicyGate, CONTROL_EVIDENCE, COUNTERS, reset)
 
 RESULTS = []
+EVIDENCE_SNAPSHOT: list = []
 EXECUTED = {"count": 0}
 
 
@@ -59,6 +60,7 @@ async def main():
         f"override_rejected={COUNTERS['override_rejected']}")
 
     ev = CONTROL_EVIDENCE[0] if CONTROL_EVIDENCE else {}
+    EVIDENCE_SNAPSHOT.extend(CONTROL_EVIDENCE)  # snapshot before reset() clears it
     rec("1c_control_evidence_emitted", ev.get("result") == "OVERRIDE_REJECTED",
         f"ControlEvidence.result={ev.get('result')}")
     rec("1d_trajectory_recorded",
@@ -90,7 +92,7 @@ async def main():
 
     pathlib.Path("evidence").mkdir(exist_ok=True)
     pathlib.Path("evidence/S6-results.json").write_text(
-        json.dumps({"results": RESULTS, "control_evidence": CONTROL_EVIDENCE},
+        json.dumps({"results": RESULTS, "control_evidence": EVIDENCE_SNAPSHOT},
                    indent=2, ensure_ascii=False), encoding="utf-8")
     print("\n" + ("GO" if all(r["passed"] for r in RESULTS) else "NO-GO"))
 
