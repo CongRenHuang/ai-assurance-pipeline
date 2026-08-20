@@ -1,0 +1,70 @@
+{
+  "status": "complete",
+  "limitations": [],
+  "expectations": [
+    {
+      "text": "States that app_name is the deployed folder name, not App(name=...) in code",
+      "passed": false,
+      "evidence": "Transcript says \"the app_name is derived from the agent's folder name (the one containing agent.py + __init__.py...)\" but never mentions or contrasts against the `App(name=...)` field in code — the specific trap (config value vs. folder name) is not called out."
+    },
+    {
+      "text": "Points out that session creation not erroring on the wrong app_name is misleading and /list-apps (or equivalent) is the way to confirm the real name",
+      "passed": true,
+      "evidence": "\"Session creation ... just writes an entry into the session store. It does not verify that app_name corresponds to a real, successfully-loaded agent — so it 'succeeds' even for a bogus app name\" plus \"Fastest way to confirm: curl https://<your-cloud-run-url>/list-apps\""
+    },
+    {
+      "text": "Gives a corrected /run call using the folder name",
+      "passed": false,
+      "evidence": "No corrected /run call (with app_name/body) is ever given. Executor instead asks the user to paste directory layout and the exact appName values sent, deferring the fix: \"To actually fix it, I need a couple of specifics from you...Paste those...and I'll pinpoint the exact mismatch and write the fix.\""
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.3333
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Executor correctly diagnosed the session-creation-vs-/run asymmetry and pointed to /list-apps, which is the strongest and most concrete part of the response. However it stopped short of the two other required points: it never explicitly names the App(name=...) code field as the misleading source (it only says folder name is authoritative, without naming the trap it's contrasted against), and rather than committing to a corrected /run call, it asked the user for more info before offering a fix — reasonable given the empty sandbox, but it doesn't satisfy the expectation as written."
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Bash": 1,
+      "ToolSearch": 1,
+      "WebSearch": 2
+    },
+    "total_tool_calls": 4,
+    "total_steps": 9,
+    "files_created": [],
+    "errors_encountered": 2,
+    "output_chars": 2884,
+    "transcript_chars": 6006
+  },
+  "grader": {
+    "cli": "claude",
+    "model": null,
+    "effort": null,
+    "duration_ms": 25931
+  },
+  "expected_output_comparison": {
+    "points": [
+      {
+        "status": "partial",
+        "note": "States folder name is the real app_name source, but never mentions or contrasts the `App(name=...)` code field as the misleading alternative — the specific trap is not named."
+      },
+      {
+        "status": "matched",
+        "note": "Clearly explains session creation silently accepts any app_name while only /run 404s, matching the expected 'known trap' framing."
+      },
+      {
+        "status": "missing",
+        "note": "No concrete corrected /run call with app_name 'deploy_agent' or any folder name is given; executor asks the user for the folder layout instead of committing to a specific answer."
+      },
+      {
+        "status": "matched",
+        "note": "Recommends curl to /list-apps to confirm the actual routable name, matching expected guidance."
+      }
+    ]
+  }
+}

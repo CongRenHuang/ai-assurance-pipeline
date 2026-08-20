@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "app-name-404-after-deploy",
+  "type": "behavioral",
+  "prompt": "My Google ADK agent is deployed and running on Cloud Run via `adk api_server`. Creating a session works fine, but every `/run` call against it comes back 404 \"Agent not found\". Figure out what's wrong and fix it.",
+  "expectations": [
+    "States that app_name is the deployed folder name, not App(name=...) in code",
+    "Points out that session creation not erroring on the wrong app_name is misleading and /list-apps (or equivalent) is the way to confirm the real name",
+    "Gives a corrected /run call using the folder name"
+  ],
+  "files": null,
+  "priority": "P0"
+}

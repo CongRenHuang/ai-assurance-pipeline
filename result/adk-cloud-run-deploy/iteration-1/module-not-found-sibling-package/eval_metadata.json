@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "module-not-found-sibling-package",
+  "type": "behavioral",
+  "prompt": "I ran `adk deploy cloud_run ./my_agent` for my Google ADK agent. The deploy succeeded but the live service crashes on every request with `ModuleNotFoundError: No module named 'shared_lib'` in the Cloud Run logs. `my_agent/agent.py` does `from shared_lib.policy import evaluate`, and `shared_lib/` is a sibling directory of `my_agent/`, not nested inside it. Diagnose and fix the deploy so the service starts cleanly.",
+  "expectations": [
+    "Names the root cause as adk deploy cloud_run only bundling the agent subdirectory, not sibling packages",
+    "Proposes gcloud run deploy --source . (or equivalent whole-repo Dockerfile build) as the fix, not a retry of the same adk deploy cloud_run scope",
+    "Does not claim the fix is done without a redeploy + log/health check confirming the ModuleNotFoundError is gone"
+  ],
+  "files": null,
+  "priority": "P0"
+}

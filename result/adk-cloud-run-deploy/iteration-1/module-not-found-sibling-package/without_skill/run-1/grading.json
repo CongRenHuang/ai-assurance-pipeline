@@ -1,0 +1,74 @@
+{
+  "status": "complete",
+  "limitations": [],
+  "expectations": [
+    {
+      "text": "Names the root cause as adk deploy cloud_run only bundling the agent subdirectory, not sibling packages",
+      "passed": true,
+      "evidence": "transcript.md: '`adk deploy cloud_run ./my_agent` uses only `./my_agent` as the build context... Anything outside `my_agent/` — including a sibling `shared_lib/` — never reaches the image.' Also repeated in README.md diagnosis section."
+    },
+    {
+      "text": "Proposes gcloud run deploy --source . (or equivalent whole-repo Dockerfile build) as the fix, not a retry of the same adk deploy cloud_run scope",
+      "passed": false,
+      "evidence": "A Dockerfile/gcloud-builds-based option is offered (Option 3, outputs/Dockerfile + deploy.sh), but it is ranked lowest of three and explicitly not the endorsed fix. The final steer in transcript.md says: 'For your case, the fastest fix is Option 1: mv shared_lib my_agent/shared_lib, then redeploy with the same adk deploy cloud_run ./my_agent command — no code changes needed.' The actually-recommended fix retries the identical adk deploy cloud_run scope after moving the sibling directory in, contradicting the expectation."
+    },
+    {
+      "text": "Does not claim the fix is done without a redeploy + log/health check confirming the ModuleNotFoundError is gone",
+      "passed": true,
+      "evidence": "No claim of completion/deployment is made; transcript notes the environment is a described scenario with no real repo to act on, and README.md includes a 'Verifying the fix' section instructing the user to redeploy, inspect the image, tail logs, and confirm the ModuleNotFoundError is gone before trusting it."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 1,
+    "total": 3,
+    "pass_rate": 0.6667
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Proposes gcloud run deploy --source . (or equivalent whole-repo Dockerfile build) as the fix, not a retry of the same adk deploy cloud_run scope",
+        "reason": "Run hedges by offering three ranked options including the correct Dockerfile-based fix, but then explicitly endorses a different fix (nest shared_lib into agent dir, keep same adk deploy cloud_run command) as 'the fastest fix' for the user's case — this is exactly the anti-pattern the expected-output description calls out (moving/copying shared_lib into the agent directory). Grader had to read past the offered options to the actual final recommendation to catch this; consider noting in the expectation that merely listing the correct fix as one of several options, while endorsing a different one, should not count as passing."
+      }
+    ],
+    "overall": "Root-cause diagnosis is accurate and well-explained, and the run avoids false completion claims, including solid verification guidance. However, the run's actual endorsed recommendation directly contradicts the expected fix pattern by recommending directory restructuring plus retrying the identical adk deploy cloud_run command, even though it also produced correct Dockerfile-based artifacts as merely one of three ranked options."
+  },
+  "execution_metrics": {
+    "tool_calls": {
+      "Bash": 3,
+      "Write": 3
+    },
+    "total_tool_calls": 6,
+    "total_steps": 10,
+    "files_created": [
+      "Dockerfile",
+      "README.md",
+      "deploy.sh"
+    ],
+    "errors_encountered": 2,
+    "output_chars": 1265,
+    "transcript_chars": 4282
+  },
+  "grader": {
+    "cli": "claude",
+    "model": null,
+    "effort": null,
+    "duration_ms": 41012
+  },
+  "expected_output_comparison": {
+    "points": [
+      {
+        "status": "matched",
+        "note": "Correctly identifies that adk deploy cloud_run <agent_dir> only bundles that directory, dropping the sibling shared_lib/ package, causing the runtime ModuleNotFoundError."
+      },
+      {
+        "status": "partial",
+        "note": "A gcloud-builds/Dockerfile whole-repo build (outputs/Dockerfile, deploy.sh) was produced as 'Option 3', but it is not the endorsed fix — the transcript's final recommendation is Option 1 (same adk deploy cloud_run command, same directory scope) after moving shared_lib into the agent directory."
+      },
+      {
+        "status": "missing",
+        "note": "Expected output explicitly says the fix should NOT suggest moving/copying shared_lib/ into the agent directory, but this run's primary/endorsed fix (Option 1) is exactly that: 'mv shared_lib my_agent/shared_lib' followed by redeploying with the same adk deploy cloud_run ./my_agent command."
+      }
+    ]
+  }
+}

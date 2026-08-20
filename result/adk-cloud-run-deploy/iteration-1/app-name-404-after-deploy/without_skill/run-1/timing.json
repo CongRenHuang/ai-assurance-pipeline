@@ -1,0 +1,16 @@
+{
+  "total_tokens": 73824,
+  "tokens": {
+    "input": 6,
+    "output": 4730,
+    "cache_creation": 7446,
+    "cache_read": 61642
+  },
+  "total_cost_usd": 0.1351886,
+  "duration_api_ms": 55714,
+  "duration_ms": 56994,
+  "total_duration_seconds": 57,
+  "model": null,
+  "effort": null,
+  "cli": "claude"
+}
