@@ -1,0 +1,8 @@
+template workflow agents imported OK
+WARN: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+WARN: DeprecationWarning: BaseAgentConfig is deprecated and will be removed in future versions. Config is now loaded via reflection so the separate config class is no longer needed.
+WARN: DeprecationWarning: BaseAgentConfig is deprecated and will be removed in future versions. Config is now loaded via reflection so the separate config class is no longer needed.
+WARN: DeprecationWarning: BaseAgentConfig is deprecated and will be removed in future versions. Config is now loaded via reflection so the separate config class is no longer needed.
+WARN: DeprecationWarning: BaseAgentConfig is deprecated and will be removed in future versions. Config is now loaded via reflection so the separate config class is no longer needed.
+
+judgement: no deprecation warning targeting SequentialAgent/ParallelAgent/LoopAgent -> S3 fallback path viable
