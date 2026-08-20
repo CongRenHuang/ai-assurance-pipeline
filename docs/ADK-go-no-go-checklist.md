@@ -242,26 +242,32 @@ GoogleADKInstrumentor().instrument(tracer_provider=tracer_provider)
 
 ---
 
-### S8 — Cloud Run 部署 ｜ 60 分鐘 ｜ 🟡 **資產已備妥，尚未實際部署**（2026-08-20）
+### S8 — Cloud Run 部署 ｜ 60 分鐘 ｜ ✅ **PASS**（2026-08-20）
 
 **必須在第一週打通，不要留到最後三天。** Hackathon 硬性要求 hosted URL，而部署問題永遠比預期久。
 
-- [ ] Cloud Secret Manager 存 `GOOGLE_API_KEY`（需要真實 GCP project + `gcloud auth login`，待使用者確認要動用雲端資源才執行）
-- [ ] 授予 Cloud Build 與 Secret Manager 權限給 service account（同上）
+- [x] Cloud Secret Manager 存 `GOOGLE_API_KEY` → secret `google-api-key`，project `ai-nursing-simulator`
+- [x] 授予 Cloud Build 與 Secret Manager 權限給 service account → Compute SA 已有 `secretmanager.secretAccessor` 與 `cloudbuild.builds.builder`（沿用該 project 既有綁定，未新增）
 - [x] 確認 agent 檔案結構符合要求（`agent.py` 內含 `root_agent` 變數）→ `deploy_agent/agent.py`（**不是**沿用 `spike_agent/`，見下方說明）
-- [ ] `adk deploy cloud_run --project=... --region=... --with_ui [AGENT_PATH]`（未執行，屬會建立/計費雲端資源的動作，需先確認 `PROJECT_ID`）
-- [ ] 用公開 URL 跑完一次完整流程
+- [x] 部署完成 → **改用 `gcloud run deploy --source .` fallback**（原因見下方）
+- [x] 用公開 URL 跑完一次完整流程 → R3 正常執行、**R4 在 hosted 服務上仍被 `OVERRIDE_REJECTED` 擋下**
 
 **通過標準：** 拿到可公開存取的 URL，端到端流程可執行
 **失敗處理：** 改用 `gcloud run deploy` + 自製 Dockerfile。成本 +2 小時，不影響 GO。
 
-**目前進度：** 部署資產已備妥並在本機驗證，尚未觸碰任何 gcloud/雲端資源。
+**結果：** Service URL：`https://assurance-agent-6eqpujphvq-de.a.run.app`（project `ai-nursing-simulator`，region `asia-east1`；經使用者同意後 project 選用既有的 `ai-nursing-simulator` 而非另開新 project）。證據：`evidence/S8-url.txt`、`S8-session.json`、`S8-e2e.json`（R3 成功）、`S8-e2e-r4-block.json`（R4 仍 `OVERRIDE_REJECTED`）。
 
-- `deploy_agent/agent.py`：獨立於 `spike_agent/`（S1/S6 測試 fixture，不可更動）的正式部署進入點。用 `App(name=..., root_agent=..., plugins=[...])` 而非 `root_agent` 單一變數——ADK loader（`agent_loader.py`）優先找模組層級的 `app`，這是**唯一**能讓 `HardPolicyPlugin`/`EgressGatePlugin`/`HardPolicyGate` 在 hosted 服務上真正生效的方式（deploy 不像本機測試走 `InMemoryRunner(plugins=[...])`）。
-- `requirements.txt`、`Dockerfile`（fallback，`python:3.13-slim`）、`.dockerignore` 已建立。
-- **★ 意外抓到一個真的 bug：** 把三個 plugin 一起掛到 `App` 後本機煙霧測試（`tests/test_s8_deploy_agent.py`）發現 `HardPolicyPlugin`（S1，來源白名單檢查）會攔截**所有**工具呼叫，包括沒有 `url`/`host` 參數的 `assess_release`——因為缺參數被當成 `UNKNOWN` 來源，R4 在到達 `HardPolicyGate`（S6）之前就先被 `HardPolicyPlugin` 擋下，形成「結果正確但保證來源錯誤」。已修正 `assurance/plugin.py::HardPolicyPlugin`，只在 `tool_args` 含 `url`/`host` 時才介入。修正後 S1/S2/S6 既有測試全數重跑通過，`evidence/S8-app-smoke.json` 三項驗證通過。
-- 過程中也踩到一次「相信回應文字」的反例：煙霧測試原本斷言 `"BLOCKED" in txt`，LLM 改用小寫 paraphrase 導致誤判為失敗——這正是 S2 強調過的陷阱，已改為斷言 tool 的成功標記（`"ASSESSED"`）未出現在輸出中。
-- **尚未執行：** `gcloud auth login`、Secret Manager、實際 `adk deploy cloud_run`——這些會建立/計費真實雲端資源，待使用者提供 `PROJECT_ID` 並確認才動手。
+**部署資產：**
+- `deploy_agent/agent.py`：獨立於 `spike_agent/`（S1/S6 測試 fixture，不可更動）的正式部署進入點。用 `App(name=..., root_agent=..., plugins=[...])` 而非 `root_agent` 單一變數——ADK loader（`agent_loader.py`）優先找模組層級的 `app`，這是讓 `HardPolicyPlugin`/`EgressGatePlugin`/`HardPolicyGate` 在 hosted 服務上真正生效的方式（deploy 不像本機測試走 `InMemoryRunner(plugins=[...])`）。
+- `requirements.txt`、`Dockerfile`（`python:3.13-slim`）、`.dockerignore`。
+
+**★ 三個實測才發現的問題（文件沒寫，全部親手撞到）：**
+
+1. **`adk deploy cloud_run` 只複製 AGENT_PATH 資料夾本身，不含同層的 sibling package。** `deploy_agent/agent.py` import `assurance.env` / `assurance.plugin` / `assurance.hard_policy`，但 `adk deploy cloud_run ./deploy_agent` 產生的容器裡沒有 `assurance/`，導致 `ModuleNotFoundError`（見 `evidence/S8-deploy.txt`，第一次嘗試的 500 錯誤 log）。**改用 checklist 原本列為 fallback 的 `gcloud run deploy --source .`**（我們的 `Dockerfile` 本來就 `COPY . .`，整個 repo 一起進容器），才解決。這代表對這個「plugin 與 tool 分屬不同 package」的專案結構，**fallback 其實才是正確路徑，不是退路**。
+2. **`--with_ui` 部署預設不開放未驗證存取**，互動式 `Allow unauthenticated invocations? (y/N)` 提示在非互動執行下取預設值 `N`，服務回 403。需另外 `gcloud run services add-iam-policy-binding --member=allUsers --role=roles/run.invoker` 才能公開存取（已取得使用者確認才執行，因為這是會改變安全態勢的動作）。
+3. **`adk api_server` 的 `app_name` 是資料夾名稱，不是 `App.name` 欄位。** `deploy_agent/agent.py` 內 `App(name="assurance_agent", ...)`，但 `/list-apps` 回傳 `["deploy_agent"]`；用 `app_name="assurance_agent"` 呼叫 `/run` 得到 `404 Agent not found`。session 建立 API 不驗證 app_name 是否存在（會靜默接受並回傳成功），只有 `/run` 才會噴錯——這本身也是一個值得記錄的「看起來成功但其實沒生效」案例。改用 `app_name="deploy_agent"` 後正常。
+
+**環境備註：** 本機 `.venv`（`uv venv` 建立）console scripts 的 shebang 指向另一個工作目錄的 `.venv`（`~/Project/.venv`），`adk` CLI 直接執行會壞掉；改用 `python -c "from google.adk.cli import main; main()"` 繞過。另外使用者系統上 `gcloud` 實際安裝於 Homebrew Caskroom（`.zshrc` 有 source），Bash 工具的非互動 shell 未載入該 PATH，需用完整路徑或手動加入 PATH。兩者都與 ADK/GCP 本身無關，純屬此機器的環境設定問題，記錄在此避免下次重複排查。
 
 ---
 

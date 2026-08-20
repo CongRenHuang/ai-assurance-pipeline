@@ -1,0 +1,29 @@
+WARNING: ADK Web is for development purposes. It has access to all data and should not be used in production.
+Start generating Cloud Run source files in /var/folders/4t/by0ycnv91p38_t2k7cyzphvwl9gr3s/T/cloud_run_deploy_src/20260820_171445
+Copying agent source code...
+Copying agent source code completed.
+Creating Dockerfile...
+Creating Dockerfile complete: /var/folders/4t/by0ycnv91p38_t2k7cyzphvwl9gr3s/T/cloud_run_deploy_src/20260820_171445/Dockerfile
+Deploying to Cloud Run...
+Deploying from source requires an Artifact Registry Docker repository to store 
+built containers. A repository named [cloud-run-source-deploy] in region 
+[asia-east1] will be created.
+
+Do you want to continue (Y/n)?  
+Allow unauthenticated invocations to [assurance-agent] (y/N)?  
+Building using Dockerfile and deploying container to Cloud Run service [[1massurance-agent[m] in project [[1mai-nursing-simulator[m] region [[1masia-east1[m]
+Building and deploying new service...
+Validating configuration.........done
+Creating Container Repository...................done
+Uploading sources.........................INFO: Not using ignore file.
+INFO: Uploading [/var/folders/4t/by0ycnv91p38_t2k7cyzphvwl9gr3s/T/tmpzwvh_tkd/file.zip] to [run-sources-ai-nursing-simulator-asia-east1/services/assurance-agent/1787217298.991596-33bdb56bc719439999e58a572f8a36fc.zip]
+.done
+Building Container..............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................done
+Creating Revision..................................................................................................................................................................................................done
+Routing traffic.....done
+Done.
+Service [[1massurance-agent[m] revision [[1massurance-agent-00001-4x2[m] has been deployed and is serving [1m100[m percent of traffic.
+Service URL: [1mhttps://assurance-agent-94391013102.asia-east1.run.app[m
+Proxy locally with: gcloud run services proxy assurance-agent --region asia-east1 --project ai-nursing-simulator
+INFO: Display format: "none"
+Cleaning up the temp folder: /var/folders/4t/by0ycnv91p38_t2k7cyzphvwl9gr3s/T/cloud_run_deploy_src/20260820_171445

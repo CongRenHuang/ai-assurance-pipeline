@@ -1,0 +1,11 @@
+Building using Dockerfile and deploying container to Cloud Run service [[1massurance-agent[m] in project [[1mai-nursing-simulator[m] region [[1masia-east1[m]
+Building and deploying...
+Validating configuration..............done
+Uploading sources.........done
+Building Container.....................................................................................................................................................................................................................................................................................................................................................................................................................................................done
+Setting IAM Policy.............done
+Creating Revision...................................................................................................................................................done
+Routing traffic.....done
+Done.
+Service [[1massurance-agent[m] revision [[1massurance-agent-00002-tjh[m] has been deployed and is serving [1m100[m percent of traffic.
+Service URL: [1mhttps://assurance-agent-94391013102.asia-east1.run.app[m
