@@ -137,7 +137,9 @@ flowchart LR
     class E,P ev
 ```
 
-**不寫死數字。** 真實計數（`AUTO 54 / SAMPLE 28 / HUMAN 9 / BLOCK 9`）放在旁白或投影片文字裡，不寫進圖形節點——圖形是結構說明，數字會隨語料重跑而變，寫死圖裡就要在每次重跑後改圖。
+**不寫死數字。** 圖形是結構說明，數字會隨語料重跑而變，寫死圖裡就要在每次重跑後改圖。
+
+旁白或投影片文字只引用**不變量**：`HUMAN_REVIEW 9 / BLOCK 9 / RELEASED 82`——三者跨三次獨立跑（含一次 planner 完全停擺）以 assessment id 比對皆相同。`AUTO / SAMPLE` 的分裂**不是**不變量（觀測 `54/28`、`43/39`、`59/23`），因為它取決於 planner 選了哪些 evaluator；它是抽樣決策，不是放行決策。見 `evidence/S2-planner-variance.json`。
 
 ---
 

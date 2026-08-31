@@ -17,7 +17,7 @@ v1 有五處宣稱了 repo 裡不存在的東西。這不是數字誤差，是**
 |---|---|---|
 | 「Every item is checked twice… deterministic and model-based… when they disagree it escalates」 | **從未實作。** Devpost §3 已聲明 model-based evaluator 是 deferred | 🔴 影片與自己的提交文件互相打臉 |
 | `source_governance` evaluator | 不存在。實際四個：`citation_coverage` / `content_integrity` / `source_ttl` / `numeric_claim_check` | 🔴 |
-| 計數 `AUTO 87 · SAMPLE 9 · HUMAN 2 · BLOCK 2` | `54 / 28 / 9 / 9`（`evidence/S2-batch-run.json`） | 🔴 與 README、Devpost 全部不符 |
+| 計數 `AUTO 87 · SAMPLE 9 · HUMAN 2 · BLOCK 2` | `H9 / B9 / 82 released` 為不變量；AUTO/SAMPLE 逐跑不同（觀測 `54/28`、`43/39`、`59/23`），見 `evidence/S2-planner-variance.json` | 🔴 與 README、Devpost 全部不符 |
 | `Review minutes 240 → 18` + `Compute cost $X → $Y` | 實際 `240 → 43.2`；**成本量測從未實作** | 🔴 |
 | 核准包 `FIN-AI-001 unregistered source` / `citation coverage 0.62 (threshold 0.80)` | 版面與數字皆非 `packet.py` 輸出 | 🟠 |
 | `"result": "OVERRIDE_REJECTED"` | live 回應的 key 是 `"decision"` | 🟡 |
@@ -33,7 +33,7 @@ v1 有五處宣稱了 repo 裡不存在的東西。這不是數字誤差，是**
 | C | 2:00 `"trajectory": ["hard_policy_gate","hard_block"]` | **live 回應裡沒有這個欄位。** `evidence/S8-e2e-r4-block.json` 的 functionResponse 只有 status/decision/risk_tier/policy_id/reason/note。trajectory 只存在於 `hard_policy.py` 的 in-process `CONTROL_EVIDENCE` 與 `evidence/S6-results.json` | **FIX-2**，或改成雙來源並說明 |
 | D | 2:25 packet trajectory 只列 4 步 | ASMT-088 實際 **6 步**（sovereignty / planner / 3 個 eval / route） | 用逐字輸出 |
 | E | 2:25 無法指定 item | `batch.py` 只會自動渲染**佇列中第一個** HUMAN_REVIEW/BLOCK，也就是 **ASMT-002**，不是 ASMT-088 | **FIX-3**，或改拍 ASMT-002 |
-| F | 1:30 計數定格 `AUTO 54 · SAMPLE 28 · HUMAN 9 · BLOCK 9` | `counts_line()` 實際輸出是 `A54 S28 H9 B9` | 字卡另做，或接受終端機原樣 |
+| F | 1:30 計數定格為特定 A/S 值 | `counts_line()` 實際輸出形如 `A59 S23 H9 B9`，而 **A/S 逐跑不同**；只有 `H9 B9` 與 82 是不變量 | 定格用終端機原樣，**不得另做寫死 A/S 的字卡** |
 | G | 3:52「切到 trace viewer：GUARDRAIL / EVALUATOR span 樹」 | **沒有 trace viewer。** `tracing.setup(use_otlp=False)` → `ConsoleSpanExporter`。Phoenix 路徑要自己起 localhost:6006 | 改拍 **Cloud Logging**（見 S6，反而更強） |
 | H | 0:25 定格在 `100 assessments pending review` | `batch.py` 不印這一行，跑起來就直接逐筆輸出 | 改用 `wc -l data/queue.jsonl` 開場 |
 
@@ -161,7 +161,7 @@ GOOGLE_API_KEY=invalid python -m assurance.batch --queue data/queue.jsonl --dela
 - 可替換的同類 item：ASMT-050 / ASMT-056 / ASMT-071 / ASMT-077（全部略過 numeric）
 - `planner_reasoning` 是 LLM 當下生成、**沒有存進 evidence**，所以只能現場錄。錄到什麼就用什麼，別預寫字幕
 - 未做 FIX-1 時：**這一鏡只拍 span，不要拍 trajectory**。trajectory 裡的 `fallback` 目前恆為 false（BUG-1）
-- 計數定格的實際樣子是 `A54 S28 H9 B9`。要顯示 `AUTO 54 · SAMPLE 28 · HUMAN 9 · BLOCK 9` 就得另做字卡，別假裝是程式輸出
+- 🔴 **計數定格直接用終端機原樣**（形如 `A59 S23 H9 B9`），**不要另做寫死 AUTO/SAMPLE 的字卡**——那兩個值逐跑不同，字卡等於把一個非不變量宣稱成事實。要做字卡就只放 `HUMAN 9 · BLOCK 9 · RELEASED 82`
 
 ---
 
@@ -261,7 +261,7 @@ python -m assurance.resolve ASMT-088 --decision APPROVE --reviewer dennis
 
 ---
 
-### 【S5｜2:55–3:30】摩擦力數字 + 誠實聲明 ｜ 90 words
+### 【S5｜2:55–3:30】摩擦力數字 + 誠實聲明 ｜ 91 words
 
 **實際指令**：接在 S2 的 batch 輸出之後（`batch.py` 跑完會自動印 `render_table()`）
 
@@ -282,19 +282,20 @@ python -m assurance.resolve ASMT-088 --decision APPROVE --reviewer dennis
 - 3:20 **免責聲明整行留在畫面上 ≥ 5 秒**
 
 **旁白**
-> Fifty-four auto-released, each with audit evidence. Twenty-eight sampled. Nine escalated. Nine blocked.
+> Nine escalated, nine blocked — and eighty-two released. I've run this batch three separate times, once with no planner API key at all, and by assessment id those three numbers never change.
 >
-> Eighty-two of a hundred items never reached a person. That is a measured count of routes.
+> What does move is how many of the eighty-two get sampled for audit versus auto-released outright — that boundary depends on which checks the planner picked, not on who gets escalated or blocked.
 >
-> The time figure next to it is not. It's an estimate on a two-point-four minute baseline with no timed pilot behind it — and it says so on screen.
+> The time figure next to it is an estimate on a two-point-four minute baseline with no timed pilot behind it — and it says so on screen.
 >
-> The point isn't the number. It's that the number is auditable, and so is every one of those fifty-four approvals.
+> The point isn't the number. It's that the number is auditable, and so is every one of those eighty-two releases.
 
 **備註**
 - ★ **這一段是評審判斷你可不可信的地方。不要美化**
-- ⚠️ **兩個 82 必須分開講。** 「82 筆」是量測；「82% 時間減幅」是估計，數字接近是這份語料的巧合。旁白刻意只念「eighty-two of a hundred items」（量測），時間那句改用 `240 → 43.2` 的絕對值，**不出現任何百分比**
-- v2 這一段的實際輸出已逐字比對過，一字不差
+- 🔴 **S5 不可念 AUTO/SAMPLE 的絕對值。** 錄影當下那一次跑的 54/28 只是三個觀測值之一（也見過 43/39、59/23），跟 README/Devpost 不會一致。旁白只講不變量：`9 human review / 9 hard block / 82 released`，這三個數字才是跨跑一致的（見 `evidence/S2-planner-variance.json`）
+- ⚠️ **兩個 82 必須分開講。** 「82 筆」是量測；「82% 時間減幅」是估計，數字接近是這份語料的巧合。旁白刻意只念「eighty-two」（量測），時間那句改用 `240 → 43.2` 的絕對值，**不出現任何百分比**
 - 免責聲明是 `metrics.py` 的模組常數組出來的，結構上不可省略——這件事值得在 Devpost 寫一句，影片裡沒時間講
+- 字數：91 words（原 90，維持 ≤100 上限）
 
 ---
 
@@ -345,7 +346,7 @@ gcloud logging read \
 
 ### 錄之前
 - [ ] Cloud Run `--min-instances=1` 已設（避免冷啟動拖秒數）
-- [ ] `python -m assurance.batch` 完整跑一次，**確認四類計數仍是 54/28/9/9**
+- [ ] `python -m assurance.batch` 完整跑一次，**確認不變量仍是 `H9 B9`、AUTO+SAMPLE = 82**（A/S 的分裂逐跑不同，不必也不該相符）
 - [ ] 終端機字體 ≥ 16pt，**寬度 ≥ 100 字元**（S5 的免責聲明需要）
 - [ ] 兩個終端機視窗備好：一個正常、一個 `GOOGLE_API_KEY=invalid`
 - [ ] 關閉所有通知

@@ -17,17 +17,26 @@ release even when a human with approval authority says yes.
 ![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
 
 ```
- BATCH RUN — 100 AI-generated answers, one pass
+ BATCH RUN — 100 AI-generated answers, three independent runs
  ─────────────────────────────────────────────────────────────────────
-  AUTO-RELEASE      SAMPLE          HUMAN REVIEW      HARD BLOCK
-       54              28                 9                9
-   FIN-AI-010      FIN-AI-009        FIN-AI-008     FIN-AI-005 / 011
-  all evaluators   low-confidence    evaluator      evaluator FAIL
-  PASS, high conf   PASS, sampled     WARN           or SENSITIVE
+  HUMAN REVIEW        HARD BLOCK          RELEASED (auto + sampled)
+       9                  9                          82
+  FIN-AI-008        FIN-AI-005 / 011           FIN-AI-010 / 009
+  same 9 items       same 9 items          same 82 items, every run
  ─────────────────────────────────────────────────────────────────────
   82 of 100 items never reached a person. ← MEASURED: count of routes
   Estimated review time 240 → 43.2 min.   ← ESTIMATE, see below
  ─────────────────────────────────────────────────────────────────────
+  The 9/9/82 split is an INVARIANT: verified identical across three
+  independent runs, by assessment id, including one with the planner
+  API key pulled entirely. See evidence/S2-planner-variance.json.
+
+  What moves is the AUTO/SAMPLE split *within* the 82 -- observed
+  54/28, 43/39, 59/23 across those same three runs. That boundary is
+  a function of which evaluators the planner selects (LLM, so it
+  varies); it is a sampling decision, not a release decision, and it
+  never changes who gets escalated or blocked.
+
   Synthetic corpus. Two different 82s appear here and they are not the
   same quantity. "82 of 100 items" is a MEASURED count of routes. The
   240→43.2 min figure is an ESTIMATE built on a 2.4 min/item baseline
@@ -36,8 +45,12 @@ release even when a human with approval authority says yes.
   See docs/baseline-estimate.md.
 ```
 
-Counts are reproducible: `python -m assurance.batch --queue data/queue.jsonl`,
-committed at [`evidence/S2-batch-run.json`](evidence/S2-batch-run.json).
+The 9 human-review, 9 hard-block, and 82 released items are the same items
+every run — verified by assessment id across three independent runs,
+committed at [`evidence/S2-planner-variance.json`](evidence/S2-planner-variance.json).
+The AUTO/SAMPLE split within those 82 is not reproducible run to run (it's
+planner-dependent); one full run's raw output is committed at
+[`evidence/S2-batch-run.json`](evidence/S2-batch-run.json).
 
 ---
 
@@ -137,8 +150,11 @@ a second, lower WARN threshold at `90 × 0.7 = 63` days, so the same class
 of noise resurfaced one tier down. Both fixes align the generator to a
 threshold that already exists in the evaluator; neither invents a
 threshold to hit a target ratio — the corpus's own docstring states counts
-are not tuned, and the final distribution (`AUTO 54 · SAMPLE 28 ·
-HUMAN_REVIEW 9 · BLOCK 9`) is what fell out once the mismatch was gone.
+are not tuned, and the distribution that fell out once the mismatch was
+gone (`AUTO 54 · SAMPLE 28 · HUMAN_REVIEW 9 · BLOCK 9` on that run) is what
+the corpus produces, not a target. The `H9 B9` half of it turned out to be
+invariant across later runs; the `AUTO/SAMPLE` half did not — see the
+metrics card above.
 
 ## Why Taskmaster, not Fortified Enterprise Fleet
 
@@ -196,7 +212,11 @@ adk web spike_agent                                   # interactive dev UI
 
 **No API key?** The batch still runs end-to-end: the planner fails closed and
 every item is evaluated against all four evaluators. That path is the one
-verified in `evidence/S10-results.json`.
+verified in `evidence/S10-results.json`. It produces a different AUTO/SAMPLE
+split (43/39, against 59/23 in the committed keyed run) because fail-closed runs a superset of
+evaluators — but the same 9 human-review and 9 hard-block items, and the
+same 82 released overall; see `evidence/S2-batch-run.nokey.json` and
+`evidence/S2-planner-variance.json`.
 
 ## Deploy
 

@@ -50,14 +50,15 @@ NOT WIRED  deploy_agent 未呼叫 tracing.setup()
 | **WS2** | 批次核心 | 3.0h | `schema/evaluators/batch.py`、語料 | WS3, WS5 |
 | **WS3** | 決策產出 | 1.5h | `metrics.py`、`packet.py` | WS5 |
 | **WS4** | Fortified 三項 | 2.0h | card / store / sovereignty | — |
-| **WS5** | 語料校正與重跑 ★ | 1.0h | 修正 TTL 參數、重生 evidence | WS6, WS9 |
+| **WS5** | 語料校正與重跑 ★ | 1.0h | 修正 TTL 參數、重生 evidence | WS6, WS10 |
 | **WS6** | 部署與文件 | 2.0h | 重新部署、README、架構圖 | WS7 |
 | **WS7** | 腳本校正與證據修正 ★ | 1.5h | `demo-script-v3.md`、FIX-1/2/3 | WS8 |
-| **WS8** | 影片（重錄） | 5.0h | 錄影、剪接、上傳 | WS9 |
-| **WS9** | 提交 | 1.0h | Devpost | — |
-| | **合計** | **18.5h** | | |
+| **WS8** | 不變量重構 ★ | 1.0h | `S2-planner-variance.json`、README/Devpost/腳本改宣稱 | WS9 |
+| **WS9** | 影片（重錄） | 4.5h | 錄影、剪接、上傳 | WS10 |
+| **WS10** | 提交 | 1.0h | Devpost | — |
+| | **合計** | **19.0h** | | |
 
-**22 小時 − 18.5 小時 = 3.5 小時緩衝**（含睡眠）。
+**22 小時 − 19.0 小時 = 3.0 小時緩衝**（含睡眠）。
 
 > WS5 是 8/31 實查後新增的。`evidence/S2-batch-run.json` 的分流分佈
 > （A39 S18 H19 B24）與敘事嚴重不符，根因已定位為語料產生器的參數
@@ -365,7 +366,7 @@ random items are clean by default; planted samples are unaffected.
 - [x] 四類計數總和 == 100，四類皆 > 0（`A54 S28 H9 B9`）
 - [x] BLOCK 的每一筆都能對應到 `make_r4_item` 或 SENSITIVE 植入（逐筆核對 9 筆：6 筆 evaluator FAIL + 3 筆 SENSITIVE，無 stray `source_ttl`；6 筆中 1 筆為隨機語料巧合觸發的真實 FAIL，非 bug）
 - [x] `evidence/S2-batch-run.json` 與 `data/queue.jsonl` 同一次產生
-- [ ] 影片腳本與 Devpost 草稿的 `<<FILL>>` 數字**全部改用新證據**（留待 WS8/WS9）
+- [ ] 影片腳本與 Devpost 草稿的 `<<FILL>>` 數字**全部改用新證據**（留待 WS9/WS10）
 
 ### 🚦 GATE 2.5 · 19:00
 **新分佈是否讓「人只需看少數幾筆」的敘事成立？**
@@ -416,7 +417,7 @@ WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊�
 
 ## WS7 · 腳本校正與證據修正 ★ ｜ 1.5h ｜ 21:00–22:30
 
-> **這一段是 8/31 夜間新增的，且必須在 WS8 重錄之前完成。**
+> **這一段是 8/31 夜間新增的，且必須在 WS9 重錄之前完成。**
 > 第一支影片是照 v1 腳本（8/21）錄的，而 v1 寫於功能尚未建成時。
 > 不先對齊就重錄，等於把同一個錯再錄一次。
 
@@ -465,9 +466,21 @@ runs end-to-end」跑一次，會拿到 100 筆 ControlEvidence，每一筆 traj
 - [x] `hard_policy.py` 的回傳 dict 加 `"trajectory": ["hard_policy_gate", "hard_block"]`
 - [x] `tests/test_s6_override.py` **PASS** —— 它正是覆蓋 `HardPolicyGate` 的那支，
       改完必須綠過才可部署（斷言讀的是 `CONTROL_EVIDENCE`，非回傳 dict，故未受影響）
-- [ ] `gcloud run deploy --source . --region=asia-east1 --min-instances=1` ← **唯一未完成項**
-- [ ] 冒煙：live R4 請求的 functionResponse 同時有 `decision` / `policy_id` / `trajectory`
-- [ ] 保留前一版供回滾
+- [x] `gcloud run deploy --source . --region=asia-east1 --min-instances=1`
+      → `assurance-agent-00006-w8l`，project `ai-nursing-simulator`
+- [x] 冒煙：live R4 的 functionResponse 同時有 `decision` / `policy_id` / `trajectory` ✅
+- [x] 保留前一版供回滾（`00005-qnc` 仍在）
+
+> ⚠️ **第一次部署部到錯的專案。** `gcloud` 的 active project 當時是
+> `openai-error-archaeologist`，於是在那裡**新建**了一個 `assurance-agent`
+> 服務（revision `00001-279`，且互動式問了 unauthenticated——既有服務不會問）。
+> README / Devpost / agent card / 已錄影片全部指向 `ai-nursing-simulator`
+> 的那個服務，它當時完全沒被更新。
+>
+> **辨識訊號：`revision 00001` 就是新建，不是新版本。** 切回專案後重跑，
+> 才拿到正確的 `00006-w8l`。
+> - [ ] **待辦：** 刪掉誤建的服務（它掛著 `--min-instances=1` 在燒錢）
+>   `gcloud run services delete assurance-agent --region=asia-east1 --project=openai-error-archaeologist`
 
 **收益：** 2:00 那一鏡從「切兩個來源」變成「單一 live JSON 三行到底」。
 **代價：** 這是唯一需要重新部署的項目。部署失敗就回滾，走 v3 分鏡 S3 的退路。
@@ -519,25 +532,123 @@ runs end-to-end」跑一次，會拿到 100 筆 ControlEvidence，每一筆 traj
 ### WS7-5 · 停手條件（自我約束）
 
 > 任一 FIX 改壞就 `git checkout -- <file>`，用現有版本拍。
-> **不得往 WS8 借時間。** 程式碼不是這支影片的瓶頸——
+> **不得往 WS9 借時間。** 程式碼不是這支影片的瓶頸——
 > 沒有影片就沒有提交，少一個 FIX 只是某一鏡弱一點。
 
 ### 🚦 GATE 3 · 22:30
 **v3 分鏡的每一格畫面，都有一條能跑的指令嗎？**
 ❌ → 只保留 FIX-1，其餘退回 v3 分鏡各段標好的退路，**立刻進 WS8**。
 
-**結果：PASS（附一項未結）。** FIX-1 / FIX-3 完成並雙向驗證；FIX-2 程式碼完成、
-`test_s6_override` 綠過，**但尚未部署**——S3 那一鏡在部署完成前仍走雙來源退路。
+**結果：PASS。** FIX-1 / FIX-3 完成並雙向驗證；FIX-2 程式碼完成、
+`test_s6_override` 綠過、已部署為 `00006-w8l` 並在 live 冒煙驗到 `trajectory`
+——**S3 那一鏡現在可走「單一 live JSON 三行到底」，不必雙來源退路**。
 WS7-4 意外測出 planner 變異，衍生出 WS8。
 
 ---
 
-## WS8 · 影片（重錄） ｜ 5.0h ｜ 22:30–03:30
+## WS8 · 不變量重構 ★ ｜ 1.0h ｜ 22:00–23:00
+
+> **這一段由 WS7-4 那條沒過的 DoD 直接衍生，且必須在 WS9 錄影之前完成。**
+> 影片旁白會念出這些數字。宣稱先定，才錄得下去。
+
+### WS8-0 · 發現（三次獨立跑，ID 級比對）
+
+```
+A54 S28 H9 B9   ← 先前 committed（帶 key）
+A43 S39 H9 B9   ← 無 key，planner 完全停擺，fail-closed 全跑
+A59 S23 H9 B9   ← 本次帶 key（現為 canonical）
+```
+
+逐一比對 **assessment id** 而非只比計數：
+
+| | 三次是否為同一組 |
+|---|---|
+| HUMAN_REVIEW 9 筆 | **YES** — `002 003 030 052 074 076 085 088 095` |
+| BLOCK 9 筆 | **YES** — `014 023 040 067 071 094 097 099 100` |
+| AUTO∪SAMPLE 82 筆 | **YES** |
+
+**只有 AUTO/SAMPLE 的界線會動。** 而兩者都是放行——SAMPLE 只是抽樣稽核。
+
+機制：`SAMPLE` 的條件是 `min_score < LOW_CONFIDENCE_THRESHOLD (0.8)`，
+而 `min_score` 取決於 planner 選了哪些 evaluator；WARN / FAIL 是個別
+evaluator 的判定，不因多跑幾個而消失。所以 LLM 的變異在結構上被關在
+一個**不是放行決策**的邊界裡。
+
+> **這是本專案中心主張的意外實證。** 原本只能用嘴巴講「LLM 只做 triage，
+> 永不決定放行」，現在有三次跑的 ID 級對照當證據——其中一次 planner 根本沒運作，
+> 而該擋的、該給人看的，一筆不差。
+
+### WS8-1 · 產生證據檔（15 分）
+
+- [x] `evidence/S2-planner-variance.json`：三次的 `counts`、兩組 9 筆完整 ID、
+      82 集合大小、比對方法、機制說明、結論
+- [x] 小而可讀（單檔，非三份 130KB batch 輸出）
+
+**DoD：達成。** 新宣稱裡的每個數字都能在這一個檔案裡搜到；
+`e7b7876` 那次的 `A54 S28` 已回查確認無誤。
+
+### WS8-2 · README（20 分）★ 最重要
+
+- [x] 指標卡改以**不變量**領頭：`HUMAN REVIEW 9 · HARD BLOCK 9 · RELEASED 82`
+- [x] AUTO/SAMPLE 降為次要資訊，標出觀測區間 `54/28 · 43/39 · 59/23`
+- [x] **「Counts are reproducible」已刪**，改為不變量宣稱並指向新證據檔
+- [x] 「**No API key?**」那段補上 A/S 差異與 `S2-batch-run.nokey.json`
+
+> ⚠️ **這不是退讓，是升級。** 原本宣稱「某一次跑的四個數字」，
+> 改成宣稱「跨三次跑不變的東西」，證據更硬，而且順帶回應了前兩輪
+> 評審「讀起來像規則引擎」的疑慮——LLM 確實在做事，只是碰不到放行決策。
+
+### WS8-3 · Devpost 草稿（15 分）
+
+- [x] §3 的 `54 / 28 / 9 / 9` 改為不變量陳述
+- [x] 宣稱↔證據對照表指向 `evidence/S2-planner-variance.json`
+- [x] 「合成語料」與「估計值」既有誠實聲明未動
+
+> 超出 GATE 4 的最低要求——原本可延到 WS10，因為快所以一併做完。
+
+### WS8-4 · `docs/demo-script-v3.md` S5 旁白（10 分）
+
+- [x] 旁白改為不變量版本（九、九、八十二 + 一次 planner 停擺）
+- [x] 畫面備註加上 🔴 **S5 不可念 AUTO/SAMPLE 的絕對值**
+- [x] 字數 91 words（≤ 100）
+
+**額外清掃（GATE 4 驗收時發現）：** 重構後仍有六處殘留舊數字，已一併修正——
+
+| 位置 | 問題 |
+|---|---|
+| `demo-script-v3.md` 錄前 checklist | 仍寫「確認四類計數仍是 54/28/9/9」，**與同檔 S5 備註自相矛盾** |
+| `demo-script-v3.md` 稽核表 F 項 + 1:30 備註 | 建議另做寫死 `AUTO 54 · SAMPLE 28` 的字卡 —— 等於把非不變量宣稱成事實 |
+| `demo-script-v3.md` v1 稽核表「repo 事實」欄 | 仍以 `54/28/9/9` 為準 |
+| `docs/architecture.md` | 「真實計數放在旁白或投影片文字裡」並列出 `AUTO 54 / SAMPLE 28` —— 現在是錯的拍攝指示 |
+| `README.md` No API key 段 | 「43/39 instead of 54/28」，但 committed 的帶 key 跑已是 `59/23` |
+| `README.md` What I learned | WS5 那段的 `AUTO 54 · SAMPLE 28` 未加限定，讀者接在不變量卡之後會混淆 |
+
+### WS8-5 · 停手條件（自我約束）
+
+> 只改**宣稱**，不改 `evaluators.py`、`policy.py`、`make_queue.py` 的任何一行。
+> 一旦動了門檻或語料，就要重跑、重驗、重對三份文件，而現在沒有那個時間。
+> **這是 WS5 的教訓：改的是產生器不是 evaluator；這次連產生器都不准改。**
+
+### 🚦 GATE 4 · 23:00
+**README、Devpost、v3 腳本三者的數字宣稱是否一致，且都能在 `evidence/` 搜到？**
+❌ → 只做 WS8-2（README）與 WS8-4（腳本旁白），Devpost 留到 WS10 一起處理，
+**立刻進 WS9**。影片的時間不可以借給文件。
+
+**結果：PASS。** 四份文件（README / Devpost / v3 腳本 / architecture.md）
+的數字宣稱一致，全部指向 `evidence/S2-planner-variance.json`。
+`evaluators.py` / `policy.py` / `make_queue.py` 一行未動，符合 WS8-5。
+
+> **平行事項已完成：** WS7-2 的部署在本段期間並行完成（含一次部錯專案的
+> 往返），live R4 回應已帶 `trajectory`。
+
+---
+
+## WS9 · 影片（重錄） ｜ 4.5h ｜ 23:00–03:30
 
 > **自己配音，不用 AI 語音。** 評審明說看重 energy。
 > **逐字腳本與每一鏡的實際指令見 `docs/demo-script-v3.md`。** 本節只列時程與檢查項。
 
-### WS8-1 · 錄影（3.5h）· 22:30–02:00
+### WS9-1 · 錄影（3.5h）· 23:00–02:30
 
 **★ 場景順序：問題先行。** 舊版曾寫「R4 移到冷開場」，但 8/31 的腳本
 校正已改回問題先行——R4 放在 1:25，觀眾已經知道系統在幹什麼，那一拒才有重量。
@@ -562,19 +673,19 @@ WS7-4 意外測出 planner 變異，衍生出 WS8。
 - [ ] 終端機字體 ≥ 16pt、**寬度 ≥ 100 字元**（S5 免責聲明需要），關閉所有通知
 - [ ] 畫面不得出現 API key、`.env`、個資
 
-### WS8-2 · 剪接上傳（1.5h）· 02:00–03:30
+### WS9-2 · 剪接上傳（1.0h）· 02:30–03:30
 - [ ] 總長 **≤ 4:00**（評審嚴格計時，超過不看）
 - [ ] 英文字幕
 - [ ] YouTube 公開
 - [ ] **無痕視窗驗證真的可存取**
 
-### 🚦 GATE 4 · 03:30
+### 🚦 GATE 5 · 03:30
 **影片已上傳且可公開？**
 ❌ → 現有素材直出，**先把 Devpost 送出**。送出後仍可更新影片連結。
 
 ---
 
-## WS9 · 提交 ｜ 1.0h ｜ 03:30–04:30
+## WS10 · 提交 ｜ 1.0h ｜ 03:30–04:30
 
 - [ ] Category = **The Taskmaster**（8/31 切換，不是 Fortified Enterprise Fleet）
 - [ ] Project name：`Release Assessment Agent`
@@ -599,6 +710,7 @@ WS7-4 意外測出 planner 變異，衍生出 WS8。
 | **18:00** | 功能完成 | **停止新功能開發** |
 | **19:00** | 新分佈讓敘事成立 | 恢復 110，改壓力測試敘事 |
 | **22:30** | 腳本每一鏡都有可跑的指令 | 只留 FIX-1，其餘走退路，立刻進 WS8 |
+| **23:00** | 三份文件的數字宣稱一致且可查證 | 只改 README 與腳本，Devpost 留到 WS10 |
 | **03:30** | 影片上傳且可公開 | **直出，先送 Devpost** |
 
 ---

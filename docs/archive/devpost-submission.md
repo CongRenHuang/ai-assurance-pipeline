@@ -15,14 +15,17 @@
 | Real Assessment IDs | `ASMT-001`, `ASMT-R4-777`, `ASMT-R4-LIVE` (S8); `ASMT-001`~`ASMT-100` (Batch) |
 | Policy IDs | FIN-AI-000~004 (source/egress/override) · FIN-AI-005~010 (router) · FIN-AI-011 (sovereignty) |
 | Test Results | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 · S10 Planner Concordance 100% |
-| Batch Distribution | `A54 S28 H9 B9` (100 items), 18 items require human touch, 240 → 43.2 min |
+| Batch Distribution | `H9 B9` invariant, `82 released` invariant (verified identical by id across 3 runs, incl. one with no API key) — AUTO/SAMPLE split within the 82 varies by run (`54/28`, `43/39`, `59/23`); 18 items require human touch, 240 → 43.2 min |
 | Statutory Basis | Taiwan Artificial Intelligence Basic Act passed 3rd reading 2025-12-23; Article 18 2-year mandate |
 
-> ✅ **Batch layer completed and rerun twice to fix corpus parameter bugs (WS5).** Final distribution:
-> `A54 S28 H9 B9` (100 items), 240 → 43.2 min. Previous 87/9/2/2 and `24 BLOCK` versions are deprecated —
-> 16 of the `24 BLOCK` items were due to a `source_ttl` generator parameter bug
-> (`max_age_days` not aligned with `SOURCE_TTL_DAYS`), not designed traffic.
-> §4 is updated with current numbers.
+> ✅ **Batch layer completed and rerun twice to fix corpus parameter bugs (WS5).** Then rerun a
+> further two times independently (WS7/WS8) to check reproducibility. `H9`/`B9`/`82 released` are
+> identical by assessment id across all three runs, including one where the planner had no API key
+> at all — the AUTO/SAMPLE split *within* the 82 is not (`54/28`, `43/39`, `59/23`), because it's a
+> function of which evaluators the LLM planner selects. See `evidence/S2-planner-variance.json`.
+> Previous 87/9/2/2 and `24 BLOCK` versions are deprecated — 16 of the `24 BLOCK` items were due to
+> a `source_ttl` generator parameter bug (`max_age_days` not aligned with `SOURCE_TTL_DAYS`), not
+> designed traffic. §4 is updated with current numbers.
 
 ---
 
@@ -108,16 +111,22 @@ The human stays in the loop, but only where judgment is actually required.
 
 ## Measured on a synthetic queue
 
-100 assessments processed in a single run:
+100 assessments, three independent runs (one with the planner's API key
+pulled entirely). By assessment id, these are invariant across all three:
 
-| Disposition | Count |
-|---|---|
-| Auto-released | 54 |
-| Sampled | 28 |
-| Escalated to human | 9 |
-| Hard-blocked | 9 |
+| Disposition | Count | Same items every run? |
+|---|---|---|
+| Escalated to human | 9 | Yes |
+| Hard-blocked | 9 | Yes |
+| Released (auto + sampled) | 82 | Yes, as a set |
 
 **18 of 100 items needed a person.** Estimated review time: 240 → 43.2 minutes.
+
+The split *within* the 82 — how many were auto-released versus sampled —
+is not invariant: `54/28`, `43/39`, `59/23` across the three runs. That
+boundary is a function of which evaluators the LLM planner selected; it
+decides how much gets sampled for audit, never who gets escalated or
+blocked. See `evidence/S2-planner-variance.json`.
 
 *Synthetic corpus. The baseline (2.4 min/item) is an estimate documented in
 `docs/baseline-estimate.md`, not a measurement — the disclaimer is assembled from a
@@ -246,7 +255,7 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 
 | Appears In | Value | Source Artifact |
 |---|---|---|
-| §3 Measured on a synthetic queue | `54 / 28 / 9 / 9` | `evidence/S2-batch-run.json` → `counts` |
+| §3 Measured on a synthetic queue | `H9 / B9 / 82 released` invariant, `54/28`,`43/39`,`59/23` split observed | `evidence/S2-planner-variance.json` |
 | Same as above | `18` human-touched items | `HUMAN_REVIEW + BLOCK` |
 | Same as above | `240 → 43.2` minutes | `assurance.metrics.render_table()` output |
 | §3 Override rejection | `FIN-AI-004` / `OVERRIDE_REJECTED` | `evidence/S8-e2e-r4-block.json` |

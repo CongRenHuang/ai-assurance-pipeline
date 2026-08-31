@@ -1,0 +1,40 @@
+{
+  "purpose": "Three independent batch runs show the planner's LLM variance is confined to the AUTO/SAMPLE boundary and never touches which items are escalated to a human or hard-blocked.",
+  "method": "Compared batch runs by assessment_id (position in data/queue.jsonl, since ControlEvidence entries carry no id field -- see docs/demo-script-v3.md BUG-2), not just by route counts. Route membership per id was diffed across all three runs.",
+  "runs": [
+    {
+      "label": "committed (with API key)",
+      "source": "evidence/S2-batch-run.json @ git e7b7876",
+      "counts": {"AUTO": 54, "SAMPLE": 28, "HUMAN_REVIEW": 9, "BLOCK": 9}
+    },
+    {
+      "label": "no key, planner fail-closed (all evaluators forced)",
+      "source": "evidence/S2-batch-run.nokey.json",
+      "counts": {"AUTO": 43, "SAMPLE": 39, "HUMAN_REVIEW": 9, "BLOCK": 9}
+    },
+    {
+      "label": "rerun with API key",
+      "source": "evidence/S2-batch-run.json (current)",
+      "counts": {"AUTO": 59, "SAMPLE": 23, "HUMAN_REVIEW": 9, "BLOCK": 9}
+    }
+  ],
+  "invariant_sets": {
+    "human_review_9": {
+      "same_across_all_three_runs": true,
+      "ids": ["ASMT-002", "ASMT-003", "ASMT-030", "ASMT-052", "ASMT-074",
+              "ASMT-076", "ASMT-085", "ASMT-088", "ASMT-095"]
+    },
+    "block_9": {
+      "same_across_all_three_runs": true,
+      "ids": ["ASMT-014", "ASMT-023", "ASMT-040", "ASMT-067", "ASMT-071",
+              "ASMT-094", "ASMT-097", "ASMT-099", "ASMT-100"]
+    },
+    "auto_union_sample_82": {
+      "size": 82,
+      "same_membership_across_all_three_runs": true,
+      "note": "82 = 100 - 9 - 9. Which items land in AUTO vs SAMPLE moves between runs; the set of 82 that were NOT escalated or blocked does not."
+    }
+  },
+  "why_the_boundary_moves": "SAMPLE fires when route_item sees min_score < LOW_CONFIDENCE_THRESHOLD (0.8) among the evaluators the planner selected. Planner selection differs run to run (LLM), so an item can pick up an extra evaluator that pulls its min_score below 0.8 -- moving it AUTO->SAMPLE or back. WARN/FAIL verdicts from individual evaluators don't depend on how many evaluators ran, so HUMAN_REVIEW and BLOCK membership is unaffected by planner variance.",
+  "conclusion": "The planner's variance is structurally confined to a boundary between two release outcomes (auto vs sampled release), never to the escalate/block decision. This is empirical support -- discovered, not designed -- for the project's central claim that the LLM triages but never decides release."
+}
