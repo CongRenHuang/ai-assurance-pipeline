@@ -33,9 +33,11 @@ git add LICENSE && git commit -m "chore: add Apache-2.0 license"
 | 測試結果 | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 |
 | 法源 | 人工智慧基本法 2025/12/23 三讀，第 18 條兩年期限 |
 
-> ⚠️ **批次層（100 筆佇列、87/9/2/2 分佈、240→18 分鐘）尚未建立。**
-> 本文件的 §2 與 §4 已寫成「批次完成後才填入真實數字」的形式，**留了 `<<FILL>>` 標記**。
-> **不要在批次跑出來之前填任何數字。**
+> ✅ **批次層已完成並重跑兩次修正語料 bug（WS5）。** 最終分佈
+> `A54 S28 H9 B9`（100 筆），240→43.2 分鐘。舊的 87/9/2/2 與
+> `24 BLOCK` 版本已作廢——`24 BLOCK` 中 16 筆是 `source_ttl` 產生器
+> 參數 bug（`max_age_days` 與 `SOURCE_TTL_DAYS` 未對齊），非設計流量。
+> §4 已用新數字填入。
 
 ---
 
@@ -218,23 +220,23 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 ```markdown
 ## Measured on a synthetic queue
 
-<<FILL: 實際 N>> assessments processed in a single run:
+100 assessments processed in a single run:
 
 | Disposition | Count |
 |---|---|
-| Auto-released | <<FILL>> |
-| Sampled | <<FILL>> |
-| Escalated to human | <<FILL>> |
-| Hard-blocked | <<FILL>> |
+| Auto-released | 54 |
+| Sampled | 28 |
+| Escalated to human | 9 |
+| Hard-blocked | 9 |
 
-Estimated review time: <<FILL>> → <<FILL>> minutes.
+Estimated review time: 240 → 43.2 minutes (18 of 100 items needed a human).
 
 *Synthetic corpus. The baseline is an estimate documented in `docs/baseline-estimate.md`,
 not a measurement. The sensitivity band is stated there — the claim does not hinge on the
 exact figure.*
 ```
 
-**規則：** 數字從 `evidence/S10-results.json` 抄，不從腳本抄。**若批次未完成，整段刪除，不要留空表格。**
+**已完成，來源：** `evidence/S2-batch-run.json`（counts）+ `assurance.metrics.render_table()`（時間換算）。
 
 ---
 
@@ -242,14 +244,14 @@ exact figure.*
 
 | 項目 | 狀態 |
 |---|---|
-| **LICENSE 檔案（Apache-2.0）** | 🔴 **缺，必補** |
+| **LICENSE 檔案（Apache-2.0）** | ✅ 已補 |
 | Repo 為 public | ✅ |
 | Category 選 **The Fortified Enterprise Fleet** | ⬜ |
-| Project URL = Cloud Run 網址 | ✅ 已備 |
-| 4 分鐘影片，公開，英文字幕 | ⬜ |
-| 架構圖 | ⬜ **尚未製作** |
-| Cloud Run `--min-instances=1`（8/28 調）| ⬜ |
-| README 前 10 行看得懂 | ⬜ |
-| 提交後 `--min-instances=0` | ⬜ |
+| Project URL = Cloud Run 網址 | ✅ 已備（`assurance-agent-00005-qnc`，`--min-instances=1`） |
+| 4 分鐘影片，公開，英文字幕 | ⬜ WS7 |
+| 架構圖 | ⬜ WS6-3 |
+| Cloud Run `--min-instances=1` | ✅ WS6-1 |
+| README 前 10 行看得懂 | ⬜ WS6-2 |
+| 提交後 `--min-instances=0` | ⬜ 留到 WS8 之後 |
 
 **架構圖是提交硬性要求，目前完全沒開始。** 建議 8/30 用 Mermaid 畫，內容就是 §3 "What it does" 的五個步驟 + 四條路由。

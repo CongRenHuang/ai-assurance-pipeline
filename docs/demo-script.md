@@ -86,7 +86,7 @@
 **製作備註**
 - **1:15 那個「兩條路徑分歧」是本片第二強的畫面**，一定要看得清楚
 - 「It does not guess」後面停 1 拍
-- 計數器最終定格：`AUTO 87 · SAMPLE 9 · HUMAN 2 · BLOCK 2`
+- 計數器最終定格：`AUTO 54 · SAMPLE 28 · HUMAN 9 · BLOCK 9`
 
 ---
 
@@ -168,27 +168,27 @@
   ```
   100 assessments
   ─────────────────────────────────────────
-  Auto-approved       87    each with ControlEvidence
-  Sampled              9
-  Human review         2
-  Hard-blocked         2    incl. 1 OVERRIDE_REJECTED
+  Auto-approved       54    each with ControlEvidence
+  Sampled              28
+  Human review          9
+  Hard-blocked           9    incl. 1 OVERRIDE_REJECTED
   ─────────────────────────────────────────
-  Review minutes      240 → 18      (estimated baseline)
+  Review minutes      240 → 43.2   (estimated baseline)
   Compute cost        $X  → $Y      (risk-tiered evaluation)
   ─────────────────────────────────────────
   Synthetic corpus. Baseline is an estimate, not measured.
   ```
-- 3:25 highlight `240 → 18`
+- 3:25 highlight `240 → 43.2`
 
 **旁白**
 
 > Here's the whole batch.
-> Eighty-seven auto-approved, each with audit evidence. Nine sampled. Two escalated. Two blocked.
+> Fifty-four auto-approved, each with audit evidence. Twenty-eight sampled. Nine escalated. Nine blocked.
 >
-> Estimated review time drops from about four hours to eighteen minutes, and compute cost falls because low-risk items don't run expensive checks.
+> Estimated review time drops from about four hours to forty-three minutes, and compute cost falls because low-risk items don't run expensive checks.
 >
 > This is a synthetic corpus and the baseline is an estimate — both are stated on screen.
-> The point isn't the exact number. It's that the number exists at all, and every one of those eighty-seven approvals can be audited.
+> The point isn't the exact number. It's that the number exists at all, and every one of those fifty-four approvals can be audited.
 
 **製作備註**
 - ★ **誠實聲明必須留在畫面上至少 5 秒**，而且旁白要念出來
@@ -229,7 +229,7 @@
 |---|---|---|---|---|
 | 1 | **批次 runner**（100 筆佇列）| 0:08–1:35 | WS1 | **整支影片沒有開場**，退回單筆 = middleware 敘事 |
 | 2 | **四類分流計數** | 1:30, 3:05 | WS1 | 沒有「agent 做了很多事」的證據 |
-| 3 | **每筆 ControlEvidence** | 2:00, 3:10 | WS1 | 87 筆自動核准變成無根據 |
+| 3 | **每筆 ControlEvidence** | 2:00, 3:10 | WS1 | 54 筆自動核准變成無根據 |
 | 4 | **evaluator 選擇 + 理由** | 1:00 | WS2 | **失去 autonomous 的唯一直接畫面** |
 | 5 | **雙路徑交叉比對 + 分歧升級** | 1:15 | WS2 | 失去第二強畫面；升級變成無理由 |
 | 6 | **R4 + 人工核准被拒** | 1:35–2:20 | ✅ 已完成 | 失去最強 45 秒 |

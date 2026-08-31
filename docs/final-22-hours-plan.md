@@ -203,7 +203,7 @@ python -m assurance.batch --queue data/queue.jsonl
 - [x] `public/.well-known/agent.json`：purpose / policy_scope / owner / data_classes / hard_policies_not_overridable / deployment.region
 - [x] Cloud Run 開 `/.well-known/agent.json` 路由（`deploy_agent/serve.py` 包住 `get_fast_api_app()` 加一條 route；`Dockerfile` CMD 已改指到它；本地起服務驗證 200 OK，`/dev-ui/` 仍是 200）
 
-**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致（本地 curl 驗證通過；實際 Cloud Run 上瀏覽器驗證留給 WS6-1 重新部署後做）
+**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致（本地與 Cloud Run 上皆驗證通過，見 WS6-1）
 
 ### WS4-2 · Approval Store（60 分）
 - [x] `assurance/approval_store.py`，**SQLite**（不開 Cloud SQL）
@@ -222,7 +222,7 @@ python -m assurance.resolve ASMT-042 --decision APPROVE --reviewer dennis
 ### WS4-3 · Data Sovereignty（30 分）
 - [x] `assurance/sovereignty.py`：`DOMAIN_POLICY`，`UNKNOWN` fail closed
 - [x] 接在 `EgressGatePlugin` **前面**當前置判斷，不重寫既有邏輯（ADK 層：`SovereigntyGatePlugin` plugin_index=0 早於 EgressGatePlugin；批次層：`batch.py` 在呼叫 planner/evaluators 前先做 `check_sovereignty()`）
-- [ ] `gcloud run services update --update-labels=data-residency=asia-east1`（留給 WS6-1 實際部署時做，屬雲端變更不在本階段執行）
+- [x] `gcloud run services update --update-labels=data-residency=asia-east1`（於 WS6-1 實際部署時完成）
 
 **DoD：** SENSITIVE 項目在批次中被 domain 檢查擋下並留下證據 —
 驗證：`ASMT-067`（`data_class=SENSITIVE`）→ `BLOCK` / `FIN-AI-011`，
@@ -371,24 +371,36 @@ WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊�
 ## WS6 · 部署與文件 ｜ 2.0h ｜ 19:00–21:00
 
 ### WS6-1 · 重新部署（45 分）
-- [ ] `gcloud run deploy --source .`（`adk deploy` 不打包 sibling package）
-- [ ] `app_name` 用**資料夾名** `deploy_agent`，不是 `App(name=...)`
-- [ ] 冒煙測試：R4 在雲端仍回 `OVERRIDE_REJECTED`
-- [ ] `--min-instances=1`
-- [ ] 保留前一版供回滾
+- [x] `gcloud run deploy --source .`（`adk deploy` 不打包 sibling package）→ revision `assurance-agent-00004-7p6`
+- [x] `app_name` 用**資料夾名** `deploy_agent`，不是 `App(name=...)`（REST session 建立於 `/apps/deploy_agent/...` 驗證通過）
+- [x] 冒煙測試：R4 在雲端仍回 `OVERRIDE_REJECTED`（`policy_id=FIN-AI-004`，即時 curl 到 `/run`，見上方 transcript）
+- [x] `--min-instances=1`
+- [x] 保留前一版供回滾（`00001`~`00003` 均仍在，`gcloud run revisions list` 確認）
+- [x] `gcloud run services update --update-labels=data-residency=asia-east1`（WS4-3 延後項，此處補上）→ revision `00005-qnc`
+- [x] `/.well-known/agent.json` 瀏覽器可開（curl+identity token 驗證 200，WS4-1 DoD 補齊）
 
 ### WS6-2 · README（45 分）
-- [ ] 開頭 5–8 行摘要，不用捲動
-- [ ] **宣稱 ↔ 程式碼路徑對照表**（評審明說會看）
-- [ ] 三段 What I learned
-- [ ] **Fortified 三項誠實聲明**（實作 / 部分 / 未實作）
-- [ ] `How to run locally / deploy`
+- [x] 開頭 5–8 行摘要，不用捲動
+- [x] **宣稱 ↔ 程式碼路徑對照表**（評審明說會看）
+- [x] 三段 What I learned
+- [x] **Fortified 三項誠實聲明**（實作 / 部分 / 未實作 —— sovereignty 標為部分：純函式+批次層已驗證，`SovereigntyGatePlugin` 未註冊進 `deploy_agent/agent.py` 的 live plugin chain）
+- [x] `How to run locally / deploy`
+
+> 順手把 `docs/devpost-submission.md` 與 `docs/demo-script.md` 裡所有殘留的
+> 舊數字（87/9/2/2、240→18、24 BLOCK）換成 WS5 重跑後的真實值
+> `A54 S28 H9 B9`、240→43.2 分鐘——照使用者指示，趁還在改文件時一次做完，
+> 不留到 02:30 送出前。
 
 ### WS6-3 · 架構圖（30 分）
-- [ ] 降密度：保留 Gemini 虛線、`DEFAULT_ROUTE` → HardBlock、人類迴圈
-- [ ] 標上企業模組名：Gateway / Runtime / HardPolicyPlugin / Observability
-- [ ] mermaid.live 匯出高解析 PNG
-- [ ] **簡化版不要寫死數字**
+- [x] 降密度：保留 Gemini 虛線、`DEFAULT_ROUTE` → HardBlock、人類迴圈
+- [x] 標上真實模組名（Batch Runner / Evaluator Selection / Policy Engine /
+      Risk Router / ControlEvidence / OpenTelemetry）——比原稿的
+      Gateway/Runtime 泛稱更貼近實際程式碼
+- [x] mermaid-cli 匯出 1600px PNG（`docs/assets/architecture.png`），已檢視無截斷、四色可辨
+- [x] **簡化版不寫死數字**（原本硬編 87/9/2/2，已改為純結構標籤，數字放旁白/文字說明）
+- [x] 順手修正一處失準敘述：ROUTE 節點原標「ADK graph workflow」，但 S3 從未
+      實際完成（見 WS2-2 筆記），改標「fail-closed, deterministic」以符合
+      `policy.py::route_item` 的實際實作
 
 ---
 

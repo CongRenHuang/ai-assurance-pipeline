@@ -28,7 +28,7 @@ flowchart TB
         POL{"Policy Engine<br/>FIN-AI-000…004"}
         POL --> ROUTE
 
-        ROUTE{"Risk Router<br/>ADK graph workflow"}
+        ROUTE{"Risk Router<br/>fail-closed, deterministic"}
     end
 
     GEM["Gemini 3.5 Flash<br/>via ADK"] -.->|"reasoning only,<br/>never decides"| SEL
@@ -110,10 +110,10 @@ flowchart LR
         A1["Select checks<br/>by risk"] --> A2["Run deterministic<br/>evaluators"] --> A3["Route by policy"]
     end
 
-    A --> R1["✅ 87 auto-released"]
-    A --> R2["🔍 9 sampled"]
-    A --> R3["👤 2 to human"]
-    A --> R4["⛔ 2 blocked"]
+    A --> R1["✅ Auto-released"]
+    A --> R2["🔍 Sampled"]
+    A --> R3["👤 To human"]
+    A --> R4["⛔ Blocked"]
 
     R3 --> P["Approval packet"]
     R1 & R2 & R3 & R4 --> E[("ControlEvidence<br/>every decision")]
@@ -124,7 +124,7 @@ flowchart LR
     class E,P ev
 ```
 
-**⚠️ 這版寫死了 87/9/2/2。** 批次跑完前**不要用**——數字必須來自 `evidence/S10-results.json`。若最終分佈不是這組數字，改圖比改敘事容易。
+**不寫死數字。** 真實計數（`AUTO 54 / SAMPLE 28 / HUMAN 9 / BLOCK 9`）放在旁白或投影片文字裡，不寫進圖形節點——圖形是結構說明，數字會隨語料重跑而變，寫死圖裡就要在每次重跑後改圖。
 
 ---
 
