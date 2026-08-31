@@ -33,7 +33,7 @@ CONTENT = (
 # content makes external-source freshness unambiguous instead.
 
 # ---- 1: consistency across 5 runs ----
-runs = [tuple(sorted(plan_for(CONTENT).selected)) for _ in range(5)]
+runs = [tuple(sorted(plan_for(CONTENT)[0].selected)) for _ in range(5)]
 counts = Counter(runs)
 top_selection, top_count = counts.most_common(1)[0]
 agreement = top_count / len(runs)
@@ -45,7 +45,7 @@ saved_key = os.environ.get("GOOGLE_API_KEY")
 os.environ["GOOGLE_API_KEY"] = "bad-key-for-fail-closed-test"
 os.environ["GEMINI_API_KEY"] = "bad-key-for-fail-closed-test"
 try:
-    fallback_plan = plan_for(CONTENT)
+    fallback_plan, fallback_triggered = plan_for(CONTENT)
 finally:
     if saved_key is not None:
         os.environ["GOOGLE_API_KEY"] = saved_key
@@ -59,6 +59,10 @@ rec("2_fail_closed_selects_all",
 rec("2b_fallback_reasoning_says_why",
     "fallback" in fallback_plan.reasoning.lower(),
     f"reasoning={fallback_plan.reasoning[:120]}")
+rec("2c_fallback_flag_propagates_to_trajectory",
+    fallback_triggered is True,
+    f"fallback_triggered={fallback_triggered} (must be True so batch.py's "
+    "trajectory doesn't hardcode fallback=false while reasoning says fallback)")
 
 pathlib.Path("evidence").mkdir(exist_ok=True)
 pathlib.Path("evidence/S10-results.json").write_text(

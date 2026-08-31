@@ -14,6 +14,11 @@
       "test": "2b_fallback_reasoning_says_why",
       "passed": true,
       "detail": "reasoning=fallback: planner failed (ClientError(\"400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Plea"
+    },
+    {
+      "test": "2c_fallback_flag_propagates_to_trajectory",
+      "passed": true,
+      "detail": "fallback_triggered=True (must be True so batch.py's trajectory doesn't hardcode fallback=false while reasoning says fallback)"
     }
   ]
 }

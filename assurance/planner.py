@@ -103,11 +103,16 @@ async def _plan_for_async(content: str) -> tuple[EvaluationPlan, bool]:
         return fallback_plan, True
 
 
-def plan_for(content: str) -> EvaluationPlan:
-    """Sync entrypoint for batch.py. Records reasoning onto a span."""
+def plan_for(content: str) -> tuple[EvaluationPlan, bool]:
+    """Sync entrypoint for batch.py. Records reasoning onto a span.
+
+    Returns (plan, fallback_triggered) -- callers must propagate the
+    fallback flag into their own evidence/trajectory rather than hardcode
+    False, or the trajectory will contradict the planner's own reasoning.
+    """
     plan, fallback = asyncio.run(_plan_for_async(content))
     with tracer().start_as_current_span("planner.plan_for") as sp:
         sp.set_attribute("assurance.selected_evaluators", plan.selected)
         sp.set_attribute("assurance.planner_reasoning", plan.reasoning[:400])
         sp.set_attribute("assurance.planner_fallback", fallback)
-    return plan
+    return plan, fallback

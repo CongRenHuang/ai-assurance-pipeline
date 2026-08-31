@@ -70,6 +70,7 @@ class HardPolicyGate(BasePlugin):
                     "risk_tier": tier,
                     "policy_id": "FIN-AI-004",
                     "reason": reason,
+                    "trajectory": ["hard_policy_gate", "hard_block"],
                     "note": "This policy does not accept human override.",
                 }
         return None

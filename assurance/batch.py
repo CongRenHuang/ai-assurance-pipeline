@@ -79,14 +79,14 @@ def run_batch(path: str, *, emit=None, delay: float = 0.0) -> BatchResult:
                      "decision": "BLOCK", "data_class": data_class},
                 ]
             else:
-                plan = plan_for(item.get("content", ""))
+                plan, planner_fallback = plan_for(item.get("content", ""))
                 evaluations = _run_evaluators(item, plan.selected)
                 decision = route_item(evaluations, data_class)
 
                 trajectory = [
                     {"step": "policy.sovereignty", "policy_id": SOVEREIGNTY_POLICY_ID,
                      "decision": "ALLOW", "data_class": data_class},
-                    {"step": "planner", "selected": plan.selected, "fallback": False},
+                    {"step": "planner", "selected": plan.selected, "fallback": planner_fallback},
                     *[{"step": f"eval.{e.evaluation}", "status": e.status, "score": e.score}
                       for e in evaluations],
                     {"step": "policy.route", "policy_id": decision.policy_id,
@@ -128,6 +128,9 @@ def main() -> None:
     parser.add_argument("--queue", default="data/queue.jsonl")
     parser.add_argument("--delay", type=float, default=0.0,
                          help="seconds between items, for recording")
+    parser.add_argument("--packet", default=None,
+                         help="item id to render the approval packet for "
+                              "(default: first HUMAN_REVIEW/BLOCK item)")
     args = parser.parse_args()
 
     result = run_batch(args.queue, emit=_cli_emit, delay=args.delay)
@@ -141,11 +144,16 @@ def main() -> None:
     print()
     print(render_table(result.counts))
 
-    sample = next((r for r in result.items if r.decision.route in ("HUMAN_REVIEW", "BLOCK")), None)
-    if sample:
-        print()
-        print(render_packet(sample.item_id, sample.decision, sample.evidence))
-
+    if args.packet:
+        sample = next((r for r in result.items if r.item_id == args.packet), None)
+        if sample is None:
+            raise SystemExit(f"--packet {args.packet!r}: no such item id in {args.queue}")
+    else:
+        sample = next((r for r in result.items if r.decision.route in ("HUMAN_REVIEW", "BLOCK")), None)
+    # Persist the authoritative artifact BEFORE any optional presentation.
+    # render_packet() rejects non-HUMAN_REVIEW/BLOCK routes, and the planner
+    # is an LLM -- an item's route is not guaranteed run to run. Rendering
+    # first meant one ValueError discarded the whole batch.
     Path("evidence").mkdir(exist_ok=True)
     Path("evidence/S2-batch-run.json").write_text(
         json.dumps({
@@ -154,6 +162,16 @@ def main() -> None:
             "evidence": [e.model_dump() for e in result.evidence],
         }, indent=2, ensure_ascii=False),
         encoding="utf-8")
+
+    if sample:
+        route = sample.decision.route
+        if route not in ("HUMAN_REVIEW", "BLOCK"):
+            print(f"\n-- {sample.item_id} routed to {route} this run; "
+                  f"no approval packet (packets are for HUMAN_REVIEW/BLOCK only). "
+                  f"Evidence was still written.")
+        else:
+            print()
+            print(render_packet(sample.item_id, sample.decision, sample.evidence))
 
 
 if __name__ == "__main__":
