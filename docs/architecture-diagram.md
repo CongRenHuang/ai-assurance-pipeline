@@ -12,38 +12,46 @@
 flowchart TB
     Q[("Review Queue<br/>100 AI answers")] --> BATCH
 
-    subgraph GCP["☁️ Google Cloud Run"]
+    subgraph PIPE["Batch Pipeline — python -m assurance.batch"]
         direction TB
         BATCH["Batch Runner<br/><i>takes the whole queue</i>"]
-        BATCH --> SEL
+        BATCH --> SOV
 
-        SEL["Evaluator Selection<br/><i>picks checks by risk</i>"]
+        SOV{"Sovereignty Pre-check<br/>FIN-AI-011"}
+        SOV -->|"SENSITIVE"| BLOCK
+        SOV -->|"PUBLIC · INTERNAL"| SEL
+
+        SEL["Planner: evaluator selection<br/><i>fails closed to ALL checks</i>"]
         SEL --> EVAL
 
         subgraph DET["Deterministic Evaluators — no LLM"]
-            EVAL["citation coverage<br/>content integrity<br/>source registry · TTL"]
+            EVAL["citation coverage · content integrity<br/>source TTL · numeric claim check"]
         end
 
-        EVAL --> POL
-        POL{"Policy Engine<br/>FIN-AI-000…004"}
-        POL --> ROUTE
-
-        ROUTE{"Risk Router<br/>fail-closed, deterministic"}
+        EVAL --> ROUTE
+        ROUTE{"Risk Router — route_item()<br/>if/elif, first match wins<br/>FIN-AI-005…010"}
     end
 
-    GEM["Gemini 3.5 Flash<br/>via ADK"] -.->|"reasoning only,<br/>never decides"| SEL
+    subgraph GCP["☁️ Google Cloud Run — deployed"]
+        AGENT["release_assessment agent<br/>App(plugins=[...])"]
+        AGENT --> GATE{"HardPolicyGate<br/>FIN-AI-004"}
+        CARD["/.well-known/agent.json"]
+    end
+
+    GEM["Gemini 3.5 Flash<br/>via ADK"] -.->|"advisory only,<br/>never decides"| SEL
 
     ROUTE -->|R0 · R1| AUTO["✅ Auto-release"]
     ROUTE -->|R2| SAMP["🔍 Sample"]
     ROUTE -->|R3| HUMAN["👤 Human review"]
     ROUTE -->|R4| BLOCK["⛔ Hard block"]
-    ROUTE -.->|"unmatched route<br/>DEFAULT_ROUTE"| BLOCK
+    ROUTE -.->|"unrecognized data_class<br/>fail-closed fallback"| BLOCK
+
+    GATE -->|"approver says yes<br/>OVERRIDE_REJECTED"| EV
 
     HUMAN --> PKT["Approval Packet<br/><i>30-second decision</i>"]
     PKT --> REV(("Compliance<br/>reviewer"))
     REV -->|approve / reject| EV
 
-    BLOCK -->|"override attempt<br/>OVERRIDE_REJECTED"| EV
     AUTO --> EV
     SAMP --> EV
 
@@ -56,8 +64,10 @@ flowchart TB
     classDef blk fill:#FCE8E6,stroke:#D93025,stroke-width:2px,color:#A50E0E
     classDef hum fill:#FEF7E0,stroke:#F9AB00,stroke-width:2px,color:#B06000
     classDef ev fill:#F1F3F4,stroke:#5F6368,stroke-width:2px,color:#202124
+    classDef pipe fill:#FFF8E1,stroke:#F57C00,stroke-width:2px,color:#E65100
 
-    class BATCH,SEL,POL,ROUTE gcp
+    class AGENT,GATE,CARD gcp
+    class BATCH,SOV,SEL,ROUTE pipe
     class EVAL det
     class BLOCK blk
     class HUMAN,PKT,REV hum
@@ -71,7 +81,7 @@ flowchart TB
 **① Gemini 用虛線，標註 "never decides"**
 評審會看你在哪裡用 LLM。虛線 + `reasoning only` 明確表示：**模型選工具，政策引擎做決定**。這一眼就把你和「LLM 決定一切」的作品區分開。
 
-**② `DEFAULT_ROUTE` 用虛線指向 Hard block**
+**② 無法識別的 data_class 用虛線指向 Hard block（fail-closed fallback）**
 這是 fail-closed 拓撲。**未匹配的風險等級不會靜默通過，因為圖上沒有那條邊。** S3 的第 5 項測試證明了移除它會 fail-open。
 
 **③ 人類在圖的下半部，且有回饋箭頭**
@@ -120,6 +130,7 @@ flowchart LR
 
     classDef ag fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#1A237E
     classDef ev fill:#F1F3F4,stroke:#5F6368,stroke-width:2px,color:#202124
+    classDef pipe fill:#FFF8E1,stroke:#F57C00,stroke-width:2px,color:#E65100
     class A,A1,A2,A3 ag
     class E,P ev
 ```
@@ -143,7 +154,7 @@ flowchart LR
 > The agent runs on Cloud Run and processes a queue of AI-generated answers awaiting release.
 > Gemini selects which checks each item warrants; **deterministic evaluators produce the evidence and
 > a policy engine makes the decision** — the model is never the decision authority.
-> Unmatched risk classifications fall through `DEFAULT_ROUTE` to a hard block, so an unclassified item
+> An unrecognized `data_class` falls through to a hard block, so an unclassified item
 > cannot pass silently. Every decision emits ControlEvidence containing the governing policy, the
 > execution trajectory, and the component that made the call.
 

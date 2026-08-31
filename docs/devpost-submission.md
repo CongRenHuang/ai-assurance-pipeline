@@ -170,7 +170,7 @@ Three independent instances, all verified against the framework source:
 
 None of these are bugs. They are reasonable defaults for general use. But each one resolves toward "quietly continue" rather than "explicitly refuse" — and for an assurance system, *silence* and *refusal* are entirely different outcomes. Only one of them leaves evidence.
 
-**Safety was not something the framework provided. It was something I had to add on top.** `DEFAULT_ROUTE → HardBlock` is not a nice-to-have; it is the reason an unclassified risk tier cannot pass silently, because the graph has no edge for it.
+**Safety was not something the framework provided. It was something I had to add on top.** I evaluated ADK's Graph Workflow for the risk router and did not use it — `route_item()` is a plain `if`/`elif` chain whose first branch rejects any unrecognized `data_class`. The fail-closed guarantee is the same; expressing it in ordinary code means it is testable without standing up the framework, and there is no silent-branch-end path to defend against.
 
 ### Evaluator independence is not free
 
@@ -202,6 +202,32 @@ Committed evidence:
 **Deployment assumptions that only break in production.** `adk deploy cloud_run` does not bundle sibling packages, so `assurance/` never reached the container. The API's `app_name` is the folder name, not the value passed to `App(name=...)` — and session creation *silently accepted* the wrong name, with only the subsequent call returning 404. An error that is not rejected at the earliest detectable point is the expensive kind.
 
 **Knowing what not to build.** Local model deployment, fine-tuning, a full DLP platform, a web dashboard, multi-agent orchestration — all evaluated, all documented as out of scope with reasons. A verification pipeline that quietly expands its own scope would be a poor advertisement for itself.
+
+## Why Taskmaster
+
+This is an autonomous multi-step workflow, not a multi-agent fleet — and that is a
+design decision, not a shortfall. The system's central claim is that release
+decisions belong to a deterministic policy engine rather than to a model. Adding
+agents that delegate to one another would weaken exactly the property it exists to
+demonstrate.
+
+What it removes is real friction, by execution: a queue of 100 AI-generated answers
+goes in, the agent decides per item which checks are warranted, gathers deterministic
+evidence, routes by risk, and escalates only what needs judgment. **18 of 100 items
+reached a person.** The other 82 carry committed evidence for why they did not.
+
+Two components were built while evaluating the Fortified track and are kept because
+they earn their place: the agent card at `/.well-known/agent.json` (discovery metadata
+— deliberately *not* claimed as an enterprise Agent Registry) and a cross-process
+approval store that survives process exit. Data sovereignty is enforced in the batch
+layer only; the ADK plugin exists but is not registered in the deployed chain, and the
+README says so.
+
+**What runs where:** the `release_assessment` agent, `HardPolicyGate`, and the agent
+card are deployed on Cloud Run. The 100-item batch pipeline runs locally, with its
+output committed to `evidence/S2-batch-run.json`. The batch does not call the deployed
+agent per item by design — the plugin-layer guarantee is already proven end-to-end by
+S1/S6/S8, and routing 100 items through it would add cost without adding evidence.
 
 ## Non-goals
 
@@ -241,7 +267,7 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 |---|---|
 | LICENSE（Apache-2.0） | ✅ |
 | Repo 為 public | ✅ |
-| Category 選 **The Fortified Enterprise Fleet** | ⬜ WS8 |
+| Category 選 **The Taskmaster** | ⬜ WS8 |
 | Project URL = Cloud Run 網址 | ✅ `assurance-agent-00005-qnc` |
 | Cloud Run `--min-instances=1` | ✅ WS6-1 |
 | `/.well-known/agent.json` 可存取 | ✅ WS6-1（200 OK）|
@@ -260,7 +286,10 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 | 2.4 min/item 為估計非實測 | §3 + `metrics.py` 常數 | ✅ 結構上不可省略 |
 | OWASP 僅宣稱 ASI01 / ASI03 | §3 Non-goals | ✅ |
 | 不宣稱法遵認證 | §3 Non-goals | ✅ |
-| Fortified 三項：sovereignty 已寫但未接入 live chain | README | ✅ WS6-2 已寫入 |
+| sovereignty 已寫但未接入 live chain | README「What runs where」| ✅ |
+| 批次跑在本機、非 Cloud Run | README + Devpost「Why Taskmaster」| ✅ 2026-08-31 修正 |
+| agent card 不是 Agent Registry | 兩處皆明寫 | ✅ 2026-08-31 修正 |
+| 未使用 ADK Graph Workflow / DEFAULT_ROUTE | 架構圖 + README + Devpost | ✅ 2026-08-31 修正 |
 | ADK graph workflow **未使用** | §3 Stack（已移除該詞）| ✅ 2026-08-31 修正 |
 
 > **最後一項是今天發現的。** 架構圖與 Stack 行都曾宣稱使用 ADK Graph Workflow，

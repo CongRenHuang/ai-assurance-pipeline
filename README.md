@@ -8,7 +8,7 @@ release even when a human with approval authority says yes.
 
 **Live:** https://assurance-agent-6eqpujphvq-de.a.run.app
 **Stack:** Gemini 3.5 Flash · Google ADK 2.7.1 · Cloud Run · OpenTelemetry/OpenInference
-**Category:** All Things Agentic Hackathon — The Fortified Enterprise Fleet
+**Category:** All Things Agentic Hackathon — The Taskmaster
 
 ---
 
@@ -20,7 +20,7 @@ The agent runs on Cloud Run and processes a queue of AI-generated answers
 awaiting release. Gemini selects which checks each item warrants;
 **deterministic evaluators produce the evidence and a policy engine makes
 the decision** — the model is never the decision authority. Unmatched risk
-classifications fall through `DEFAULT_ROUTE` to a hard block, so an
+classifications fall through to a hard block, so an
 unclassified item cannot pass silently. Every decision emits
 `ControlEvidence` containing the governing policy, the execution
 trajectory, and the component that made the call.
@@ -36,7 +36,7 @@ trajectory, and the component that made the call.
 | LLM only triages which checks to run, never decides the outcome | `assurance/planner.py` (`EvaluationPlan`, `LlmAgent`, no tools) |
 | Deterministic evidence per item | `assurance/evaluators.py` (4 pure evaluators) → `assurance/schema.py::ControlEvidence` |
 | Every decision traceable to which component decided it | `assurance/tracing.py` (`guardrail_span`/`evaluator_span`), `assurance/trajectory.py::assert_decided_by` |
-| Data sovereignty (SENSITIVE never egresses) | `assurance/sovereignty.py::SovereigntyGatePlugin` (batch layer: wired into `assurance/batch.py`; ADK plugin layer: written, **not yet registered** in `deploy_agent/agent.py` — see Fortified status below) |
+| Data sovereignty (SENSITIVE never egresses) | `assurance/sovereignty.py::SovereigntyGatePlugin` (batch layer: wired into `assurance/batch.py`; ADK plugin layer: written, **not yet registered** in `deploy_agent/agent.py` — see “What runs where” below) |
 | Cross-process human approval | `assurance/approval_store.py` (SQLite), `scripts/resolve.py` |
 | Machine-readable capability/policy declaration | `scripts/gen_agent_card.py` → `/.well-known/agent.json` |
 
@@ -87,9 +87,12 @@ silently passes), Graph Workflow routing logs a warning and silently ends
 a branch on an unmatched route with no `DEFAULT_ROUTE`, and the Plugin
 chain stops at the first non-`None` return. None of these are bugs — they
 are reasonable defaults for general use. But each resolves toward "quietly
-continue," so `DEFAULT_ROUTE → HardBlock` and plugin-layer enforcement
-(not agent-layer) aren't nice-to-haves — they're the only way an
-unclassified state fails closed instead of silently passing.
+continue," so an explicit fail-closed fallback and plugin-layer
+enforcement (not agent-layer) aren't nice-to-haves — they're the only way
+an unclassified state fails closed instead of silently passing. I did not
+end up using Graph Workflow: `route_item()` is a plain `if`/`elif` chain
+whose first branch rejects any unrecognized `data_class`. Same guarantee,
+expressed in code I can test without the framework.
 
 **A generator/threshold mismatch is the same bug twice if you only fix it
 halfway.** The corpus generator drew random source ages up to 110 days
@@ -103,13 +106,44 @@ threshold to hit a target ratio — the corpus's own docstring states counts
 are not tuned, and the final distribution (`AUTO 54 · SAMPLE 28 ·
 HUMAN_REVIEW 9 · BLOCK 9`) is what fell out once the mismatch was gone.
 
-## Fortified Enterprise Fleet — honest status
+## Why Taskmaster, not Fortified Enterprise Fleet
 
-| Requirement | Status |
+The Fleet track evaluates multi-agent delegation: specialized agents, a
+registry, inter-agent routing with failure recovery. **This system is
+deliberately not that.** Its central claim is that release decisions
+belong to a deterministic policy engine, not to a model — so adding agents
+that delegate to each other would weaken the thing it exists to
+demonstrate.
+
+What it *is*: an autonomous multi-step workflow that takes a queue of 100
+AI-generated answers, decides per item which checks are warranted, gathers
+deterministic evidence, routes by risk, and escalates only what needs a
+person. **18 of 100 items reached a human.** That is friction removed by
+execution, which is what Taskmaster asks for.
+
+Two capabilities built for the Fleet track are kept because they earn
+their place here:
+
+| Capability | Status |
 |---|---|
-| Agent card (`/.well-known/agent.json`) | **Implemented.** Generated from `policy_ids.py`, served live, verified on the deployed Cloud Run service. |
-| Cross-process human approval | **Implemented.** SQLite-backed (`data/approvals.db`), verified across two independent process invocations (`escalate()` in the batch run, `resolve()` in a separate terminal). |
-| Data sovereignty (SENSITIVE data never leaves the approved region) | **Partially implemented.** The pure-function check (`check_sovereignty`) and its batch-layer enforcement are live and verified against the corpus (SENSITIVE items are blocked with evidence). The ADK `SovereigntyGatePlugin` exists but is **not yet registered** in `deploy_agent/agent.py`'s live plugin chain — only `HardPolicyPlugin`, `EgressGatePlugin`, and `HardPolicyGate` are wired into the deployed agent today. |
+| Agent card (`/.well-known/agent.json`) | **Live.** Generated from `policy_ids.py`, served by the deployed service. Discovery metadata — *not* an enterprise Agent Registry. |
+| Cross-process human approval | **Live.** SQLite-backed (`data/approvals.db`), verified across two independent process invocations. In-flight batch state is not persisted; only decisions are. |
+| Data sovereignty | **Batch layer only.** `check_sovereignty()` blocks SENSITIVE items with evidence in `assurance/batch.py`. The ADK `SovereigntyGatePlugin` exists but is **not registered** in the deployed plugin chain. |
+
+## What runs where
+
+Accuracy matters more here than a bigger claim:
+
+| Component | Where it runs |
+|---|---|
+| `release_assessment` agent + `HardPolicyGate` (R4 override rejection) | **Deployed** on Cloud Run — `evidence/S8-e2e-r4-block.json` |
+| `/.well-known/agent.json` | **Deployed** on Cloud Run |
+| `assurance.batch` 100-item pipeline | **Local** — `python -m assurance.batch`, committed output in `evidence/S2-batch-run.json` |
+| `SovereigntyGatePlugin` | **Written, not deployed** |
+
+The batch pipeline does not call the deployed agent per item by design:
+the plugin-layer guarantee is already proven end-to-end by S1/S6/S8, and
+running 100 items through it would add LLM cost without adding evidence.
 
 ## Run locally
 
