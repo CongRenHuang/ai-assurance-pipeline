@@ -7,3 +7,4 @@ data/approvals.db
 .DS_Store
 .claude/scheduled_tasks.lock
 evidence/*.old
+docs/assets/takes/
