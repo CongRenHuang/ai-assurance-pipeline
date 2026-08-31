@@ -10,14 +10,43 @@ release even when a human with approval authority says yes.
 **Stack:** Gemini 3.5 Flash · Google ADK 2.7.1 · Cloud Run · OpenTelemetry/OpenInference
 **Category:** All Things Agentic Hackathon — The Taskmaster
 
+![Cloud Run](https://img.shields.io/badge/Cloud_Run-deployed-4285F4)
+![Gemini](https://img.shields.io/badge/Gemini_3.5_Flash-advisory_only-8E75FF)
+![Fail-closed](https://img.shields.io/badge/policy-fail--closed_verified-1E8E3E)
+![Override](https://img.shields.io/badge/R4_override-rejected_on_live_API-D93025)
+![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
+
+```
+ BATCH RUN — 100 AI-generated answers, one pass
+ ─────────────────────────────────────────────────────────────────────
+  AUTO-RELEASE      SAMPLE          HUMAN REVIEW      HARD BLOCK
+       54              28                 9                9
+   FIN-AI-010      FIN-AI-009        FIN-AI-008     FIN-AI-005 / 011
+  all evaluators   low-confidence    evaluator      evaluator FAIL
+  PASS, high conf   PASS, sampled     WARN           or SENSITIVE
+ ─────────────────────────────────────────────────────────────────────
+  18 of 100 items reached a person.       ← measured: count of routes
+  Estimated review time 240 → 43.2 min.   ← ESTIMATE, see below
+ ─────────────────────────────────────────────────────────────────────
+  Synthetic corpus. The 82% time reduction is an ESTIMATE derived from
+  a 2.4 min/item baseline that has no timed-pilot backing; it is not a
+  measured 82% reduction in human effort. The measured figure is the
+  routing itself: 18 items escalated, 82 released or sampled with
+  committed ControlEvidence. See docs/baseline-estimate.md.
+```
+
+Counts are reproducible: `python -m assurance.batch --queue data/queue.jsonl`,
+committed at [`evidence/S2-batch-run.json`](evidence/S2-batch-run.json).
+
 ---
 
 ## Architecture
 
 ![Architecture diagram](docs/assets/architecture.png)
 
-The agent runs on Cloud Run and processes a queue of AI-generated answers
-awaiting release. Gemini selects which checks each item warrants;
+The batch pipeline processes a queue of AI-generated answers awaiting
+release; the agent and its hard-policy gate run on Cloud Run (see
+"What runs where" below). Gemini selects which checks each item warrants;
 **deterministic evaluators produce the evidence and a policy engine makes
 the decision** — the model is never the decision authority. Unmatched risk
 classifications fall through to a hard block, so an
