@@ -314,13 +314,21 @@ WARN/低分區、`make_r4_item` 仍 FAIL——**每一條 route 都還有樣本*
 
 ### WS5-3 · 執行步驟（40 分）
 
-- [x] `data/make_queue.py`：`max_age_days=110` → `max_age_days=75`
+- [x] `data/make_queue.py`：`max_age_days=110` → `max_age_days=75` → **`max_age_days=55`**（見下方修正說明）
 - [x] 備份舊證據：`evidence/S2-batch-run.json` → `.old`（保留對照，**不 commit**）
 - [x] `python data/make_queue.py > data/queue.jsonl`
 - [x] `python -m assurance.batch --queue data/queue.jsonl`
-- [x] 重跑 `tests/test_s10_planner.py` → 更新 `evidence/S10-results.json`（GO，consistency 100%、fail-closed 皆通過）
-- [x] 確認四條 route 都仍有樣本（實測 `AUTO 39 / SAMPLE 26 / HUMAN_REVIEW 27 / BLOCK 8`，皆 > 0）
+- [x] 重跑 `tests/test_s10_planner.py` → 更新 `evidence/S10-results.json`（GO，consistency 100%、fail-closed 皆通過；與語料無關，未再重跑第二次）
+- [x] 確認四條 route 都仍有樣本（實測 `AUTO 54 / SAMPLE 28 / HUMAN_REVIEW 9 / BLOCK 9`，皆 > 0）
 - [x] `data/approvals.db` 清空重建（`rm` 後隨批次重跑自動重建，escalation 對應新 item id）
+
+> **75 修正未完整：** `source_ttl` 有兩條線——`SOURCE_TTL_DAYS=90` 是
+> FAIL 線，`90 × 0.7 = 63` 是 WARN 線（`evaluators.py:77`）。`75` 只
+> 清掉 FAIL 線，WARN 線仍在，導致 HUMAN_REVIEW 27 筆裡 16 筆仍是
+> `source_ttl` WARN——43→35 只降 19%，敘事不成立。改為 `55`（低於
+> 63 這條 WARN 線），random item 的 `source_ttl` 全數 PASS，HUMAN_REVIEW
+> 降到 9 筆、全部來自 `citation_coverage`/`content_integrity` WARN。
+> 與前次同類修正——對齊已存在於 evaluator 的門檻，不是發明門檻湊數字。
 
 ### WS5-4 · Commit 誠信要求（10 分）
 
@@ -344,8 +352,8 @@ random items are clean by default; planted samples are unaffected.
 > （誠實但 40% 那條故事線變弱）。這條線很細，越線就不誠實了。
 
 **DoD：**
-- [x] 四類計數總和 == 100，四類皆 > 0（`A39 S26 H27 B8`）
-- [x] BLOCK 的每一筆都能對應到 `make_r4_item` 或 SENSITIVE 植入（逐筆核對 8 筆：5 筆 evaluator FAIL + 3 筆 SENSITIVE，無 stray `source_ttl`）
+- [x] 四類計數總和 == 100，四類皆 > 0（`A54 S28 H9 B9`）
+- [x] BLOCK 的每一筆都能對應到 `make_r4_item` 或 SENSITIVE 植入（逐筆核對 9 筆：6 筆 evaluator FAIL + 3 筆 SENSITIVE，無 stray `source_ttl`；6 筆中 1 筆為隨機語料巧合觸發的真實 FAIL，非 bug）
 - [x] `evidence/S2-batch-run.json` 與 `data/queue.jsonl` 同一次產生
 - [ ] 影片腳本與 Devpost 草稿的 `<<FILL>>` 數字**全部改用新證據**（留待 WS7/WS8）
 
@@ -353,9 +361,10 @@ random items are clean by default; planted samples are unaffected.
 **新分佈是否讓「人只需看少數幾筆」的敘事成立？**
 ❌ → 恢復 110，改用壓力測試語料敘事，**不再調參**，直接進 WS6。
 
-**結果：PASS。** 一次調整（110→75）即達標，未反覆微調。BLOCK 24→8，
-且全部對應設計內植入（5 R4 + 3 SENSITIVE），`source_ttl` 造成的雜訊
-歸零。
+**結果：PASS。** 兩次調整（110→75→55），第一次修 FAIL 線、第二次修
+WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊數字。
+最終 `A54 S28 H9 B9`，HUMAN_REVIEW 9 筆全來自真實 WARN，BLOCK 9 筆
+全對應植入設計，`source_ttl` 雜訊歸零。
 
 ---
 
