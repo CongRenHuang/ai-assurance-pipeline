@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 from google.adk.plugins.base_plugin import BasePlugin
 from .policy import evaluate
+from .tracing import guardrail_span
 
 # Observation counters: S1 uses these to prove the tool truly did not execute.
 COUNTERS: dict[str, int] = {
@@ -24,8 +25,9 @@ def reset_counters() -> None:
 class HardPolicyPlugin(BasePlugin):
     """Hard policy gate that cannot be bypassed at the agent layer."""
 
-    def __init__(self) -> None:
+    def __init__(self, plugin_index: int = 0) -> None:
         super().__init__(name="hard_policy")
+        self.plugin_index = plugin_index
 
     async def before_tool_callback(
         self, *, tool, tool_args: dict[str, Any], tool_context
@@ -41,10 +43,16 @@ class HardPolicyPlugin(BasePlugin):
             return None
         COUNTERS["plugin_callback"] += 1
         verdict = evaluate(tool.name, tool_args)
-        if not verdict.allowed:
-            COUNTERS["blocked"] += 1
-            return verdict.to_tool_response()  # non-None -> short-circuits at plugin layer
-        return None  # allow, continue downstream
+        with guardrail_span(
+            "policy.source_governance",
+            policy_id=verdict.policy_id, risk_tier=verdict.risk_tier,
+            decision="ALLOW" if verdict.allowed else "BLOCK",
+            plugin="HardPolicyPlugin", plugin_index=self.plugin_index,
+        ):
+            if not verdict.allowed:
+                COUNTERS["blocked"] += 1
+                return verdict.to_tool_response()  # non-None -> short-circuits at plugin layer
+            return None  # allow, continue downstream
 
 
 # ---------- S2: Egress Gate ----------
@@ -65,8 +73,9 @@ def _extract_text(llm_request) -> str:
 class EgressGatePlugin(BasePlugin):
     """Blocks SENSITIVE content from reaching an external model."""
 
-    def __init__(self) -> None:
+    def __init__(self, plugin_index: int = 1) -> None:
         super().__init__(name="egress_gate")
+        self.plugin_index = plugin_index
 
     async def before_model_callback(self, *, callback_context, llm_request):
         # ADK 2.7.1 requires Optional[LlmResponse], not Optional[Content] --
@@ -77,15 +86,21 @@ class EgressGatePlugin(BasePlugin):
         COUNTERS["model_callback"] += 1
         text = _extract_text(llm_request)
         hit = [m for m in SENSITIVE_MARKERS if m in text]
-        if hit:
-            COUNTERS["model_blocked"] += 1
-            return LlmResponse(
-                content=types.Content(
-                    role="model",
-                    parts=[types.Part(text=(
-                        "BLOCKED by FIN-AI-003: sensitive content must not be sent "
-                        f"to an external model. markers={hit}"
-                    ))],
+        with guardrail_span(
+            "policy.egress_gate",
+            policy_id="FIN-AI-003", risk_tier="R4" if hit else "R0",
+            decision="BLOCK" if hit else "ALLOW",
+            plugin="EgressGatePlugin", plugin_index=self.plugin_index,
+        ):
+            if hit:
+                COUNTERS["model_blocked"] += 1
+                return LlmResponse(
+                    content=types.Content(
+                        role="model",
+                        parts=[types.Part(text=(
+                            "BLOCKED by FIN-AI-003: sensitive content must not be sent "
+                            f"to an external model. markers={hit}"
+                        ))],
+                    )
                 )
-            )
-        return None
+            return None

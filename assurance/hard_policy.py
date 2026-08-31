@@ -10,6 +10,8 @@ from typing import Any, Optional
 
 from google.adk.plugins.base_plugin import BasePlugin
 
+from .tracing import guardrail_span
+
 PROHIBITED = {
     "R4": "FIN-AI-004: PROHIBITED operations cannot be released by any reviewer.",
 }
@@ -40,8 +42,9 @@ def _emit(control_id, result, detail, trajectory):
 
 
 class HardPolicyGate(BasePlugin):
-    def __init__(self) -> None:
+    def __init__(self, plugin_index: int = 2) -> None:
         super().__init__(name="hard_policy_gate")
+        self.plugin_index = plugin_index
 
     async def before_tool_callback(
         self, *, tool, tool_args: dict[str, Any], tool_context
@@ -54,13 +57,19 @@ class HardPolicyGate(BasePlugin):
             reason = PROHIBITED[tier]
             _emit("FIN-AI-004", "OVERRIDE_REJECTED", reason,
                   ["hard_policy_gate", "hard_block"])
-            # non-None -> short-circuits at plugin layer, tool never executes
-            return {
-                "status": "BLOCKED",
-                "decision": "OVERRIDE_REJECTED",
-                "risk_tier": tier,
-                "policy_id": "FIN-AI-004",
-                "reason": reason,
-                "note": "This policy does not accept human override.",
-            }
+            with guardrail_span(
+                "policy.hard_block",
+                policy_id="FIN-AI-004", risk_tier=tier, decision="BLOCK",
+                override_rejected=True,
+                plugin="HardPolicyGate", plugin_index=self.plugin_index,
+            ):
+                # non-None -> short-circuits at plugin layer, tool never executes
+                return {
+                    "status": "BLOCKED",
+                    "decision": "OVERRIDE_REJECTED",
+                    "risk_tier": tier,
+                    "policy_id": "FIN-AI-004",
+                    "reason": reason,
+                    "note": "This policy does not accept human override.",
+                }
         return None

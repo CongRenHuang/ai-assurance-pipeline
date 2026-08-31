@@ -17,8 +17,11 @@ MODEL = get_model()
 from google.adk.agents import LlmAgent
 from google.adk.apps.app import App
 
+from assurance import tracing
 from assurance.plugin import HardPolicyPlugin, EgressGatePlugin
 from assurance.hard_policy import HardPolicyGate
+
+tracing.setup(use_otlp=False)
 
 
 def assess_release(assessment_id: str, risk_tier: str) -> dict:
@@ -53,8 +56,11 @@ root_agent = LlmAgent(
 # `adk deploy cloud_run` / `adk api_server` actually picks up, and it's
 # the only way to get HardPolicyPlugin / EgressGatePlugin / HardPolicyGate
 # enforced on the hosted service instead of just in local test runners.
+_PLUGIN_CLASSES = [HardPolicyPlugin, EgressGatePlugin, HardPolicyGate]
+_PLUGINS = [cls(plugin_index=i) for i, cls in enumerate(_PLUGIN_CLASSES)]
+
 app = App(
     name="assurance_agent",
     root_agent=root_agent,
-    plugins=[HardPolicyPlugin(), EgressGatePlugin(), HardPolicyGate()],
+    plugins=_PLUGINS,
 )

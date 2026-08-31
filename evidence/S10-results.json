@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "test": "1_selection_consistency",
+      "passed": false,
+      "detail": "agreement=60% (need >=80%), most common=('citation_coverage', 'content_integrity', 'numeric_claim_check'), all_runs=[('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check'), ('citation_coverage', 'content_integrity', 'numeric_claim_check'), ('citation_coverage', 'content_integrity', 'numeric_claim_check')]"
+    },
+    {
+      "test": "2_fail_closed_selects_all",
+      "passed": true,
+      "detail": "selected=['citation_coverage', 'content_integrity', 'source_ttl', 'numeric_claim_check'] (need == ALL_EVALUATORS=['citation_coverage', 'content_integrity', 'source_ttl', 'numeric_claim_check'])"
+    },
+    {
+      "test": "2b_fallback_reasoning_says_why",
+      "passed": true,
+      "detail": "reasoning=fallback: planner failed (ClientError(\"400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'API key not valid. Plea"
+    }
+  ]
+}

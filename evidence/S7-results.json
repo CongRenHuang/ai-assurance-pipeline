@@ -33,7 +33,7 @@
     {
       "test": "7_guardrail_has_plugin_attr",
       "passed": true,
-      "detail": "r4_span={'name': 'policy.hard_block', 'attributes': {'openinference.span.kind': 'GUARDRAIL', 'assurance.policy_id': 'FIN-AI-004', 'assurance.risk_tier': 'R4', 'assurance.decision': 'BLOCK', 'assurance.override_rejected': True, 'assurance.plugin': 'HardPolicyGate', 'assurance.plugin_index': 2}, 'parent_id': 4767440121703770942, 'span_id': 13954669229651557654}"
+      "detail": "r4_span={'name': 'policy.hard_block', 'attributes': {'openinference.span.kind': 'GUARDRAIL', 'assurance.policy_id': 'FIN-AI-004', 'assurance.risk_tier': 'R4', 'assurance.decision': 'BLOCK', 'assurance.override_rejected': True, 'assurance.plugin': 'HardPolicyGate', 'assurance.plugin_index': 2}, 'parent_id': 17262645169792980422, 'span_id': 16171432512817163806}"
     },
     {
       "test": "8_r4_blocked_by_r4_policy_not_by_source_governance",

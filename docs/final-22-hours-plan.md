@@ -1,0 +1,327 @@
+# 衝刺計畫書 — Final 22 Hours
+
+**專案：** Release Assessment Agent
+**賽道：** Fortified Enterprise Fleet
+**交件：** 2026-09-01 08:00（台北）
+**Repo：** `github.com/CongRenHuang/ai-assurance-pipeline`
+**Live：** `https://assurance-agent-6eqpujphvq-de.a.run.app`
+
+---
+
+## 0. 現況（已於 8/31 實查，非推測）
+
+### ✅ 已完成
+
+| 項目 | 狀態 |
+|---|---|
+| S0–S3, S6–S9 八個 spike | 全通過，26 個 evidence 檔案 |
+| `policy.py` | `PolicyVerdict` / `classify_source` / `evaluate` |
+| `policy_ids.py` | `Policy(id, owner, description)` NamedTuple，FIN-AI-000～004 |
+| `plugin.py` | `HardPolicyPlugin` / `EgressGatePlugin` |
+| `hard_policy.py` | `HardPolicyGate`，R4 不可覆寫，雲端實跑有證據 |
+| `tracing.py` | `guardrail_span()` / `evaluator_span()` / `SPAN_KIND` 常數 |
+| `trajectory.py` | `Trajectory` 五類 invariant 斷言，含 `assert_decided_by` |
+| `deploy_agent/agent.py` | `App(plugins=[...])`，Cloud Run 活著 |
+
+### ❌ 缺口（本計畫要補的全部）
+
+```
+MISSING  assurance/batch.py           MISSING  assurance/schema.py
+MISSING  assurance/planner.py         MISSING  assurance/evaluators.py
+MISSING  assurance/metrics.py         MISSING  assurance/packet.py
+MISSING  assurance/approval_store.py  MISSING  assurance/sovereignty.py
+MISSING  data/queue.jsonl             MISSING  LICENSE
+NOT WIRED  deploy_agent 未呼叫 tracing.setup()
+```
+
+### 🔑 關鍵優勢
+
+`guardrail_span` / `evaluator_span` / `Trajectory` **全部已存在且測試通過**。
+批次層只需要**呼叫**它們，不需要重寫。這是本計畫能在 22 小時內完成的原因。
+
+---
+
+## 1. Work Stages 總覽
+
+| WS | 名稱 | 時間 | 產出 | 阻塞誰 |
+|---|---|---|---|---|
+| **WS0** | 止血 | 0.5h | LICENSE、tracing 接線 | — |
+| **WS1** | Agent 推理層 ★ | 1.0h | `planner.py` | WS2 |
+| **WS2** | 批次核心 | 3.0h | `schema/evaluators/batch.py`、語料 | WS3, WS5 |
+| **WS3** | 決策產出 | 1.5h | `metrics.py`、`packet.py` | WS5 |
+| **WS4** | Fortified 三項 | 2.0h | card / store / sovereignty | — |
+| **WS5** | 部署與文件 | 2.0h | 重新部署、README、架構圖 | WS6 |
+| **WS6** | 影片 | 5.5h | 錄影、剪接、上傳 | WS7 |
+| **WS7** | 提交 | 1.0h | Devpost | — |
+| | **合計** | **16.5h** | | |
+
+**22 小時 − 16.5 小時 = 5.5 小時緩衝**（含睡眠）。
+
+---
+
+## WS0 · 止血 ｜ 0.5h ｜ 10:00–10:30
+
+> 兩個 30 分鐘內能做完、但不做會失格或說謊的項目。
+
+### WS0-1 · LICENSE（5 分）
+- [x] GitHub UI → Add file → Create new file → 檔名 `LICENSE`
+- [x] 右側 **Choose a license template** → Apache-2.0
+- [x] Commit
+
+**DoD：** repo 首頁 About 區塊顯示 "Apache-2.0"
+
+> ⚠️ 必須用 GitHub template，手貼文字不會被偵測。
+
+### WS0-2 · tracing 接線（25 分）
+- [x] `deploy_agent/agent.py` import 時呼叫 `tracing.setup(use_otlp=False)`
+- [x] `HardPolicyPlugin` / `EgressGatePlugin` / `HardPolicyGate` 的決策點包進 `guardrail_span()`
+- [x] plugin 加 `plugin_index` 建構參數，由註冊順序推導
+
+**DoD：** `S1/S2/S6/S8` 四個測試仍全綠，且 span 由 plugin 發出而非測試腳本
+
+> 這修的是影片 3:52 的誠信問題——目前宣稱 agent 發出 trace，實際是測試腳本手工建的。
+
+---
+
+## WS1 · Agent 推理層 ★ ｜ 1.0h ｜ 10:30–11:30
+
+> **最高優先。** 評審信標為「最致命風險」：讀起來像規則引擎。
+> 而實況更糟——`evaluate_node` 是 stub，Gemini 在批次流程裡什麼都沒做。
+
+### WS1-1 · `assurance/planner.py`（40 分）
+- [x] `EvaluationPlan` Pydantic：`selected` / `reasoning` / `skipped_because`
+- [x] `LlmAgent(model="gemini-3.5-flash", output_schema=EvaluationPlan)`，**不掛 tool**
+- [x] instruction 明寫：*You do NOT decide whether it may be released*
+- [x] **fail-closed fallback：planner 失敗或回傳空選擇 → `selected = ALL`**
+
+> 實作中發現：Gemini Developer API 不支援 `dict[str,str]` 輸出 schema
+> （`additionalProperties` 只在 Enterprise Agent Platform mode 支援）。
+> `skipped_because` 改為 `list[SkippedEvaluator{evaluator,reason}]`。
+
+### WS1-2 · 推理寫進 span（20 分）
+- [x] `assurance.selected_evaluators`
+- [x] `assurance.planner_reasoning`（截斷 400 字）
+- [x] `assurance.planner_fallback`（bool）
+
+**DoD：**
+- [x] 同一筆內容跑 5 次，選擇結果一致率 ≥ 80%（實測 100%，見 `evidence/S10-results.json`）
+- [x] **斷網或給錯 key 時，fallback 觸發且 `selected == ALL`**（驗證通過）
+
+驗證：`tests/test_s10_planner.py` → `evidence/S10-results.json`
+
+> 第二項是靈魂：**連自主性都套用 fail-closed**——不確定時做更多檢查，不是更少。
+
+---
+
+## WS2 · 批次核心 ｜ 3.0h ｜ 11:30–14:30
+
+### WS2-1 · `schema.py`（30 分）
+- [ ] `EvaluationResult` / `RiskDecision` / `ApprovalDecision`
+- [ ] `Transformation`（v0.2 預留，`type="none"`）
+- [ ] `ControlEvidence`：`control_id` / `result` / `trajectory` / `transformation`
+
+> ⚠️ 欄位名是 `control_id` **不是** `policy_id`——影片腳本的 mock-up 要改。
+
+### WS2-2 · `evaluators.py`（30 分）
+- [ ] `citation_coverage` / `content_integrity` / `source_ttl` / `numeric_claim_check`
+- [ ] 全部純函式，零 LLM
+- [ ] 每個都包進 `evaluator_span()`
+
+**DoD：** 同輸入跑 100 次結果完全一致
+
+### WS2-3 · 合成語料（45 分）
+- [ ] `data/make_queue.py`，固定 seed
+- [ ] 100 筆，欄位含 `data_class`（WS4-3 要用）
+- [ ] **刻意植入 R2/R3/R4 各數筆**，其餘由規則自然落點
+- [ ] 產出後 commit 為靜態 `data/queue.jsonl`
+
+> **不要為了湊 87/9/2/2 而調語料。** 數字由 policy 決定，敘事跟著數字走。
+
+### WS2-4 · `batch.py`（75 分）
+- [ ] `run_batch(path, *, emit=None, delay=0.0) -> BatchResult`
+- [ ] 每筆：`planner.plan_for` → evaluators → `policy` → 路由 → `make_evidence`
+- [ ] 四類計數 `AUTO / SAMPLE / HUMAN_REVIEW / BLOCK`
+- [ ] **每筆都產 ControlEvidence**（目前只有 R4 會產）
+- [ ] CLI `--delay 0.45` 給錄影用；預設 0 給測試用
+- [ ] 每行結尾帶累計計數 `A38 S4 H1 B0`
+
+**DoD：**
+```bash
+python -m assurance.batch --queue data/queue.jsonl
+# 100 筆跑完、四類總和 == 100、evidence 100 筆無空值
+```
+
+### 🚦 GATE 1 · 14:30
+**批次能跑完並印出四類計數？**
+❌ → 佇列縮到 20 筆，放棄「一整天工作量」說法，改講端到端深度。**不要往後借時間。**
+
+---
+
+## WS3 · 決策產出 ｜ 1.5h ｜ 14:30–16:00
+
+### WS3-1 · `metrics.py`（45 分）
+- [ ] `REVIEW_MINUTES_BASELINE_PER_ITEM = 2.4`，標 ESTIMATE
+- [ ] `docs/baseline-estimate.md`：說明無實測基準、涵蓋範圍、敏感度區間
+- [ ] `render_table()` **由模組常數組出免責聲明**，結構上不可省略
+- [ ] 基準與實際皆為 常數 × 真實計數，**不得寫死**
+
+### WS3-2 · `packet.py`（45 分）
+- [ ] 純文字核准包：結論 / 政策 / 關鍵證據 / 軌跡 / **建議動作選項**
+- [ ] 用「給選項」而非「給資訊」的格式（A/B/C 讓 reviewer 直接勾）
+
+**DoD：** 兩者輸出可直接上鏡，免責聲明在畫面上
+
+---
+
+## WS4 · Fortified 三項最小補強 ｜ 2.0h ｜ 16:00–18:00
+
+> 三項 `must demonstrate` 全建不完。目標是**從「沒做」變成「有基本機制 + 誠實標注」**。
+
+### WS4-1 · Agent Card（30 分）
+- [ ] `scripts/gen_agent_card.py` **由 `policy_ids.py` 產生**，不手抄
+- [ ] `public/.well-known/agent.json`：purpose / policy_scope / owner / data_classes / hard_policies_not_overridable / deployment.region
+- [ ] Cloud Run 開 `/.well-known/agent.json` 路由
+
+**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致
+
+### WS4-2 · Approval Store（60 分）
+- [ ] `assurance/approval_store.py`，**SQLite**（不開 Cloud SQL）
+- [ ] `escalate()` / `list_pending()` / `resolve()`
+- [ ] `scripts/resolve.py` CLI
+
+**DoD（這就是可上鏡的證明）：**
+```bash
+python -m assurance.batch ...        # 程序 1 寫入
+# ★ 關閉終端機
+python -m assurance.resolve ASMT-042 --decision APPROVE --reviewer dennis
+# 程序 2 恢復，印出 created_at 與 resolved_at
+```
+
+### WS4-3 · Data Sovereignty（30 分）
+- [ ] `assurance/sovereignty.py`：`DOMAIN_POLICY`，`UNKNOWN` fail closed
+- [ ] 接在 `EgressGatePlugin` **前面**當前置判斷，不重寫既有邏輯
+- [ ] `gcloud run services update --update-labels=data-residency=asia-east1`
+
+**DoD：** SENSITIVE 項目在批次中被 domain 檢查擋下並留下證據
+
+### 🚦 GATE 2 · 18:00
+**功能與文件是否完成？**
+❌ → **停止一切開發，帶著現有功能去錄影。**
+影片的時間不可以借給功能——**沒有影片就沒有提交，功能少一項只是扣分。**
+
+降級順序：砍 WS4-2 → 砍 WS4-3 → 保留 WS1 + WS4-1 + README 聲明
+
+---
+
+## WS5 · 部署與文件 ｜ 2.0h ｜ 18:00–20:00
+
+### WS5-1 · 重新部署（45 分）
+- [ ] `gcloud run deploy --source .`（`adk deploy` 不打包 sibling package）
+- [ ] `app_name` 用**資料夾名** `deploy_agent`，不是 `App(name=...)`
+- [ ] 冒煙測試：R4 在雲端仍回 `OVERRIDE_REJECTED`
+- [ ] `--min-instances=1`
+- [ ] 保留前一版供回滾
+
+### WS5-2 · README（45 分）
+- [ ] 開頭 5–8 行摘要，不用捲動
+- [ ] **宣稱 ↔ 程式碼路徑對照表**（評審明說會看）
+- [ ] 三段 What I learned
+- [ ] **Fortified 三項誠實聲明**（實作 / 部分 / 未實作）
+- [ ] `How to run locally / deploy`
+
+### WS5-3 · 架構圖（30 分）
+- [ ] 降密度：保留 Gemini 虛線、`DEFAULT_ROUTE` → HardBlock、人類迴圈
+- [ ] 標上企業模組名：Gateway / Runtime / HardPolicyPlugin / Observability
+- [ ] mermaid.live 匯出高解析 PNG
+- [ ] **簡化版不要寫死數字**
+
+---
+
+## WS6 · 影片 ｜ 5.5h ｜ 20:00–01:30
+
+> **自己配音，不用 AI 語音。** 評審明說看重 energy。
+
+### WS6-1 · 錄影（4.0h）· 20:00–24:00
+
+**★ 場景順序已依評審回饋調整——R4 移到冷開場**
+
+| 段落 | 時間 | 內容 |
+|---|---|---|
+| 1 | 0:00–0:30 | **冷開場：按下 APPROVE → `OVERRIDE_REJECTED`**（Cloud Run 實跑）|
+| 2 | 0:30–1:15 | 稽核週場景 + 法規時程 |
+| 3 | 1:15–2:00 | 架構飛掠 + **planner 推理鏈上鏡** |
+| 4 | 2:00–3:00 | 批次實跑 + **GCP Console 畫面** |
+| 5 | 3:00–3:30 | 核准包 + approval store 跨程序恢復 |
+| 6 | 3:30–4:00 | Trace + 指標表（含免責聲明停留 5 秒）|
+
+- [ ] **場景 1 第一個錄**——它已經是真的，不依賴任何待建功能
+- [ ] APPROVE 按下後**停 2 秒不說話**
+- [ ] 終端機字體 ≥ 16pt，關閉所有通知
+- [ ] 畫面不得出現 API key、`.env`、個資
+
+### WS6-2 · 剪接上傳（1.5h）· 24:00–01:30
+- [ ] 總長 **≤ 4:00**（評審嚴格計時，超過不看）
+- [ ] 英文字幕
+- [ ] YouTube 公開
+- [ ] **無痕視窗驗證真的可存取**
+
+### 🚦 GATE 3 · 01:30
+**影片已上傳且可公開？**
+❌ → 現有素材直出，**先把 Devpost 送出**。送出後仍可更新影片連結。
+
+---
+
+## WS7 · 提交 ｜ 1.0h ｜ 01:30–02:30
+
+- [ ] Category = **The Fortified Enterprise Fleet**
+- [ ] Project name：`Release Assessment Agent`
+- [ ] Elevator pitch（≤200 字元，主推版）
+- [ ] Project Story：**所有 `<<FILL>>` 換成 `evidence/S10-results.json` 的真實數字**
+- [ ] 明列 Google stack：Gemini 3.5 Flash via ADK · Cloud Run · OpenTelemetry/OpenInference
+- [ ] Repo URL · Live URL · 影片 URL · 架構圖 PNG
+- [ ] **送出**
+
+### 提交後
+- [ ] 確認 Devpost 頁面所有連結可點
+- [ ] 評審期間保持 `--min-instances=1`
+
+---
+
+## 2. 三個停損閘門（總表）
+
+| 時間 | 檢查 | 沒過就做 |
+|---|---|---|
+| **14:30** | 批次跑完並印四類計數 | 佇列縮到 20 筆 |
+| **18:00** | 功能與文件完成 | **停止開發去錄影** |
+| **01:30** | 影片上傳且可公開 | **直出，先送 Devpost** |
+
+---
+
+## 3. 不做（已決定，不再重啟討論）
+
+| 項目 | 原因 |
+|---|---|
+| 雙路徑分歧升級 | 需第二個 LLM evaluator，鏡頭前可能失敗 |
+| 多模態 | 只有 1.5/10 功能存在時不加新方向 |
+| `RemoteA2aAgent` / Google Agent Registry | 22 小時內建不完，改 first-party card |
+| Cloud SQL | SQLite 證據等效，省 IAM 與時間 |
+| 網頁 dashboard | 終端表格足夠，且花俏降低可信度 |
+| S5 human approval REST | 核准包是「顯示」，不需真的回寫 |
+| 備忘錄 pipeline | 已決定 No-Go |
+
+---
+
+## 4. 不可妥協的三條紅線
+
+1. **畫面上每個數字、ID、JSON key 都能在 `evidence/` 或 `data/` 搜到。** 到最後一刻都不放寬。
+2. **估計值標明為估計。** 免責聲明由常數組出，結構上不可省略。
+3. **OWASP 只宣稱 ASI01 / ASI03**，不宣稱法遵認證，不使用真實資料。
+
+---
+
+## 5. 一句話
+
+> 八個 spike 已經證明「框架能不能承載」。
+> 接下來 22 小時要證明的是「它能不能被拍出來」。
+>
+> **18:00 之後，任何功能都不值得用影片的時間去換。**
