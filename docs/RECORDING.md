@@ -73,20 +73,36 @@ python -m scripts.demo_recorder.player --segment S2 --calibrate
 邊聽 mp3 邊看碼表，把想要的分鏡秒數記下來，微調 `scripts/demo_recorder/scenes.py`
 裡對應段的 `S2_ORIG` 等字典（一次性工作，調好之後不用再動）。
 
-## 4. 正式錄
+## 4. 正式錄 —— 分兩段錄，S6 錄壞不用連累前面
+
+**S1~S5 跟 S6 是兩支各自獨立的影片檔**，錄完再接起來。壞處是多一個 concat
+步驟；好處是 S6 手滑重來，`take-s1s5.mov` 完全不受影響，不用整支重錄。
+
+### 4a. 錄 S1~S5
 
 ```bash
-python -m scripts.demo_recorder.player
+python -m scripts.demo_recorder.player --part1
 ```
 
-driver 自己開 `screencapture -v`、播六段旁白到你的耳機對點、依序真跑 S1~S5 的畫面。
-**你唯一要做的事**：
+driver 自己開 `screencapture -v`、播五段旁白到你的耳機對點、依序真跑 S1~S5 的畫面，
+錄完自己停，寫出 `docs/assets/takes/take-s1s5.mov`。**全程不用碰鍵盤。**
 
-1. 聽到「S1..S5 done. Manual S6 now」提示，切到瀏覽器，按 Enter 記錄時間點
-2. 照 S6 分鏡手動操作（下面「S6 手動步驟」）
-3. 結束卡念完停 2 秒，錄影會由 `-V` 自己在時限到時停止（用 `--no-capture` 則自己按停止）
+> ⚠️ **這段裡的 S4 resolve 是真的寫 `data/approvals.db`**，不是重播。若要重錄
+> 這段（不只 S6），第二次跑會因為那筆 approval 已經是 `APPROVED` 而噴錯。
+> 重跑前先 `rm data/approvals.db` 再重跑一次 `python -m scripts.demo_recorder.prerun`
+> （它會自動重建乾淨的 PENDING 狀態），或直接接受重跑一次 prerun 的 7 分鐘代價。
 
-### S6 手動步驟（唯一要手動的 32 秒）
+### 4b. 錄 S6（可以重錄任意次）
+
+```bash
+python -m scripts.demo_recorder.player --part6
+```
+
+driver 開一段獨立的錄影，給你 45 秒操作瀏覽器，時間到自動停，寫出
+`docs/assets/takes/take-s6.mov`。**看回放不滿意就再跑一次這行**，
+`take-s1s5.mov` 不會被動到。
+
+### S6 手動步驟（唯一要手動的部分）
 
 1. 分頁 1：`https://assurance-agent-6eqpujphvq-de.a.run.app/.well-known/agent.json`，
    **網址列的 `.run.app` 要清楚入鏡**
@@ -108,20 +124,27 @@ driver 自己開 `screencapture -v`、播六段旁白到你的耳機對點、依
    ```
 4. 結束卡：專案名 + GitHub URL + `#AllThingsAgenticHackathon`，**停 2 秒**
 
-> 這一撈是撈 prerun 暖身請求或步驟 4 錄影時 S3 那次真實請求都可以 —— 兩次都是
+> 這一撈是撈 prerun 暖身請求或 4a 錄影時 S3 那次真實請求都可以 —— 兩次都是
 > 真的打 `HardPolicyGate`，log 內容一樣。暖身請求先送過，ingestion lag 不會卡住你。
 
-## 5. Mux 音軌
+## 5. 接起來 + Mux 音軌
+
+```bash
+python -m scripts.demo_recorder.player --concat
+```
+
+把 `take-s1s5.mov` 跟 `take-s6.mov` 接成一支 `take.mov`，順便重算 S6 在整支片裡
+的真實 offset，寫出新的 `mux.sh`。**每次重錄完 S6，都要重跑這行**才會接到最新的那一版。
 
 ```bash
 bash docs/assets/takes/mux.sh
 open docs/assets/takes/final.mov   # 無痕視窗確認音畫同步、無雜音
 ```
 
-`mux.sh` 是 `player.py` 收工時自動產生的，把 `take.mov` 與六段 mp3 依
-`take-timeline.json` 記錄的真實 offset 貼上去 —— **不用剪接對嘴**。
-S6 那段的 offset 是你在步驟 4 按 Enter 那一刻記下的，其餘五段是 driver 自己
-算出的常數。
+`mux.sh` 把 `take.mov` 與六段 mp3 依 `take-timeline.json` 記錄的真實 offset 貼上去 ——
+**不用剪接對嘴**。S1~S5 那五段的 offset 是 4a 錄影時 driver 自己算出的常數，
+S6 那段的 offset 是 `--concat` 用 `take-s1s5.mov` 的實際長度重新換算出來的，
+不管你重錄 S6 幾次都準。
 
 ---
 
@@ -164,8 +187,9 @@ git push origin main
 
 # 第三部分 · 附錄：全手動備援
 
-driver 或 `screencapture` 出狀況時的備援方案：`player.py` 全部指令加
-`--no-capture` 改用 QuickTime；`prerun.py` 照跑不受影響（它本來就不碰螢幕錄影）。
+driver 或 `screencapture` 出狀況時的備援方案：`--part1` / `--part6` 都加
+`--no-capture` 改用 QuickTime（`--concat` 不錄影，不受影響）；`prerun.py`
+照跑不受影響（它本來就不碰螢幕錄影）。
 若整套 driver 都要放棄，改回逐指令手動操作，指令都在
 `docs/demo-storyboard.md` Part C「拍攝指令總表」（`SHOT-CMD-A/B/Q/MAIN/R4/RESOLVE/VAR`），
 分鏡秒數對照見同檔 Part B。三個終端機分頁（T1 批次、T2 無 key 對照、T3 Cloud Run +
