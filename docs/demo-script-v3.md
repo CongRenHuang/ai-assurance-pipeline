@@ -53,13 +53,17 @@ v1 有五處宣稱了 repo 裡不存在的東西。這不是數字誤差，是**
 
 ---
 
-## Part 1 — 拍攝前的三個修正（GATE 制）
+## Part 1 — 拍攝前的三個修正（✅ 全部完成，2026-08-31 23:00）
+
+> **三項皆已完成、驗證、commit。** FIX-2 已部署為 `assurance-agent-00006-w8l`
+> （project `ai-nursing-simulator`），live R4 回應實測帶 `trajectory`。
+> **下面各段標「未做 X 的退路」都不必走了**，保留只為記錄當時的判斷。
 
 | | 內容 | 行數 | 收益 | 需重新部署 |
 |---|---|---|---|---|
-| **FIX-1** | `plan_for()` 回傳 `(plan, fallback)`，batch trajectory 寫真值 | ~5 | 修掉 BUG-1。**建議必做**，這是證據正確性不是美觀 | 否（batch 在本機） |
-| **FIX-2** | `hard_policy.py` 回傳的 dict 加 `"trajectory": ["hard_policy_gate","hard_block"]` | 1 | 2:00 那一鏡可在**單一 live JSON** 裡看到三行，不必切兩個來源 | **是** |
-| **FIX-3** | `batch.py` 加 `--packet ASMT-088` | ~8 | 2:25 能指定 item，不必接受 ASMT-002 | 否 |
+| ✅ **FIX-1** | `plan_for()` 回傳 `(plan, fallback)`，batch trajectory 寫真值 | ~5 | 修掉 BUG-1 | 否 — **已完成**，無 key 97/97 `true`、帶 key 97/97 `false` |
+| ✅ **FIX-2** | `hard_policy.py` 回傳的 dict 加 `"trajectory": ["hard_policy_gate","hard_block"]` | 1 | 2:00 單一 live JSON 三行到底 | **已部署** `00006-w8l`，live 冒煙通過 |
+| ✅ **FIX-3** | `batch.py` 加 `--packet ASMT-088` | ~8 | 2:25 能指定 item | 否 — **已完成**，另加固：證據寫入移到渲染之前 |
 
 **GATE：任一項改壞就 `git checkout` 該檔，用現有版本拍。** 距截止只有一個晚上，程式碼不是這支影片的瓶頸。
 
@@ -160,7 +164,7 @@ GOOGLE_API_KEY=invalid python -m assurance.batch --queue data/queue.jsonl --dela
 - ⚠️ **v2 的 `["citation_coverage","source_ttl"]` 是憑空的組合**，100 筆裡不存在。ASMT-034 是實測過的（`AUTO`，且 `numeric_claims: false`）
 - 可替換的同類 item：ASMT-050 / ASMT-056 / ASMT-071 / ASMT-077（全部略過 numeric）
 - `planner_reasoning` 是 LLM 當下生成、**沒有存進 evidence**，所以只能現場錄。錄到什麼就用什麼，別預寫字幕
-- 未做 FIX-1 時：**這一鏡只拍 span，不要拍 trajectory**。trajectory 裡的 `fallback` 目前恆為 false（BUG-1）
+- ✅ FIX-1 已完成，**span 與 trajectory 都可以拍**，兩者的 `fallback` 現在一致
 - 🔴 **計數定格直接用終端機原樣**（形如 `A59 S23 H9 B9`），**不要另做寫死 AUTO/SAMPLE 的字卡**——那兩個值逐跑不同，字卡等於把一個非不變量宣稱成事實。要做字卡就只放 `HUMAN 9 · BLOCK 9 · RELEASED 82`
 
 ---
@@ -185,7 +189,7 @@ curl -s -X POST "$SERVICE_URL/run" -H 'Content-Type: application/json' -d '{
   ```
   "decision":  "OVERRIDE_REJECTED"
   "policy_id": "FIN-AI-004"
-  "trajectory": ["hard_policy_gate", "hard_block"]      ← 需 FIX-2
+  "trajectory": ["hard_policy_gate", "hard_block"]      ← ✅ 已在 live 回應裡
   ```
 - 2:05 停在 trajectory 那一行
 
@@ -206,7 +210,7 @@ curl -s -X POST "$SERVICE_URL/run" -H 'Content-Type: application/json' -d '{
 - ★ **送出後必須停 2 秒不說話。** 讓觀眾自己反應過來
 - 最後一句是全片金句，念慢
 - ⚠️ **批次裡沒有 R4 item。** 批次的 9 筆 BLOCK 是 FIN-AI-005 / 011，R4 覆寫只存在於 live 服務。v2 的「zoom 到 BLOCK 其中一筆，接著切到 live」會讓人以為是同一筆——**旁白要明確說「now the hard case, on the live service」**，這是誠信問題不是剪接問題
-- **未做 FIX-2 的退路：** live 回應只有 `decision` + `policy_id`。trajectory 要另外切到 `evidence/S6-results.json` 的 `1d_trajectory_recorded`，並在旁白加半句「recorded in the control evidence」。兩個來源要讓觀眾看得出來是兩個來源
+- ~~未做 FIX-2 的退路~~ **不必走了。** `00006-w8l` 的 live 回應已同時帶 `decision` / `policy_id` / `trajectory`，三行在同一個 JSON 裡
 
 ---
 
@@ -214,7 +218,7 @@ curl -s -X POST "$SERVICE_URL/run" -H 'Content-Type: application/json' -d '{
 
 **實際指令**
 ```bash
-python -m assurance.batch --queue data/queue.jsonl --packet ASMT-088   # 需 FIX-3
+python -m assurance.batch --queue data/queue.jsonl --packet ASMT-088   # ✅ FIX-3 已完成
 python -m assurance.resolve ASMT-088 --decision APPROVE --reviewer dennis
 ```
 
@@ -255,7 +259,7 @@ python -m assurance.resolve ASMT-088 --decision APPROVE --reviewer dennis
 **備註**
 - ✅ ASMT-088 的每個數字都已對過原始資料：`data_class=PUBLIC`、claimed 3 筆／cited 2 筆 → `0.667` → WARN、`FIN-AI-008`、`R3`。**v2 這些數字是對的**，錯的只有「只列 4 步」
 - ⚠️ v2 寫的 trajectory 第 2 行 `selected=[...]` 是省略號。**實際會展開整個 list**，版面比 v2 想像的寬，終端機要拉夠寬
-- **未做 FIX-3 的退路：** 改拍 **ASMT-002**（佇列中第一個 HUMAN_REVIEW，`batch.py` 會自動渲染它）。旁白不必改，把 ID 換掉即可
+- **備援（非退路）：** 若某次跑 ASMT-088 落到 AUTO/SAMPLE（planner 逐跑不同），`--packet` 會印提示而非報錯，證據照寫；改拍 **ASMT-002** 即可，旁白換 ID 就好
 - 用第二個終端機跑 `resolve` 是**加分畫面**：它證明 approval store 跨行程存活，而 v2 把 S5 標成「不做」時低估了自己已經有的東西
 - 核准包**不要做成漂亮網頁**。純文字終端機就好——花俏會讓評審懷疑內容
 

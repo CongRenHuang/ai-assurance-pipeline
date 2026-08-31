@@ -1,3 +1,7 @@
+> ⚠️ **SUPERSEDED — 已由 `docs/demo-script-v3.md` 取代（2026-08-31）。**
+> 本檔的 AUTO/SAMPLE 計數與 Cloud Run revision 皆已過期，且其中數處畫面
+> 指示與實作不符（見 v3 的 Part 0 稽核表）。保留為開發過程紀錄，**不要照著拍**。
+
 # 4 分鐘 Demo 影片逐字腳本
 
 **專案：** Release Assessment Agent

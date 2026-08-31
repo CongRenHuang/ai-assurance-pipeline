@@ -11,10 +11,10 @@
 |---|---|
 | Repo | `https://github.com/CongRenHuang/ai-assurance-pipeline` |
 | Live URL | `https://assurance-agent-6eqpujphvq-de.a.run.app` |
-| Cloud Run Revision | `assurance-agent-00005-qnc` (`--min-instances=1`, `data-residency=asia-east1`) |
+| Cloud Run Revision | `assurance-agent-00006-w8l` (`--min-instances=1`, `data-residency=asia-east1`), project `ai-nursing-simulator` |
 | Real Assessment IDs | `ASMT-001`, `ASMT-R4-777`, `ASMT-R4-LIVE` (S8); `ASMT-001`~`ASMT-100` (Batch) |
 | Policy IDs | FIN-AI-000~004 (source/egress/override) · FIN-AI-005~010 (router) · FIN-AI-011 (sovereignty) |
-| Test Results | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 · S10 Planner Concordance 100% |
+| Test Results | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 · S10 4/4 (Planner Concordance 100%, incl. fallback-flag propagation) |
 | Batch Distribution | `H9 B9` invariant, `82 released` invariant (verified identical by id across 3 runs, incl. one with no API key) — AUTO/SAMPLE split within the 82 varies by run (`54/28`, `43/39`, `59/23`); 18 items require human touch, 240 → 43.2 min |
 | Statutory Basis | Taiwan Artificial Intelligence Basic Act passed 3rd reading 2025-12-23; Article 18 2-year mandate |
 
@@ -278,7 +278,7 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 | LICENSE (Apache-2.0) | ✅ |
 | Repository is Public | ✅ |
 | Category selected: **The Taskmaster** | ⬜ WS8 |
-| Project URL = Cloud Run Live URL | ✅ `assurance-agent-00005-qnc` |
+| Project URL = Cloud Run Live URL | ✅ `assurance-agent-00006-w8l` |
 | Cloud Run `--min-instances=1` | ✅ WS6-1 |
 | `/.well-known/agent.json` accessible | ✅ WS6-1 (200 OK) |
 | README first 10 lines clear and readable | ✅ WS6-2 |
