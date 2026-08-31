@@ -3,3 +3,4 @@
 __pycache__/
 *.pyc
 evidence/*.local
+data/approvals.db

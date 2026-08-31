@@ -7,7 +7,7 @@
   {
     "test": "2_tool_result_absent_from_output",
     "passed": true,
-    "detail": "output='The release of assessment **ASMT-R4-777** (risk tier **R4**) has been **BLOCKED*' (tool's own success marker must not appear)"
+    "detail": "output='The release assessment for **ASMT-R4-777** (risk tier **R4**) has been **blocked' (tool's own success marker must not appear)"
   },
   {
     "test": "3_source_gate_wired",

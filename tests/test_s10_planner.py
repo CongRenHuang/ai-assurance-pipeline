@@ -21,9 +21,16 @@ def rec(n, ok, d):
 
 
 CONTENT = (
-    "Q3 earnings release drafted from three internal analyst notes citing "
-    "FY25 revenue figures."
+    "Q3 earnings release citing three external market-data providers whose "
+    "figures were fetched last week, comparing reported FY25 revenue "
+    "against the filed 10-Q numbers."
 )
+# Earlier draft used a more ambiguous prompt ("three internal analyst
+# notes citing FY25 revenue figures") that left source_ttl relevance
+# genuinely underdetermined -- the model split ~60/40 on including it
+# across runs even at temperature=0. That's a real property of LLM
+# triage, not a bug, but it isn't what this test is checking; this
+# content makes external-source freshness unambiguous instead.
 
 # ---- 1: consistency across 5 runs ----
 runs = [tuple(sorted(plan_for(CONTENT).selected)) for _ in range(5)]

@@ -1,0 +1,5163 @@
+{
+  "total": 100,
+  "counts": {
+    "AUTO": 39,
+    "SAMPLE": 18,
+    "HUMAN_REVIEW": 19,
+    "BLOCK": 24
+  },
+  "evidence": [
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.71 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.711
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:53:57.973284+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "INTERNAL"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.5
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:01.678096+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: citation_coverage.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.5
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:07.674516+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:12.681398+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:17.112028+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.828
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:21.746244+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.917
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:25.791393+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.539
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:29.726384+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.74 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.744
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:33.271889+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:37.127423+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.556
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:41.031153+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:45.689897+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:50.571720+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: citation_coverage.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:55.213416+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:54:59.313440+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.68 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.683
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:03.267813+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.69 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "INTERNAL"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.689
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:07.069732+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.511
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:11.259145+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:14.690876+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:20.803749+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:27.105885+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.71 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.711
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:31.451906+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: content_integrity.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.944
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:35.639581+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:41.065196+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:44.919745+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.73 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.733
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:49.299116+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:54.889170+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.9
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:55:59.166601+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.77 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.767
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:03.412101+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: content_integrity.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "WARN",
+          "score": 0.6
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.856
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:08.242006+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:12.948101+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:16.953574+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.817
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:20.721536+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.76 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.756
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:24.881433+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:29.509468+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:34.505284+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:39.444431+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.55
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:43.163572+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.71 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.706
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:47.525002+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: content_integrity.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.872
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:51.512612+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.69 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.694
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:54.555200+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.828
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:56:59.391422+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.606
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:04.616762+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:08.472690+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:14.477430+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.594
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:19.686231+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.544
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:24.809520+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:30.084454+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:34.261028+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:38.715874+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:42.593674+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: content_integrity.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "WARN",
+          "score": 0.6
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.939
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:46.847498+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:51.851391+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:57:56.030963+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:00.917039+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.922
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:06.883528+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:11.993075+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:17.494813+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.73 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.733
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:22.018087+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.983
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:26.498545+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:31.149883+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.67 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.667
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:35.656697+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:39.829070+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:44.416410+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:48.259196+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.71 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.706
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:52.448901+00:00"
+    },
+    {
+      "control_id": "FIN-AI-011",
+      "result": "BLOCK",
+      "detail": "data_class 'SENSITIVE' must not egress externally (sovereignty policy FIN-AI-011).",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "BLOCK",
+          "data_class": "SENSITIVE"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:52.449010+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.944
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:58:56.373426+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.611
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:01.053464+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.572
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:06.086017+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: content_integrity.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "FAIL",
+          "score": 0.2
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.994
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:10.609640+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:15.010080+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:19.988595+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.5
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:24.591251+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:30.354180+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.667
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:34.666859+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.73 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.728
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:38.649492+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.5
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:41.890901+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.572
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:48.182612+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:52.445035+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "INTERNAL"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.944
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T03:59:56.237359+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:01.839968+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.70 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.7
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:06.144059+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.72 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.717
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:10.208725+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: citation_coverage.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "INTERNAL"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.667
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.828
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:16.115824+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.572
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:20.166833+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:25.441499+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: citation_coverage.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.667
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:29.126510+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.528
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:33.108597+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.69 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.694
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:37.326339+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:41.281766+00:00"
+    },
+    {
+      "control_id": "FIN-AI-008",
+      "result": "HUMAN_REVIEW",
+      "detail": "Evaluator(s) warned: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "WARN",
+          "score": 0.572
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-008",
+          "route": "HUMAN_REVIEW",
+          "risk_tier": "R3"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:44.190733+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:49.004609+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: citation_coverage.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:53.555737+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: source_ttl.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "WARN",
+          "score": 0.5
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:00:58.968486+00:00"
+    },
+    {
+      "control_id": "FIN-AI-009",
+      "result": "SAMPLE",
+      "detail": "Lowest evaluator score 0.69 < 0.8 -> sampled.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "source_ttl",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.source_ttl",
+          "status": "PASS",
+          "score": 0.694
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-009",
+          "route": "SAMPLE",
+          "risk_tier": "R2"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:01:03.720321+00:00"
+    },
+    {
+      "control_id": "FIN-AI-011",
+      "result": "BLOCK",
+      "detail": "data_class 'SENSITIVE' must not egress externally (sovereignty policy FIN-AI-011).",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "BLOCK",
+          "data_class": "SENSITIVE"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:01:03.720412+00:00"
+    },
+    {
+      "control_id": "FIN-AI-010",
+      "result": "AUTO",
+      "detail": "All evaluators PASS with high confidence.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-010",
+          "route": "AUTO",
+          "risk_tier": "R0"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:01:10.041715+00:00"
+    },
+    {
+      "control_id": "FIN-AI-011",
+      "result": "BLOCK",
+      "detail": "data_class 'SENSITIVE' must not egress externally (sovereignty policy FIN-AI-011).",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "BLOCK",
+          "data_class": "SENSITIVE"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:01:10.041820+00:00"
+    },
+    {
+      "control_id": "FIN-AI-005",
+      "result": "BLOCK",
+      "detail": "Evaluator(s) failed: numeric_claim_check.",
+      "trajectory": [
+        {
+          "step": "policy.sovereignty",
+          "policy_id": "FIN-AI-011",
+          "decision": "ALLOW",
+          "data_class": "PUBLIC"
+        },
+        {
+          "step": "planner",
+          "selected": [
+            "citation_coverage",
+            "content_integrity",
+            "numeric_claim_check"
+          ],
+          "fallback": false
+        },
+        {
+          "step": "eval.citation_coverage",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.content_integrity",
+          "status": "PASS",
+          "score": 1.0
+        },
+        {
+          "step": "eval.numeric_claim_check",
+          "status": "FAIL",
+          "score": 0.0
+        },
+        {
+          "step": "policy.route",
+          "policy_id": "FIN-AI-005",
+          "route": "BLOCK",
+          "risk_tier": "R4"
+        }
+      ],
+      "transformation": {
+        "type": "none",
+        "reversible": null,
+        "note": "v0.1 synthetic data only"
+      },
+      "timestamp": "2026-08-31T04:01:15.054687+00:00"
+    }
+  ]
+}

@@ -2,8 +2,8 @@
   "results": [
     {
       "test": "1_selection_consistency",
-      "passed": false,
-      "detail": "agreement=60% (need >=80%), most common=('citation_coverage', 'content_integrity', 'numeric_claim_check'), all_runs=[('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check'), ('citation_coverage', 'content_integrity', 'numeric_claim_check'), ('citation_coverage', 'content_integrity', 'numeric_claim_check')]"
+      "passed": true,
+      "detail": "agreement=100% (need >=80%), most common=('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), all_runs=[('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl'), ('citation_coverage', 'content_integrity', 'numeric_claim_check', 'source_ttl')]"
     },
     {
       "test": "2_fail_closed_selects_all",

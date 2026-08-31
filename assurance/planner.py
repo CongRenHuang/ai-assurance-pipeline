@@ -64,6 +64,9 @@ def _build_agent() -> LlmAgent:
         model=get_model(),
         instruction=_INSTRUCTION,
         output_schema=EvaluationPlan,
+        # temperature=0 for run-to-run consistency -- this is a triage
+        # decision (which checks to run), not a place where variety helps.
+        generate_content_config=types.GenerateContentConfig(temperature=0.0),
     )
 
 

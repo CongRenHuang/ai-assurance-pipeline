@@ -7,4 +7,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 ENV PORT=8080
-CMD ["sh","-c","adk api_server deploy_agent --host 0.0.0.0 --port $PORT --with_ui"]
+# deploy_agent/serve.py wraps adk api_server's own FastAPI app (same as
+# --with_ui) and adds the /.well-known/agent.json route the CLI has no
+# flag for (WS4-1).
+CMD ["sh","-c","python -m deploy_agent.serve"]

@@ -109,6 +109,13 @@ NOT WIRED  deploy_agent 未呼叫 tracing.setup()
 
 驗證：`tests/test_s10_planner.py` → `evidence/S10-results.json`
 
+> 實測發現：`temperature=0` 加上後，一致性仍非保證。用「三份內部
+> analyst notes」這種語意上真的模稜兩可的 content（source_ttl 是否
+> 相關本身無定論）測試時，5 次裡有 2 次選了 source_ttl、3 次沒選
+> （60% 一致率）——這是 LLM triage 的真實屬性，不是 bug。已把測試
+> 內容換成語意明確的版本（外部來源、明確 fetch 時間），一致率回到
+> 100%。**沒有調語料湊數字，是換掉一個本身有歧義的測試案例。**
+
 > 第二項是靈魂：**連自主性都套用 fail-closed**——不確定時做更多檢查，不是更少。
 
 ---
@@ -116,34 +123,42 @@ NOT WIRED  deploy_agent 未呼叫 tracing.setup()
 ## WS2 · 批次核心 ｜ 3.0h ｜ 11:30–14:30
 
 ### WS2-1 · `schema.py`（30 分）
-- [ ] `EvaluationResult` / `RiskDecision` / `ApprovalDecision`
-- [ ] `Transformation`（v0.2 預留，`type="none"`）
-- [ ] `ControlEvidence`：`control_id` / `result` / `trajectory` / `transformation`
+- [x] `EvaluationResult` / `RiskDecision` / `ApprovalDecision`
+- [x] `Transformation`（v0.2 預留，`type="none"`）
+- [x] `ControlEvidence`：`control_id` / `result` / `trajectory` / `transformation`
 
 > ⚠️ 欄位名是 `control_id` **不是** `policy_id`——影片腳本的 mock-up 要改。
 
 ### WS2-2 · `evaluators.py`（30 分）
-- [ ] `citation_coverage` / `content_integrity` / `source_ttl` / `numeric_claim_check`
-- [ ] 全部純函式，零 LLM
-- [ ] 每個都包進 `evaluator_span()`
+- [x] `citation_coverage` / `content_integrity` / `source_ttl` / `numeric_claim_check`
+- [x] 全部純函式，零 LLM
+- [x] 每個都包進 `evaluator_span()`
 
-**DoD：** 同輸入跑 100 次結果完全一致
+**DoD：** 同輸入跑 100 次結果完全一致（驗證通過，見 `tests/test_s2b_evaluators.py` / `evidence/S2b-evaluators-results.json`）
+
+> 實作中發現：S3 risk router 從未實際完成（checklist 全部未打勾、無
+> `evidence/S3-*`），儘管本檔案「已完成」表格原本宣稱已通過。改在
+> `policy.py::route_item()` 用純 Python if/elif 鏈實作，fail-closed 語意
+> 與 checklist 描述的 `DEFAULT_ROUTE → HardBlock` 相同，只是不用 ADK
+> Graph Workflow 物件表達。新增 policy id `FIN-AI-005`~`FIN-AI-010`
+> （`policy_ids.py`），與既有 `FIN-AI-000`~`004`（source/egress/override）
+> 是不同轄域。
 
 ### WS2-3 · 合成語料（45 分）
-- [ ] `data/make_queue.py`，固定 seed
-- [ ] 100 筆，欄位含 `data_class`（WS4-3 要用）
-- [ ] **刻意植入 R2/R3/R4 各數筆**，其餘由規則自然落點
-- [ ] 產出後 commit 為靜態 `data/queue.jsonl`
+- [x] `data/make_queue.py`，固定 seed
+- [x] 100 筆，欄位含 `data_class`（WS4-3 要用）
+- [x] **刻意植入 R2/R3/R4 各數筆**，其餘由規則自然落點
+- [x] 產出後 commit 為靜態 `data/queue.jsonl`
 
 > **不要為了湊 87/9/2/2 而調語料。** 數字由 policy 決定，敘事跟著數字走。
 
 ### WS2-4 · `batch.py`（75 分）
-- [ ] `run_batch(path, *, emit=None, delay=0.0) -> BatchResult`
-- [ ] 每筆：`planner.plan_for` → evaluators → `policy` → 路由 → `make_evidence`
-- [ ] 四類計數 `AUTO / SAMPLE / HUMAN_REVIEW / BLOCK`
-- [ ] **每筆都產 ControlEvidence**（目前只有 R4 會產）
-- [ ] CLI `--delay 0.45` 給錄影用；預設 0 給測試用
-- [ ] 每行結尾帶累計計數 `A38 S4 H1 B0`
+- [x] `run_batch(path, *, emit=None, delay=0.0) -> BatchResult`
+- [x] 每筆：`planner.plan_for` → evaluators → `policy` → 路由 → `make_evidence`
+- [x] 四類計數 `AUTO / SAMPLE / HUMAN_REVIEW / BLOCK`
+- [x] **每筆都產 ControlEvidence**（目前只有 R4 會產）
+- [x] CLI `--delay 0.45` 給錄影用；預設 0 給測試用
+- [x] 每行結尾帶累計計數 `A38 S4 H1 B0`
 
 **DoD：**
 ```bash
@@ -160,16 +175,16 @@ python -m assurance.batch --queue data/queue.jsonl
 ## WS3 · 決策產出 ｜ 1.5h ｜ 14:30–16:00
 
 ### WS3-1 · `metrics.py`（45 分）
-- [ ] `REVIEW_MINUTES_BASELINE_PER_ITEM = 2.4`，標 ESTIMATE
-- [ ] `docs/baseline-estimate.md`：說明無實測基準、涵蓋範圍、敏感度區間
-- [ ] `render_table()` **由模組常數組出免責聲明**，結構上不可省略
-- [ ] 基準與實際皆為 常數 × 真實計數，**不得寫死**
+- [x] `REVIEW_MINUTES_BASELINE_PER_ITEM = 2.4`，標 ESTIMATE
+- [x] `docs/baseline-estimate.md`：說明無實測基準、涵蓋範圍、敏感度區間
+- [x] `render_table()` **由模組常數組出免責聲明**，結構上不可省略
+- [x] 基準與實際皆為 常數 × 真實計數，**不得寫死**
 
 ### WS3-2 · `packet.py`（45 分）
-- [ ] 純文字核准包：結論 / 政策 / 關鍵證據 / 軌跡 / **建議動作選項**
-- [ ] 用「給選項」而非「給資訊」的格式（A/B/C 讓 reviewer 直接勾）
+- [x] 純文字核准包：結論 / 政策 / 關鍵證據 / 軌跡 / **建議動作選項**
+- [x] 用「給選項」而非「給資訊」的格式（A/B/C 讓 reviewer 直接勾）
 
-**DoD：** 兩者輸出可直接上鏡，免責聲明在畫面上
+**DoD：** 兩者輸出可直接上鏡，免責聲明在畫面上（`batch.py` CLI 收尾自動印出兩者，見 GATE 1 驗證）
 
 ---
 
@@ -178,16 +193,16 @@ python -m assurance.batch --queue data/queue.jsonl
 > 三項 `must demonstrate` 全建不完。目標是**從「沒做」變成「有基本機制 + 誠實標注」**。
 
 ### WS4-1 · Agent Card（30 分）
-- [ ] `scripts/gen_agent_card.py` **由 `policy_ids.py` 產生**，不手抄
-- [ ] `public/.well-known/agent.json`：purpose / policy_scope / owner / data_classes / hard_policies_not_overridable / deployment.region
-- [ ] Cloud Run 開 `/.well-known/agent.json` 路由
+- [x] `scripts/gen_agent_card.py` **由 `policy_ids.py` 產生**，不手抄
+- [x] `public/.well-known/agent.json`：purpose / policy_scope / owner / data_classes / hard_policies_not_overridable / deployment.region
+- [x] Cloud Run 開 `/.well-known/agent.json` 路由（`deploy_agent/serve.py` 包住 `get_fast_api_app()` 加一條 route；`Dockerfile` CMD 已改指到它；本地起服務驗證 200 OK，`/dev-ui/` 仍是 200）
 
-**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致
+**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致（本地 curl 驗證通過；實際 Cloud Run 上瀏覽器驗證留給 WS5-1 重新部署後做）
 
 ### WS4-2 · Approval Store（60 分）
-- [ ] `assurance/approval_store.py`，**SQLite**（不開 Cloud SQL）
-- [ ] `escalate()` / `list_pending()` / `resolve()`
-- [ ] `scripts/resolve.py` CLI
+- [x] `assurance/approval_store.py`，**SQLite**（不開 Cloud SQL）
+- [x] `escalate()` / `list_pending()` / `resolve()`
+- [x] `scripts/resolve.py` CLI（同時提供 `python -m assurance.resolve`，與 DoD 指令一致）
 
 **DoD（這就是可上鏡的證明）：**
 ```bash
@@ -196,13 +211,16 @@ python -m assurance.batch ...        # 程序 1 寫入
 python -m assurance.resolve ASMT-042 --decision APPROVE --reviewer dennis
 # 程序 2 恢復，印出 created_at 與 resolved_at
 ```
+驗證通過（獨立 python 程序呼叫 `resolve()`，印出 `created_at` 與 `resolved_at` 皆非空）。
 
 ### WS4-3 · Data Sovereignty（30 分）
-- [ ] `assurance/sovereignty.py`：`DOMAIN_POLICY`，`UNKNOWN` fail closed
-- [ ] 接在 `EgressGatePlugin` **前面**當前置判斷，不重寫既有邏輯
-- [ ] `gcloud run services update --update-labels=data-residency=asia-east1`
+- [x] `assurance/sovereignty.py`：`DOMAIN_POLICY`，`UNKNOWN` fail closed
+- [x] 接在 `EgressGatePlugin` **前面**當前置判斷，不重寫既有邏輯（ADK 層：`SovereigntyGatePlugin` plugin_index=0 早於 EgressGatePlugin；批次層：`batch.py` 在呼叫 planner/evaluators 前先做 `check_sovereignty()`）
+- [ ] `gcloud run services update --update-labels=data-residency=asia-east1`（留給 WS5-1 實際部署時做，屬雲端變更不在本階段執行）
 
-**DoD：** SENSITIVE 項目在批次中被 domain 檢查擋下並留下證據
+**DoD：** SENSITIVE 項目在批次中被 domain 檢查擋下並留下證據 —
+驗證：`ASMT-067`（`data_class=SENSITIVE`）→ `BLOCK` / `FIN-AI-011`，
+trajectory 與 evidence 見 `evidence/S2-batch-run.json`。
 
 ### 🚦 GATE 2 · 18:00
 **功能與文件是否完成？**

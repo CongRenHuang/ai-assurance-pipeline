@@ -1,0 +1,37 @@
+{
+  "purpose": "Release Assessment Agent: turns AI evidence into defensible release/no-release decisions for financial AI outputs. Not governance (does not define policy boundaries) and not observability (does not merely produce signals) -- this is the decision layer.",
+  "policy_scope": {
+    "owasp_asi_coverage": [
+      "ASI01",
+      "ASI03"
+    ],
+    "note": "Deliberately narrow: ASI01 (Agent Goal Hijack) via the S1 prompt-injection test, ASI03 (Identity & Privilege Abuse) via the S6 override-rejection test. No broader OWASP ASI Top 10 or regulatory-compliance claim is made."
+  },
+  "owner": "CongRenHuang",
+  "data_classes": [
+    "INTERNAL",
+    "PUBLIC",
+    "SENSITIVE"
+  ],
+  "hard_policies_not_overridable": [
+    "FIN-AI-004"
+  ],
+  "enforces": [
+    "FIN-AI-000",
+    "FIN-AI-001",
+    "FIN-AI-002",
+    "FIN-AI-003",
+    "FIN-AI-004",
+    "FIN-AI-005",
+    "FIN-AI-006",
+    "FIN-AI-007",
+    "FIN-AI-008",
+    "FIN-AI-009",
+    "FIN-AI-010",
+    "FIN-AI-011"
+  ],
+  "deployment": {
+    "region": "asia-east1",
+    "platform": "Cloud Run"
+  }
+}

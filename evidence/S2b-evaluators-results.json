@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "test": "1_100_runs_identical",
+      "passed": true,
+      "detail": "unique signatures=1 (need 1)"
+    },
+    {
+      "test": "2_unknown_data_class_fails_closed",
+      "passed": true,
+      "detail": "route=BLOCK risk_tier=R4"
+    }
+  ]
+}
