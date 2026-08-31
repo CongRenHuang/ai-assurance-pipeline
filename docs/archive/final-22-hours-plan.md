@@ -1,7 +1,7 @@
 # 衝刺計畫書 — Final 22 Hours
 
 **專案：** Release Assessment Agent
-**賽道：** Fortified Enterprise Fleet
+**賽道：** The Taskmaster（8/31 由 Fortified Enterprise Fleet 切換）
 **交件：** 2026-09-01 08:00（台北）
 **Repo：** `github.com/CongRenHuang/ai-assurance-pipeline`
 **Live：** `https://assurance-agent-6eqpujphvq-de.a.run.app`
@@ -50,18 +50,24 @@ NOT WIRED  deploy_agent 未呼叫 tracing.setup()
 | **WS2** | 批次核心 | 3.0h | `schema/evaluators/batch.py`、語料 | WS3, WS5 |
 | **WS3** | 決策產出 | 1.5h | `metrics.py`、`packet.py` | WS5 |
 | **WS4** | Fortified 三項 | 2.0h | card / store / sovereignty | — |
-| **WS5** | 語料校正與重跑 ★ | 1.0h | 修正 TTL 參數、重生 evidence | WS6, WS8 |
+| **WS5** | 語料校正與重跑 ★ | 1.0h | 修正 TTL 參數、重生 evidence | WS6, WS9 |
 | **WS6** | 部署與文件 | 2.0h | 重新部署、README、架構圖 | WS7 |
-| **WS7** | 影片 | 5.5h | 錄影、剪接、上傳 | WS8 |
-| **WS8** | 提交 | 1.0h | Devpost | — |
-| | **合計** | **17.5h** | | |
+| **WS7** | 腳本校正與證據修正 ★ | 1.5h | `demo-script-v3.md`、FIX-1/2/3 | WS8 |
+| **WS8** | 影片（重錄） | 5.0h | 錄影、剪接、上傳 | WS9 |
+| **WS9** | 提交 | 1.0h | Devpost | — |
+| | **合計** | **18.5h** | | |
 
-**22 小時 − 17.5 小時 = 4.5 小時緩衝**（含睡眠）。
+**22 小時 − 18.5 小時 = 3.5 小時緩衝**（含睡眠）。
 
 > WS5 是 8/31 實查後新增的。`evidence/S2-batch-run.json` 的分流分佈
 > （A39 S18 H19 B24）與敘事嚴重不符，根因已定位為語料產生器的參數
 > bug。**它必須排在 WS6 重新部署之前**——因為重跑會覆寫 evidence，
 > 而 Devpost 與影片的所有數字都來自那份 evidence。順序顛倒就要重來。
+
+> WS7 是 8/31 夜間新增的，理由與 WS5 完全同型：**不是新功能，是修正既有
+> 產出的正確性，且必須排在下游之前。** 第一次錄影用的是 v1 腳本，其中
+> 「雙路徑交叉比對」等五處宣稱了 repo 裡不存在的功能；不先把腳本與程式碼
+> 對齊就重錄，只是把同一個錯再錄一次。
 
 ---
 
@@ -345,6 +351,10 @@ random items are clean by default; planted samples are unaffected.
 > 「修 bug 的 commit」和「調數字的 commit」在外觀上幾乎一樣，
 > 差別只在有沒有把理由留下來。
 
+> ⚠️ 上面這段 commit message 停在 `75d`，是第一次修正時寫的。最終值是
+> `55`（見 WS5-3 的修正說明）。範例保留原樣以呈現當下的判斷，實際 commit
+> 已是兩個：`3d55863`（110→75）與 `e7b7876`（75→55，補 WARN 線）。
+
 ### WS5-5 · 停手條件（自我約束）
 
 > 改完跑一次就結束。**如果發現自己在反覆微調 `max_age_days` 直到
@@ -355,7 +365,7 @@ random items are clean by default; planted samples are unaffected.
 - [x] 四類計數總和 == 100，四類皆 > 0（`A54 S28 H9 B9`）
 - [x] BLOCK 的每一筆都能對應到 `make_r4_item` 或 SENSITIVE 植入（逐筆核對 9 筆：6 筆 evaluator FAIL + 3 筆 SENSITIVE，無 stray `source_ttl`；6 筆中 1 筆為隨機語料巧合觸發的真實 FAIL，非 bug）
 - [x] `evidence/S2-batch-run.json` 與 `data/queue.jsonl` 同一次產生
-- [ ] 影片腳本與 Devpost 草稿的 `<<FILL>>` 數字**全部改用新證據**（留待 WS7/WS8）
+- [ ] 影片腳本與 Devpost 草稿的 `<<FILL>>` 數字**全部改用新證據**（留待 WS8/WS9）
 
 ### 🚦 GATE 2.5 · 19:00
 **新分佈是否讓「人只需看少數幾筆」的敘事成立？**
@@ -404,44 +414,169 @@ WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊�
 
 ---
 
-## WS7 · 影片 ｜ 5.5h ｜ 21:00–02:30
+## WS7 · 腳本校正與證據修正 ★ ｜ 1.5h ｜ 21:00–22:30
+
+> **這一段是 8/31 夜間新增的，且必須在 WS8 重錄之前完成。**
+> 第一支影片是照 v1 腳本（8/21）錄的，而 v1 寫於功能尚未建成時。
+> 不先對齊就重錄，等於把同一個錯再錄一次。
+
+### WS7-0 · 稽核結果（逐鏡實查，非推測）
+
+完整對照表見 **`docs/demo-script-v3.md`**。摘要：
+
+**v1 有五處宣稱了 repo 裡不存在的東西**——不是數字誤差，是能力宣稱：
+
+| v1 內容 | repo 事實 |
+|---|---|
+| 「checked twice… deterministic and model-based… when they disagree it escalates」 | **從未實作。** Devpost §3 已聲明 model-based evaluator 是 deferred |
+| `source_governance` evaluator | 不存在。實際四個：`citation_coverage` / `content_integrity` / `source_ttl` / `numeric_claim_check` |
+| `AUTO 87 · SAMPLE 9 · HUMAN 2 · BLOCK 2` | `54 / 28 / 9 / 9` |
+| `240 → 18` 分鐘 ＋ `Compute cost $X → $Y` | 實際 `240 → 43.2`；成本量測從未實作 |
+| `"result": "OVERRIDE_REJECTED"` | live 回應的 key 是 `"decision"` |
+
+> 第一列單獨一項就足以重錄。評審若比對影片與 Devpost §3，
+> 讀到的不是疏漏，是造假。
+
+**v2 另有七處與實作不符**，其中三處會直接讓某一鏡拍不出來：
+
+- 1:00 的 `["citation_coverage","source_ttl"]` **在 100 筆裡從未出現**（實際：62× 四項全跑、30× 略過 `source_ttl`、5× 略過 `numeric_claim_check`）→ 改用 **ASMT-034**
+- 2:00 的 `"trajectory"` **不在 live 回應裡**，只存在於 in-process `CONTROL_EVIDENCE` 與 `evidence/S6-results.json` → FIX-2
+- 3:52 的「trace viewer」**不存在**（`use_otlp=False` → ConsoleSpanExporter → stdout）→ 改拍 Cloud Logging
+
+### WS7-1 · FIX-1 · planner fallback 寫進 trajectory（20 分）★ 必做
+
+`planner.py::plan_for()` 內部拿到了 `fallback` 旗標、寫進 span，但**回傳時丟掉**；
+`batch.py` 因此硬寫 `{"step": "planner", ..., "fallback": False}`。
+
+- [x] `plan_for()` 改回傳 `tuple[EvaluationPlan, bool]`
+- [x] `batch.py` 接收並寫入真值
+- [x] `tests/test_s10_planner.py` 補一條 `2c_fallback_flag_propagates_to_trajectory`（PASS）
+
+**為什麼是必做，不是美觀：** 評審照 README 的「**No API key?** The batch still
+runs end-to-end」跑一次，會拿到 100 筆 ControlEvidence，每一筆 trajectory 都說
+`fallback: false`，而同一批的 planner reasoning 說 `fallback: planner failed(...)`。
+**證據自相矛盾，而且矛盾的正是影片第二強的賣點。** 也直接違反紅線第 1 條。
+
+**DoD：達成。** 無 key 跑：97 筆 planner 步驟 `fallback` 全為 `True`；
+帶 key 跑：全為 `False`。兩個方向都驗過，不是只驗成功路徑。
+
+### WS7-2 · FIX-2 · hard policy 回傳帶 trajectory（30 分）
+
+- [x] `hard_policy.py` 的回傳 dict 加 `"trajectory": ["hard_policy_gate", "hard_block"]`
+- [x] `tests/test_s6_override.py` **PASS** —— 它正是覆蓋 `HardPolicyGate` 的那支，
+      改完必須綠過才可部署（斷言讀的是 `CONTROL_EVIDENCE`，非回傳 dict，故未受影響）
+- [ ] `gcloud run deploy --source . --region=asia-east1 --min-instances=1` ← **唯一未完成項**
+- [ ] 冒煙：live R4 請求的 functionResponse 同時有 `decision` / `policy_id` / `trajectory`
+- [ ] 保留前一版供回滾
+
+**收益：** 2:00 那一鏡從「切兩個來源」變成「單一 live JSON 三行到底」。
+**代價：** 這是唯一需要重新部署的項目。部署失敗就回滾，走 v3 分鏡 S3 的退路。
+
+### WS7-3 · FIX-3 · `batch.py --packet <id>`（15 分）
+
+- [x] 加 `--packet` 參數，指定要渲染哪一筆的核准包
+- [x] 預設行為不變（第一個 HUMAN_REVIEW/BLOCK）
+- [x] **額外加固：** 證據寫入移到核准包渲染**之前**。原順序是先 `render_packet()`
+      再 `write_text()`，而 `render_packet` 對非 HUMAN_REVIEW/BLOCK 會拋 `ValueError`
+      ——item 的路由由 LLM planner 間接決定、逐次不保證，一次例外就會把整批
+      7 分鐘的跑丟掉。路由不符現在只印提示，證據照寫。
+
+**不做的退路：** 改拍 **ASMT-002**（佇列中第一個 HUMAN_REVIEW，`batch.py` 本來就會自動渲染）。
+旁白不必改，換 ID 即可。
+
+### WS7-4 · 重跑驗證（15 分）
+
+- [!] `python -m assurance.batch --queue data/queue.jsonl` → 實得 **`A59 S23 H9 B9`**，
+      **不是 `A54 S28`**。→ 這條 DoD 本身建立在錯誤前提上，見下方
+- [x] `tests/` S6 / S1 / S10 / S2 / S2b / S9 全綠（S6 是 FIX-2 的覆蓋測試）
+- [x] `evidence/S2-batch-run.json` 與 `data/queue.jsonl` 同一次產生
+- [x] FIX-1~3 皆未動 `evaluators.py` 門檻或 `policy.py` 路由（diff 可查）
+
+> ⚠️ **三個 FIX 都不得改動 `evaluators.py` 的門檻或 `policy.py` 的路由。**
+> 一旦計數變了，README、架構圖、Devpost 全部要重來，而現在沒有那個時間。
+
+> 🔴 **這條 DoD 沒過，而且沒過的方式比過了更有價值。**
+> 計數確實變了——但**不是 FIX 造成的**。planner 是 LLM，逐次選擇不同，
+> 而 `SAMPLE` 的門檻 `min_score < 0.8` 取決於跑了哪些 evaluator。
+> 三次獨立跑（含一次 planner 完全停擺）：
+>
+> ```
+> A54 S28 H9 B9   ← 先前 committed
+> A43 S39 H9 B9   ← 無 key，fail-closed 全跑
+> A59 S23 H9 B9   ← 本次帶 key
+> ```
+>
+> 以 **item ID** 逐一比對後：HUMAN_REVIEW 是**同樣那 9 筆**、BLOCK 是**同樣那 9 筆**、
+> AUTO∪SAMPLE 是**同樣那 82 筆**——三次全同。會動的只有 AUTO/SAMPLE 的界線，
+> 而兩者都是放行，SAMPLE 只是抽樣稽核。
+>
+> **意義：** LLM 的變異被關在一個不是放行決策的邊界裡。它改得動「抽多少來查」，
+> 改不動「誰被擋下」與「誰要給人看」。這正是本專案的中心主張，而且是意外測出來的。
+>
+> **後果：** README 的「Counts are reproducible」與指標卡的 `54/28` 領頭
+> **現在是錯的宣稱**——評審跑一次就會對不上。處理方式見 **WS8**。
+
+### WS7-5 · 停手條件（自我約束）
+
+> 任一 FIX 改壞就 `git checkout -- <file>`，用現有版本拍。
+> **不得往 WS8 借時間。** 程式碼不是這支影片的瓶頸——
+> 沒有影片就沒有提交，少一個 FIX 只是某一鏡弱一點。
+
+### 🚦 GATE 3 · 22:30
+**v3 分鏡的每一格畫面，都有一條能跑的指令嗎？**
+❌ → 只保留 FIX-1，其餘退回 v3 分鏡各段標好的退路，**立刻進 WS8**。
+
+**結果：PASS（附一項未結）。** FIX-1 / FIX-3 完成並雙向驗證；FIX-2 程式碼完成、
+`test_s6_override` 綠過，**但尚未部署**——S3 那一鏡在部署完成前仍走雙來源退路。
+WS7-4 意外測出 planner 變異，衍生出 WS8。
+
+---
+
+## WS8 · 影片（重錄） ｜ 5.0h ｜ 22:30–03:30
 
 > **自己配音，不用 AI 語音。** 評審明說看重 energy。
+> **逐字腳本與每一鏡的實際指令見 `docs/demo-script-v3.md`。** 本節只列時程與檢查項。
 
-### WS7-1 · 錄影（4.0h）· 21:00–01:00
+### WS8-1 · 錄影（3.5h）· 22:30–02:00
 
-**★ 場景順序已依評審回饋調整——R4 移到冷開場**
+**★ 場景順序：問題先行。** 舊版曾寫「R4 移到冷開場」，但 8/31 的腳本
+校正已改回問題先行——R4 放在 1:25，觀眾已經知道系統在幹什麼，那一拒才有重量。
 
-| 段落 | 時間 | 內容 |
-|---|---|---|
-| 1 | 0:00–0:30 | **冷開場：按下 APPROVE → `OVERRIDE_REJECTED`**（Cloud Run 實跑）|
-| 2 | 0:30–1:15 | 稽核週場景 + 法規時程 |
-| 3 | 1:15–2:00 | 架構飛掠 + **planner 推理鏈上鏡** |
-| 4 | 2:00–3:00 | 批次實跑 + **GCP Console 畫面** |
-| 5 | 3:00–3:30 | 核准包 + approval store 跨程序恢復 |
-| 6 | 3:30–4:00 | Trace + 指標表（含免責聲明停留 5 秒）|
+| 段落 | 時間 | 內容 | 旁白字數 |
+|---|---|---|---|
+| S1 | 0:00–0:30 | 問題與佇列（`wc -l` + `head \| jq`）| 63 |
+| S2 | 0:30–1:25 | 自主分流 + **planner fail-closed**（ASMT-034 + 失效 key 對照）| 105 |
+| S3 | 1:25–2:10 | **R4 不可覆寫**（live Cloud Run 實跑）| 110 |
+| S4 | 2:10–2:55 | 核准包 ASMT-088 + **跨行程 `resolve`** | 85 |
+| S5 | 2:55–3:30 | 摩擦力數字 + 誠實聲明 | 90 |
+| S6 | 3:30–4:00 | 雲端實跑 + **Cloud Logging guardrail span** | 75 |
 
-- [ ] **場景 1 第一個錄**——它已經是真的，不依賴任何待建功能
-- [ ] 場景 4（批次實跑）**必須用 WS5 重跑後的語料**，不可用舊錄好的畫面
-- [ ] APPROVE 按下後**停 2 秒不說話**
-- [ ] 終端機字體 ≥ 16pt，關閉所有通知
+旁白合計 **≈ 528 words**（140 wpm ≈ 3:46，留 14 秒給停頓）。超時砍字，不加速。
+
+- [ ] **S3 第一個錄**——它已經是真的，不依賴任何 FIX
+- [ ] S2 需要**兩個終端機**：一個正常、一個 `GOOGLE_API_KEY=invalid`
+- [ ] 所有批次畫面必須用 WS5 重跑後的語料，**不可沿用第一次錄影的素材**
+- [ ] S3 送出 R4 請求後**停 2 秒不說話**
+- [ ] S3 旁白要明確說「on the live service」——批次的 9 筆 BLOCK 是 FIN-AI-005/011，**批次裡沒有 R4 item**，不可讓兩者混為一談
+- [ ] S5 免責聲明停留 ≥ 5 秒且旁白念出來；**兩個 82 分開講**，時間那句只給絕對值不給百分比
+- [ ] 終端機字體 ≥ 16pt、**寬度 ≥ 100 字元**（S5 免責聲明需要），關閉所有通知
 - [ ] 畫面不得出現 API key、`.env`、個資
 
-### WS7-2 · 剪接上傳（1.5h）· 01:00–02:30
+### WS8-2 · 剪接上傳（1.5h）· 02:00–03:30
 - [ ] 總長 **≤ 4:00**（評審嚴格計時，超過不看）
 - [ ] 英文字幕
 - [ ] YouTube 公開
 - [ ] **無痕視窗驗證真的可存取**
 
-### 🚦 GATE 3 · 02:30
+### 🚦 GATE 4 · 03:30
 **影片已上傳且可公開？**
 ❌ → 現有素材直出，**先把 Devpost 送出**。送出後仍可更新影片連結。
 
 ---
 
-## WS8 · 提交 ｜ 1.0h ｜ 02:30–03:30
+## WS9 · 提交 ｜ 1.0h ｜ 03:30–04:30
 
-- [ ] Category = **The Fortified Enterprise Fleet**
+- [ ] Category = **The Taskmaster**（8/31 切換，不是 Fortified Enterprise Fleet）
 - [ ] Project name：`Release Assessment Agent`
 - [ ] Elevator pitch（≤200 字元，主推版）
 - [ ] Project Story：**所有 `<<FILL>>` 換成 WS5 重跑後的 `evidence/S2-batch-run.json`
@@ -463,7 +598,8 @@ WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊�
 | **14:30** | 批次跑完並印四類計數 | 佇列縮到 20 筆 |
 | **18:00** | 功能完成 | **停止新功能開發** |
 | **19:00** | 新分佈讓敘事成立 | 恢復 110，改壓力測試敘事 |
-| **02:30** | 影片上傳且可公開 | **直出，先送 Devpost** |
+| **22:30** | 腳本每一鏡都有可跑的指令 | 只留 FIX-1，其餘走退路，立刻進 WS8 |
+| **03:30** | 影片上傳且可公開 | **直出，先送 Devpost** |
 
 ---
 
@@ -471,12 +607,12 @@ WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊�
 
 | 項目 | 原因 |
 |---|---|
-| 雙路徑分歧升級 | 需第二個 LLM evaluator，鏡頭前可能失敗 |
+| 雙路徑分歧升級 | 需第二個 LLM evaluator，鏡頭前可能失敗。**⚠️ v1 腳本仍寫著它，第一支影片因此宣稱了不存在的功能——見 WS7-0** |
 | 多模態 | 只有 1.5/10 功能存在時不加新方向 |
 | `RemoteA2aAgent` / Google Agent Registry | 22 小時內建不完，改 first-party card |
 | Cloud SQL | SQLite 證據等效，省 IAM 與時間 |
 | 網頁 dashboard | 終端表格足夠，且花俏降低可信度 |
-| S5 human approval REST | 核准包是「顯示」，不需真的回寫 |
+| S5 human approval REST | 核准包是「顯示」，不需真的回寫。**8/31 更新：** WS4-2 的 `approval_store` + `python -m assurance.resolve` 已能跨行程回寫，v3 分鏡 S4 直接上鏡——不做的只有 REST 端點，不是整個核准流程 |
 | 備忘錄 pipeline | 已決定 No-Go |
 
 ---
@@ -495,3 +631,6 @@ WARN 線，兩者皆對齊 `evaluators.py` 既有門檻，非發明新門檻湊�
 > 接下來 22 小時要證明的是「它能不能被拍出來」。
 >
 > **19:00 之後，任何功能都不值得用影片的時間去換。**
+>
+> **21:00 之後補上的一句：** 拍得出來還不夠，拍出來的每一格
+> 都要對得上 repo。腳本是規格、功能是事實，兩者衝突時改腳本。

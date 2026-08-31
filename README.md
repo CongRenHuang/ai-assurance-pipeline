@@ -182,8 +182,8 @@ running 100 items through it would add LLM cost without adding evidence.
 ## Run locally
 
 ```bash
-# Python 3.14
-uv venv --python 3.14 && source .venv/bin/activate
+# Python 3.13 -- matches the Dockerfile (see Deploy below)
+uv venv --python 3.13 && source .venv/bin/activate
 uv pip install -r requirements.txt
 
 # Gemini API key (planner only -- the pipeline runs fail-closed without it)
