@@ -112,50 +112,52 @@ echo "SID=$SID"
 
 ### 時間預算（已重算，與 v3 的段落界線不同）
 
-一般語速 **140 wpm**。旁白合計 **529 words = 3:47**，加上明確停頓與轉場約 **3:55**，
-留 5 秒安全邊際。
+一般語速 **140 wpm**。旁白**實測** 512 words = 219 秒，加明確停頓 4 秒 = **3:56**，
+留 4 秒安全邊際。
 
-> 🔴 **v3 的段落界線有兩段超時，這裡修正了。**
-> S3 原配 45 秒要塞 110 words（47.1 秒）**再加 2 秒靜默** → 超 4 秒。
-> S5 原配 35 秒要塞 91 words（39.0 秒）→ 超 4 秒。
-> 照 v3 的界線錄一定會爆表，剪接時只能砍畫面。
+> 🔴 **`demo-script-v3.md` 標的字數有兩處不準，這裡以實際重數為準。**
+> 最要緊的是 **S5**：它在 WS8 重寫過，實際 **109 words**（文件仍寫 91），
+> 需要 46.7 秒。餘裕已從其他五段挪過來，S5 從 40 秒放寬到 **49 秒**。
+> **S5 是唯一沒有餘裕的一段** —— 開始前看一眼碼表。
 
-| 段 | 起訖 | 長度 | 旁白字數 | 語速 | 明確停頓 |
-|---|---|---|---|---|---|
-| S1 | 0:00–0:28 | 28s | 63 | 135 wpm | — |
-| S2 | 0:28–1:14 | 46s | 105 | 137 wpm | "not less" 後 1 拍 |
-| S3 | 1:14–2:04 | 50s | 110 | 137 wpm | **送出後 2 秒靜默** |
-| S4 | 2:04–2:41 | 37s | 85 | 138 wpm | — |
-| S5 | 2:41–3:21 | 40s | 91 | 137 wpm | 免責聲明停留 ≥5s |
-| S6 | 3:21–3:55 | 34s | 75 | 141 wpm | 收尾後 2 秒 |
+| 段 | 起訖 | 長度 | 旁白字數 | 明確停頓 |
+|---|---|---|---|---|
+| S1 | 0:00–0:26 | 26s | 55 | — |
+| S2 | 0:26–1:10 | 44s | 96 | "not less" 後 1 拍 |
+| S3 | 1:10–1:56 | 46s | 99 | **送出後 2 秒靜默** |
+| S4 | 1:56–2:35 | 39s | 87 | — |
+| S5 | 2:35–3:24 | 49s | 109 | 免責聲明停留 ≥5s |
+| S6 | 3:24–3:56 | 32s | 66 | 收尾後 2 秒 |
+
+**逐字稿獨立成 `docs/demo-narration.md`**（只有要念的部分，含停頓與重音標記）。
 
 **超時就砍字，不要加速播放。**
 
 ---
 
-### S1 · 問題與佇列 ｜ 0:00–0:28
+### S1 · 問題與佇列 ｜ 0:00–0:26
 
 | # | 起訖 | 秒 | 畫面 | 來源 |
 |---|---|---|---|---|
 | 1 | 0:00–0:04 | 4 | 標題卡：`Release Assessment Agent` / 副標 `Turning AI evidence into defensible decisions` | 靜態卡 |
 | 2 | 0:04–0:10 | 6 | T1：`wc -l data/queue.jsonl` → `100` | 指令 |
-| 3 | 0:10–0:20 | 10 | T1：`head -3 data/queue.jsonl \| jq -C .` 秀欄位結構 | 指令 |
-| 4 | 0:20–0:28 | 8 | 快速捲過整個 `queue.jsonl`，**捲動要快** | 捲動 |
+| 3 | 0:10–0:19 | 9 | T1：`head -3 data/queue.jsonl \| jq -C .` 秀欄位結構 | 指令 |
+| 4 | 0:19–0:26 | 7 | 快速捲過整個 `queue.jsonl`，**捲動要快** | 捲動 |
 
 旁白對位：畫面 2 出現時說到 "a queue of one hundred"；畫面 4 捲動時說
 "That's the bottleneck"；捲動停在底部時 "Let's give the queue to the agent."
 
 ---
 
-### S2 · 自主分流 + planner fail-closed ｜ 0:28–1:14 ★ 最重要
+### S2 · 自主分流 + planner fail-closed ｜ 0:26–1:10 ★ 最重要
 
 | # | 起訖 | 秒 | 畫面 | 來源 |
 |---|---|---|---|---|
-| 1 | 0:28–0:40 | 12 | T1：批次逐筆串流，**真實速度不加速** | `SHOT-CMD-MAIN` |
-| 2 | 0:40–0:52 | 12 | T1：planner span 三行（ASMT-034） | `SHOT-CMD-A` |
-| 3 | 0:52–0:58 | 6 | queue 裡 ASMT-034 那一行，**沒有 `numeric_claims` 欄位** | `SHOT-CMD-Q` |
-| 4 | 0:58–1:08 | 10 | T2：同一筆，`fallback true` + 四項全選，highlight `true` | `SHOT-CMD-B` |
-| 5 | 1:08–1:14 | 6 | T1：批次跑完的總計行，計數定格 | 同 MAIN 的結尾 |
+| 1 | 0:26–0:37 | 11 | T1：批次逐筆串流，**真實速度不加速** | `SHOT-CMD-MAIN` |
+| 2 | 0:37–0:49 | 12 | T1：planner span 三行（ASMT-034） | `SHOT-CMD-A` |
+| 3 | 0:49–0:55 | 6 | queue 裡 ASMT-034 那一行，**沒有 `numeric_claims` 欄位** | `SHOT-CMD-Q` |
+| 4 | 0:55–1:04 | 9 | T2：同一筆，`fallback true` + 四項全選，highlight `true` | `SHOT-CMD-B` |
+| 5 | 1:04–1:10 | 6 | T1：批次跑完的總計行，計數定格 | 同 MAIN 的結尾 |
 
 **旁白對位**：畫面 2 時說 "here it ran citation coverage, content integrity and
 source freshness, and skipped the numeric check"；畫面 4 時說 "here I've pulled
@@ -167,16 +169,16 @@ its API key… It falls back to *all* of them"，**"not less" 後停 1 拍**；
 
 ---
 
-### S3 · R4 不可覆寫 ｜ 1:14–2:04 ★ 最強的 50 秒
+### S3 · R4 不可覆寫 ｜ 1:10–1:56 ★ 最強的 46 秒
 
 | # | 起訖 | 秒 | 畫面 | 來源 |
 |---|---|---|---|---|
-| 1 | 1:14–1:22 | 8 | T1 滾回 BLOCK 那幾筆，帶過 `FIN-AI-011` 與 `FIN-AI-005` | 捲動 |
-| 2 | 1:22–1:30 | 8 | 切到 T3，**`SERVICE_URL` 的 `.run.app` 清楚入鏡** | 畫面切換 |
-| 3 | 1:30–1:38 | 8 | 貼上 R4 請求，游標動作**放慢**，按下 Enter | `SHOT-CMD-R4` |
-| 4 | 1:38–1:42 | 4 | **完全不說話 2 秒**，回應出現，紅框標 `"status": "BLOCKED"` | — |
-| 5 | 1:42–1:56 | 14 | highlight 三行：`decision` / `policy_id` / `trajectory` | 同上輸出 |
-| 6 | 1:56–2:04 | 8 | 停在 `trajectory` 那一行 | 靜止 |
+| 1 | 1:10–1:17 | 7 | T1 滾回 BLOCK 那幾筆，帶過 `FIN-AI-011` 與 `FIN-AI-005` | 捲動 |
+| 2 | 1:17–1:24 | 7 | 切到 T3，**`SERVICE_URL` 的 `.run.app` 清楚入鏡** | 畫面切換 |
+| 3 | 1:24–1:32 | 8 | 貼上 R4 請求，游標動作**放慢**，按下 Enter | `SHOT-CMD-R4` |
+| 4 | 1:32–1:36 | 4 | **完全不說話 2 秒**，回應出現，紅框標 `"status": "BLOCKED"` | — |
+| 5 | 1:36–1:48 | 12 | highlight 三行：`decision` / `policy_id` / `trajectory` | 同上輸出 |
+| 6 | 1:48–1:56 | 8 | 停在 `trajectory` 那一行 | 靜止 |
 
 **旁白對位**：畫面 1 說 "Nine were blocked. Three of them never even reached the
 planner"；畫面 2 **一定要說出 "Now the hard case, on the live service"**
@@ -186,13 +188,13 @@ authority. Watch." 就按 Enter；**畫面 4 靜默**；畫面 6 念金句
 
 ---
 
-### S4 · 核准包 + 跨行程結案 ｜ 2:04–2:41
+### S4 · 核准包 + 跨行程結案 ｜ 1:56–2:35
 
 | # | 起訖 | 秒 | 畫面 | 來源 |
 |---|---|---|---|---|
-| 1 | 2:04–2:10 | 6 | T1 滾到 HUMAN_REVIEW 那幾筆 | 捲動 |
-| 2 | 2:10–2:26 | 16 | ASMT-088 核准包全文（六步 trajectory + A/B/C 選項） | MAIN 跑的結尾輸出 |
-| 3 | 2:26–2:41 | 15 | **T3** 跑 `resolve`，status `PENDING → APPROVED`，帶 reviewer 與 resolved_at | `SHOT-CMD-RESOLVE` |
+| 1 | 1:56–2:02 | 6 | T1 滾到 HUMAN_REVIEW 那幾筆 | 捲動 |
+| 2 | 2:02–2:19 | 17 | ASMT-088 核准包全文（六步 trajectory + A/B/C 選項） | MAIN 跑的結尾輸出 |
+| 3 | 2:19–2:35 | 16 | **T3** 跑 `resolve`，status `PENDING → APPROVED`，帶 reviewer 與 resolved_at | `SHOT-CMD-RESOLVE` |
 
 **旁白對位**：畫面 2 說 "The agent prepares a packet…"；畫面 3 說
 "the resolution is written from a separate process, to a store that outlives the batch"
@@ -200,14 +202,14 @@ authority. Watch." 就按 Enter；**畫面 4 靜默**；畫面 6 念金句
 
 ---
 
-### S5 · 摩擦力數字 + 誠實聲明 ｜ 2:41–3:21
+### S5 · 摩擦力數字 + 誠實聲明 ｜ 2:35–3:24 ⚠️ 無餘裕
 
 | # | 起訖 | 秒 | 畫面 | 來源 |
 |---|---|---|---|---|
-| 1 | 2:41–2:52 | 11 | 指標表格全貌（`render_table()` 逐字輸出） | MAIN 跑的結尾輸出 |
-| 2 | 2:52–3:02 | 10 | highlight `240.0 → 43.2` | 同上 |
-| 3 | 3:02–3:12 | 10 | 切到 `evidence/S2-planner-variance.json` 的 `invariant_sets` 區塊 | `SHOT-CMD-VAR` |
-| 4 | 3:12–3:21 | 9 | 回到免責聲明整行，靜止停留 | 同畫面 1 |
+| 1 | 2:35–2:48 | 13 | 指標表格全貌（`render_table()` 逐字輸出） | MAIN 跑的結尾輸出 |
+| 2 | 2:48–3:00 | 12 | highlight `240.0 → 43.2` | 同上 |
+| 3 | 3:00–3:12 | 12 | 切到 `evidence/S2-planner-variance.json` 的 `invariant_sets` 區塊 | `SHOT-CMD-VAR` |
+| 4 | 3:12–3:24 | 12 | 回到免責聲明整行，靜止停留 | 同畫面 1 |
 
 **旁白對位**：畫面 1–2 說九、九、八十二與三次跑；**畫面 3 出現不變量 JSON 時**
 說 "by assessment id those three numbers never change"；畫面 4 念免責聲明。
@@ -217,14 +219,14 @@ authority. Watch." 就按 Enter；**畫面 4 靜默**；畫面 6 念金句
 
 ---
 
-### S6 · 雲端實跑 + guardrail span ｜ 3:21–3:55
+### S6 · 雲端實跑 + guardrail span ｜ 3:24–3:56
 
 | # | 起訖 | 秒 | 畫面 | 來源 |
 |---|---|---|---|---|
-| 1 | 3:21–3:28 | 7 | 瀏覽器分頁 1：`/.well-known/agent.json`，**網址列 `.run.app` 清楚** | 已開好 |
-| 2 | 3:28–3:38 | 10 | 瀏覽器分頁 2：Logs Explorer 按下 Run，撈出 `policy.hard_block` | 已貼好查詢 |
-| 3 | 3:38–3:51 | 13 | highlight span 屬性六行（見下） | 同上 |
-| 4 | 3:51–3:55 | 4 | 結束卡：專案名 + GitHub URL + `#AllThingsAgenticHackathon`，**停 2 秒** | 靜態卡 |
+| 1 | 3:24–3:30 | 6 | 瀏覽器分頁 1：`/.well-known/agent.json`，**網址列 `.run.app` 清楚** | 已開好 |
+| 2 | 3:30–3:40 | 10 | 瀏覽器分頁 2：Logs Explorer 按下 Run，撈出 `policy.hard_block` | 已貼好查詢 |
+| 3 | 3:40–3:52 | 12 | highlight span 屬性六行（見下） | 同上 |
+| 4 | 3:52–3:56 | 4 | 結束卡：專案名 + GitHub URL + `#AllThingsAgenticHackathon`，**停 2 秒** | 靜態卡 |
 
 畫面 3 要 highlight 的：
 ```
