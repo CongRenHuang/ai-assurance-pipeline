@@ -151,7 +151,8 @@ flowchart LR
 
 ## 給 README 的一段配文（架構圖下方）
 
-> The agent runs on Cloud Run and processes a queue of AI-generated answers awaiting release.
+> The batch pipeline processes a queue of AI-generated answers awaiting release; the agent and its
+> hard-policy gate run on Cloud Run.
 > Gemini selects which checks each item warrants; **deterministic evaluators produce the evidence and
 > a policy engine makes the decision** — the model is never the decision authority.
 > An unrecognized `data_class` falls through to a hard block, so an unclassified item

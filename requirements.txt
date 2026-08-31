@@ -1,4 +1,10 @@
+# Direct dependencies. pydantic / fastapi / uvicorn arrive transitively via
+# google-adk, but are imported directly by this project, so they are pinned
+# here rather than left to a transitive resolution that may change.
 google-adk>=2.7.1
+pydantic>=2.0
+fastapi
+uvicorn
 python-dotenv
 openinference-instrumentation-google-adk
 opentelemetry-sdk
