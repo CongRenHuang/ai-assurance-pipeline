@@ -40,6 +40,33 @@ trajectory, and the component that made the call.
 | Cross-process human approval | `assurance/approval_store.py` (SQLite), `scripts/resolve.py` |
 | Machine-readable capability/policy declaration | `scripts/gen_agent_card.py` → `/.well-known/agent.json` |
 
+## Repository layout
+
+```
+assurance/              the pipeline -- no ADK dependency except the plugins
+  policy.py             risk router: evaluator results + data_class -> route  (FIN-AI-005..010)
+  policy_ids.py         single source of truth for every policy id
+  evaluators.py         4 pure functions, zero LLM, deterministic
+  planner.py            Gemini triage: picks which evaluators to run, never decides release
+  batch.py              queue runner: sovereignty -> planner -> evaluators -> route -> evidence
+  hard_policy.py        HardPolicyGate -- R4 refuses human override           (FIN-AI-004)
+  plugin.py             HardPolicyPlugin / EgressGatePlugin                   (FIN-AI-000..003)
+  sovereignty.py        data_class egress check + ADK plugin                  (FIN-AI-011)
+  approval_store.py     SQLite escalation store, survives process exit
+  packet.py             approval packet: gives the reviewer A/B/C options, not a report
+  metrics.py            time estimate; the ESTIMATE disclaimer is a module constant
+  tracing.py            OpenInference guardrail_span / evaluator_span
+  trajectory.py         5 invariant assertions incl. assert_decided_by
+deploy_agent/           what actually runs on Cloud Run (App + plugin chain + serve.py)
+data/                   make_queue.py (seeded generator) -> queue.jsonl (100 items, committed)
+evidence/               committed JSON from every spike -- every number in this README is here
+tests/                  S1..S10 spikes
+docs/                   demo script, submission draft, architecture, baseline-estimate.md
+```
+
+**Start here:** `assurance/policy.py::route_item` is the decision. Everything
+else feeds it or records it.
+
 ## What I learned
 
 **A correct outcome reached by the wrong path is still a bug.** R4 was
@@ -87,11 +114,21 @@ HUMAN_REVIEW 9 · BLOCK 9`) is what fell out once the mismatch was gone.
 ## Run locally
 
 ```bash
-uv sync
-python -m assurance.batch --queue data/queue.jsonl   # end-to-end batch run
+# Python 3.14
+uv venv --python 3.14 && source .venv/bin/activate
+uv pip install -r requirements.txt
+
+# Gemini API key (planner only -- the pipeline runs fail-closed without it)
+cp .env.example .env && $EDITOR .env
+
+python -m assurance.batch --queue data/queue.jsonl   # end-to-end batch run, 100 items
 python tests/test_s10_planner.py                     # planner consistency + fail-closed
 adk web spike_agent                                   # interactive dev UI
 ```
+
+**No API key?** The batch still runs end-to-end: the planner fails closed and
+every item is evaluated against all four evaluators. That path is the one
+verified in `evidence/S10-results.json`.
 
 ## Deploy
 

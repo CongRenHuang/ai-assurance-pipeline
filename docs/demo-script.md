@@ -2,8 +2,10 @@
 
 **專案：** Release Assessment Agent
 **用途：** All Things Agentic 提交（4 分鐘上限、需含 GCP 部署證明、英文或英文字幕）
-**版本：** v1 — 2026-08-21
-**規則：** 這份腳本是**規格**。WS1–WS4 只做腳本裡出現的東西；沒出現的一律不做。
+**版本：** v2 — 2026-08-31（WS5 語料修正後校準；移除未實作功能）
+**規則：** 這份腳本是**規格**，但規格要跟著實作走。v1 寫於功能尚未建成時，
+其中「雙路徑交叉比對」與 `source_governance` evaluator **從未實作**，v2 已移除。
+**畫面上每個數字、ID、欄位都必須能在 `evidence/` 或 `data/` 搜到。**
 
 ---
 
@@ -63,43 +65,52 @@
 **畫面**
 - 0:35 agent 開始跑，逐筆輸出，**不要加速播放**（真實速度才可信）
 - 0:45 畫面切半：左邊處理進度，右邊 **live 分流計數器**跳動
-- 1:00 停在某一筆，highlight 該筆的 evaluator 選擇：
+- 1:00 停在某一筆，highlight planner 的 evaluator 選擇（真實 span 屬性）：
   ```
-  ASMT-042  selected: [citation_coverage, source_governance]
-            skipped:  [content_integrity]  reason: no hash claim
+  assurance.selected_evaluators  ["citation_coverage", "source_ttl"]
+  assurance.planner_reasoning    "no numeric claims present; ..."
+  assurance.planner_fallback     false
   ```
-- 1:15 畫面切到「兩條路徑」示意：deterministic vs model-based，兩者**不一致**
-- 1:25 該筆被自動升級為 R3
+- 1:15 切到 planner **失敗時**的畫面（拔掉 API key 重跑一筆）：
+  ```
+  assurance.planner_fallback     true
+  assurance.selected_evaluators  ["citation_coverage", "content_integrity",
+                                  "source_ttl", "numeric_claim_check"]
+  ```
+- 1:25 highlight `fallback: true` 那一行
 - 1:30 回到總覽，四類計數定格
 
 **旁白**
 
 > The agent doesn't run a fixed pipeline.
-> For each item it decides which checks are warranted — here it selected citation coverage and source governance, and skipped content integrity because this answer makes no hash-verifiable claim.
+> For each item, a Gemini planner decides which checks are warranted — here it selected citation coverage and source TTL, and skipped the numeric check because this answer makes no numeric claim.
 >
-> Every item is checked twice, independently: a deterministic evaluator and a model-based one.
-> When the two agree, confidence is high.
-> When they disagree — like this one — the agent escalates it to a human. It does not guess.
+> The planner advises. It never decides whether an answer may be released.
+>
+> And when the planner fails — here I've pulled its API key — it does not fall back to fewer checks.
+> It falls back to *all* of them. Uncertainty means more scrutiny, not less.
 >
 > One hundred items. Four outcomes. No human has read anything yet.
 
 **製作備註**
-- **1:15 那個「兩條路徑分歧」是本片第二強的畫面**，一定要看得清楚
-- 「It does not guess」後面停 1 拍
+- **1:15 的 fail-closed fallback 是本片第二強的畫面。** 這是真的，且是評審在意的「自主性也套用 fail-closed」
+- 「not less」後面停 1 拍
 - 計數器最終定格：`AUTO 54 · SAMPLE 28 · HUMAN 9 · BLOCK 9`
+- ⚠️ v1 這段原本寫「deterministic vs model-based 雙路徑分歧」——**該功能從未實作**，
+  且 Devpost §3 已誠實聲明 model-based evaluator 是 deferred。不可上鏡。
 
 ---
 
 ## 【1:35–2:20】硬性政策不可覆寫 ｜ 96 words ★ 本片最強的 45 秒
 
 **畫面**
-- 1:35 zoom 到 BLOCK 那 2 筆其中一筆：`ASMT-088  R4 PROHIBITED`
+- 1:35 zoom 到 BLOCK 那 9 筆其中一筆，接著切到 live 服務的 `ASMT-R4-LIVE`
 - 1:42 **切到 reviewer 視角**，畫面上有一個 APPROVE 按鈕
 - 1:48 游標移過去，**按下 APPROVE**（動作要慢，讓觀眾看清楚）
 - 1:52 系統回應：紅底 `BLOCKED — OVERRIDE_REJECTED`
 - 2:00 切到 ControlEvidence JSON，highlight 三行：
   ```
-  "result": "OVERRIDE_REJECTED"
+  "decision":  "OVERRIDE_REJECTED"
   "policy_id": "FIN-AI-004"
   "trajectory": ["hard_policy_gate", "hard_block"]
   ```
@@ -107,7 +118,7 @@
 
 **旁白**
 
-> These two were blocked outright.
+> Nine were blocked outright.
 > This one is a prohibited operation.
 >
 > I have approval authority. Watch.
@@ -129,29 +140,36 @@
 ## 【2:20–3:05】核准包 ｜ 104 words
 
 **畫面**
-- 2:20 切到 HUMAN 那 2 筆
-- 2:25 顯示核准包（純文字，終端機或簡單卡片）：
+- 2:20 切到 HUMAN_REVIEW 那 9 筆
+- 2:25 顯示核准包（`packet.py` 真實輸出，勿重打）：
   ```
-  ASSESSMENT ASMT-042              RISK R3 — needs your judgment
-  ──────────────────────────────────────────────────────────
-  Recommendation   REVIEW   (agent will not auto-release)
-  Policy           FIN-AI-001  unregistered source
-  Key evidence     citation coverage 0.62  (threshold 0.80)
-                   deterministic and model evaluators disagree
-  Trajectory       evidence → evaluate → risk_router[R3] → human
-  Your decision    Register this source, or reject the release.
-  ──────────────────────────────────────────────────────────
+  === Approval Packet: ASMT-088 ===
+
+  Conclusion:  HUMAN_REVIEW  (risk tier R3)
+  Policy:      FIN-AI-008
+  Reason:      Evaluator(s) warned: citation_coverage.
+
+  Trajectory:
+    1. policy.sovereignty (policy_id=FIN-AI-011, decision=ALLOW, data_class=PUBLIC)
+    2. planner (selected=[...], fallback=False)
+    3. eval.citation_coverage (status=WARN, score=0.667)
+    4. policy.route (policy_id=FIN-AI-008, route=HUMAN_REVIEW, risk_tier=R3)
+
+  Recommended action -- choose one:
+    A) APPROVE -- release as-is
+    B) APPROVE WITH CONDITIONS -- release after the noted fixes
+    C) REJECT -- do not release; escalate for rework
   ```
-- 2:50 reviewer 快速掃過、做出決定
-- 3:00 該筆狀態變更，evidence 更新
+- 2:50 reviewer 快速掃過、選一個選項
+- 3:00 該筆狀態變更，approval_store 更新
 
 **旁白**
 
-> The two escalated items don't arrive as raw output.
+> The nine escalated items don't arrive as raw output.
 > The agent prepares a packet: what it concluded, which policy applies, the evidence that mattered, and the path it took to get there.
 >
 > The reviewer isn't reading an AI answer from scratch.
-> They're confirming a decision the agent has already justified — in about thirty seconds.
+> They're picking one of three options against a decision the agent has already justified.
 >
 > That's the shift. The human stays in the loop, but only where judgment is actually required.
 
@@ -166,18 +184,20 @@
 **畫面**
 - 3:05 切到指標畫面（終端表格即可）：
   ```
-  100 assessments
-  ─────────────────────────────────────────
-  Auto-approved       54    each with ControlEvidence
-  Sampled              28
-  Human review          9
-  Hard-blocked           9    incl. 1 OVERRIDE_REJECTED
-  ─────────────────────────────────────────
-  Review minutes      240 → 43.2   (estimated baseline)
-  Compute cost        $X  → $Y      (risk-tiered evaluation)
-  ─────────────────────────────────────────
-  Synthetic corpus. Baseline is an estimate, not measured.
+  Release Assessment -- Time Estimate
+  ------------------------------------
+  Total items:                    100
+  Human-touched (review + block):  18
+  Baseline (manual, all items):   240.0 min
+  Actual (human-touched only):     43.2 min
+  Estimated saved:                196.8 min
+
+  ESTIMATE, not a measurement: 2.4 min/item has no timed-pilot
+  backing yet. See docs/baseline-estimate.md for scope and
+  sensitivity range.
   ```
+  > 這是 `assurance.metrics.render_table()` 的**逐字輸出**，免責聲明由模組常數組出。
+  > 拍攝時直接跑指令，不要重打。
 - 3:25 highlight `240 → 43.2`
 
 **旁白**
@@ -185,7 +205,7 @@
 > Here's the whole batch.
 > Fifty-four auto-approved, each with audit evidence. Twenty-eight sampled. Nine escalated. Nine blocked.
 >
-> Estimated review time drops from about four hours to forty-three minutes, and compute cost falls because low-risk items don't run expensive checks.
+> Eighteen of a hundred items need a person. Estimated review time drops from four hours to forty-three minutes.
 >
 > This is a synthetic corpus and the baseline is an estimate — both are stated on screen.
 > The point isn't the exact number. It's that the number exists at all, and every one of those fifty-four approvals can be audited.
@@ -225,20 +245,25 @@
 
 ## ✅ 必做（腳本直接依賴，缺一段就拍不成）
 
-| # | 功能 | 出現時間 | WS | 沒有會怎樣 |
-|---|---|---|---|---|
-| 1 | **批次 runner**（100 筆佇列）| 0:08–1:35 | WS1 | **整支影片沒有開場**，退回單筆 = middleware 敘事 |
-| 2 | **四類分流計數** | 1:30, 3:05 | WS1 | 沒有「agent 做了很多事」的證據 |
-| 3 | **每筆 ControlEvidence** | 2:00, 3:10 | WS1 | 54 筆自動核准變成無根據 |
-| 4 | **evaluator 選擇 + 理由** | 1:00 | WS2 | **失去 autonomous 的唯一直接畫面** |
-| 5 | **雙路徑交叉比對 + 分歧升級** | 1:15 | WS2 | 失去第二強畫面；升級變成無理由 |
-| 6 | **R4 + 人工核准被拒** | 1:35–2:20 | ✅ 已完成 | 失去最強 45 秒 |
-| 7 | **trajectory 在 evidence 裡** | 2:00 | ✅ 已完成 | 「正確結果錯誤原因」講不出來 |
-| 8 | **核准包產生器** | 2:25 | WS4 | 人的角色回到「被拒絕」，摩擦力故事斷掉 |
-| 9 | **指標表格**（含誠實聲明）| 3:05 | WS3 | **40% 沒有量化證據** |
-| 10 | **Cloud Run 可存取 + trace viewer** | 3:35 | ✅ 已完成 | 沒有部署證明，違反提交要求 |
+> **2026-08-31 更新：全部十項皆已完成或已移除。** 下表是拍攝前的存在性檢查清單。
 
-**6、7、10 已經完成。實際要新建的只有 1–5、8、9 共七項。**
+| # | 功能 | 出現時間 | 狀態 | 驗證方式 |
+|---|---|---|---|---|
+| 1 | **批次 runner**（100 筆佇列）| 0:08–1:35 | ✅ | `python -m assurance.batch --queue data/queue.jsonl` |
+| 2 | **四類分流計數** | 1:30, 3:05 | ✅ | `evidence/S2-batch-run.json` → `counts` |
+| 3 | **每筆 ControlEvidence** | 2:00, 3:10 | ✅ | 同上 → `evidence` 陣列 100 筆 |
+| 4 | **planner evaluator 選擇 + 理由** | 1:00 | ✅ | `evidence/S10-results.json`，一致率 100% |
+| 5 | ~~雙路徑交叉比對 + 分歧升級~~ | — | ❌ **已移除** | **從未實作**；Devpost §3 已聲明 deferred |
+| 5' | **planner fail-closed fallback** | 1:15 | ✅ | 拔 API key → `selected == ALL`，`fallback=true` |
+| 6 | **R4 + 人工核准被拒** | 1:35–2:20 | ✅ | `evidence/S8-e2e-r4-block.json` |
+| 7 | **trajectory 在 evidence 裡** | 2:00 | ✅ | 同上 → `trajectory` 欄位 |
+| 8 | **核准包產生器** | 2:25 | ✅ | `assurance/packet.py::render_packet()` |
+| 9 | **指標表格**（含誠實聲明）| 3:05 | ✅ | `assurance.metrics.render_table()` |
+| 10 | **Cloud Run 可存取 + trace viewer** | 3:35 | ✅ | `assurance-agent-00005-qnc`，`--min-instances=1` |
+
+**第 5 項是 v1 的規格債。** 腳本先寫、功能後建，這一項最後沒有建成，
+而 Devpost 已誠實聲明「model-based evaluator 是 deferred 而非造假」。
+**兩份文件現在一致。** 若上鏡演出雙路徑分歧，就與自己的聲明衝突。
 
 ## ❌ 腳本沒用到，一律不做
 
@@ -292,4 +317,7 @@
 
 # 一句話
 
-> **腳本是規格。** 這十項功能之外的任何東西，在 9/1 之前都不要寫。
+> **v1：腳本是規格，功能照著寫。**
+> **v2：功能是事實，腳本照著改。**
+>
+> 兩者衝突時，改腳本，不改事實。

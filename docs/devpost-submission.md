@@ -5,32 +5,17 @@
 
 ---
 
-## 🔴 先做這件事：沒有 LICENSE 檔案
-
-`ls LICENSE*` → **NO LICENSE FILE**
-
-Repo 是 `github.com/CongRenHuang/ai-assurance-pipeline`（public）。**提交前必須補上**，否則是失格風險。
-
-```bash
-cd ~/Project/ai-assurance-pipeline
-curl -sL https://www.apache.org/licenses/LICENSE-2.0.txt -o LICENSE
-# 或 GitHub UI: Add file → Create new file → 檔名輸入 LICENSE → 右側 "Choose a license template" → Apache-2.0
-git add LICENSE && git commit -m "chore: add Apache-2.0 license"
-```
-
-用 GitHub 的 license template 才會被偵測並顯示在 repo 首頁 About 區塊。
-
----
-
 ## 已查證的事實（本文件所有內容的來源）
 
 | 項目 | 值 |
 |---|---|
 | Repo | `https://github.com/CongRenHuang/ai-assurance-pipeline` |
 | Live URL | `https://assurance-agent-6eqpujphvq-de.a.run.app` |
-| 真實 assessment ID | `ASMT-001`, `ASMT-R4-777`, `ASMT-R4-LIVE` |
-| 政策編號 | FIN-AI-000 / 001 / 002 / 003 / 004 |
-| 測試結果 | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 |
+| Cloud Run revision | `assurance-agent-00005-qnc`（`--min-instances=1`，`data-residency=asia-east1`）|
+| 真實 assessment ID | `ASMT-001`, `ASMT-R4-777`, `ASMT-R4-LIVE`（S8）；`ASMT-001`~`ASMT-100`（批次）|
+| 政策編號 | FIN-AI-000~004（source/egress/override）· FIN-AI-005~010（router）· FIN-AI-011（sovereignty）|
+| 測試結果 | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 · S10 planner 一致率 100% |
+| 批次分佈 | `A54 S28 H9 B9`（100 筆），18 筆需人工，240→43.2 分鐘 |
 | 法源 | 人工智慧基本法 2025/12/23 三讀，第 18 條兩年期限 |
 
 > ✅ **批次層已完成並重跑兩次修正語料 bug（WS5）。** 最終分佈
@@ -85,7 +70,7 @@ A release agent for AI output in regulated work. It approves, samples, escalates
 
 # 3. Project Story（About the project）
 
-> 以下為完整 Markdown，可直接貼上。`<<FILL>>` 處等批次跑完再填。
+> 以下為完整 Markdown，可直接貼上。**所有 `<<FILL>>` 已填完**，數字來自 `evidence/S2-batch-run.json`。
 
 ---
 
@@ -114,12 +99,30 @@ That puts a dated, verifiable deadline on this problem: by late 2027, financial 
 The agent processes a queue of AI-generated answers awaiting release. For each one it:
 
 1. **Decides which checks are warranted** — evaluation depth is tiered by risk, so a low-risk answer does not pay for a full evaluation
-2. **Gathers evidence deterministically** — citation coverage, content integrity, source registration, TTL validity
+2. **Gathers evidence deterministically** — citation coverage, content integrity, source TTL, numeric claim consistency
 3. **Routes by risk** — R0/R1 auto-release, R2 sample, R3 human review, R4 hard block
 4. **Prepares an approval packet** for the few items a human must judge — conclusion, governing policy, key evidence, execution path
 5. **Emits ControlEvidence** for every decision, including the trajectory it took
 
 The human stays in the loop, but only where judgment is actually required.
+
+## Measured on a synthetic queue
+
+100 assessments processed in a single run:
+
+| Disposition | Count |
+|---|---|
+| Auto-released | 54 |
+| Sampled | 28 |
+| Escalated to human | 9 |
+| Hard-blocked | 9 |
+
+**18 of 100 items needed a person.** Estimated review time: 240 → 43.2 minutes.
+
+*Synthetic corpus. The baseline (2.4 min/item) is an estimate documented in
+`docs/baseline-estimate.md`, not a measurement — the disclaimer is assembled from a
+module constant so it cannot be omitted from the output. The claim does not hinge on
+the exact figure.*
 
 ## The part that surprises people
 
@@ -177,7 +180,7 @@ I do not have a solution for this within the project's scope, so the model-based
 
 ## How I built it
 
-**Stack:** Gemini 3.5 Flash · Google Agent Development Kit 2.7.1 (plugins, graph workflows, action confirmation) · Cloud Run · OpenTelemetry with OpenInference semantic conventions · Python 3.14 · Pydantic
+**Stack:** Gemini 3.5 Flash · Google Agent Development Kit 2.7.1 (plugins, action confirmation) · Cloud Run · OpenTelemetry with OpenInference semantic conventions · Python 3.14 · Pydantic
 
 **Method:** Before writing production code I ran nine timeboxed verification spikes with explicit pass criteria and stop-loss conditions, deciding go/no-go on three of them. Each spike wrote its result to `evidence/` as a committed JSON artifact.
 
@@ -213,30 +216,22 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 
 ---
 
-# 4. 批次完成後要填的位置
+# 4. 數字來源對照（已填完，供查核）
 
-跑完 `python -m assurance.batch` 後，在 §3 的 "What it does" 之後插入一段：
+| 出現在 | 值 | 來源 |
+|---|---|---|
+| §3 Measured on a synthetic queue | `54 / 28 / 9 / 9` | `evidence/S2-batch-run.json` → `counts` |
+| 同上 | `18` human-touched | `HUMAN_REVIEW + BLOCK` |
+| 同上 | `240 → 43.2` 分鐘 | `assurance.metrics.render_table()` 逐字輸出 |
+| §3 override 拒絕 | `FIN-AI-004` / `OVERRIDE_REJECTED` | `evidence/S8-e2e-r4-block.json` |
+| 事實表 | planner 一致率 100% | `evidence/S10-results.json` |
 
-```markdown
-## Measured on a synthetic queue
-
-100 assessments processed in a single run:
-
-| Disposition | Count |
-|---|---|
-| Auto-released | 54 |
-| Sampled | 28 |
-| Escalated to human | 9 |
-| Hard-blocked | 9 |
-
-Estimated review time: 240 → 43.2 minutes (18 of 100 items needed a human).
-
-*Synthetic corpus. The baseline is an estimate documented in `docs/baseline-estimate.md`,
-not a measurement. The sensitivity band is stated there — the claim does not hinge on the
-exact figure.*
-```
-
-**已完成，來源：** `evidence/S2-batch-run.json`（counts）+ `assurance.metrics.render_table()`（時間換算）。
+> **語料修正紀錄（WS5，兩次 commit）：** 初版分佈 `A39 S18 H19 B24` 中，
+> 24 筆 BLOCK 有 16 筆源自 `make_queue.py` 的 `max_age_days` 與
+> `evaluators.py` 的 `SOURCE_TTL_DAYS` 未對齊，屬產生器參數 bug 而非設計流量。
+> 第一次修正（110→75）清掉 FAIL 線但遺漏 WARN 線（90×0.7=63d），
+> 第二次（75→55）補齊。修正後 9 筆 BLOCK **全部**可追溯到刻意植入的
+> R4 樣本或 SENSITIVE 主權阻擋。舊的 `87/9/2/2` 從未真實存在，是早期敘事假設。
 
 ---
 
@@ -244,14 +239,29 @@ exact figure.*
 
 | 項目 | 狀態 |
 |---|---|
-| **LICENSE 檔案（Apache-2.0）** | ✅ 已補 |
+| LICENSE（Apache-2.0） | ✅ |
 | Repo 為 public | ✅ |
-| Category 選 **The Fortified Enterprise Fleet** | ⬜ |
-| Project URL = Cloud Run 網址 | ✅ 已備（`assurance-agent-00005-qnc`，`--min-instances=1`） |
-| 4 分鐘影片，公開，英文字幕 | ⬜ WS7 |
-| 架構圖 | ⬜ WS6-3 |
+| Category 選 **The Fortified Enterprise Fleet** | ⬜ WS8 |
+| Project URL = Cloud Run 網址 | ✅ `assurance-agent-00005-qnc` |
 | Cloud Run `--min-instances=1` | ✅ WS6-1 |
-| README 前 10 行看得懂 | ⬜ WS6-2 |
+| `/.well-known/agent.json` 可存取 | ✅ WS6-1（200 OK）|
+| README 前 10 行看得懂 | ✅ WS6-2 |
+| 架構圖 | ✅ `docs/assets/architecture.png`（WS6-3）|
+| 4 分鐘影片，公開，英文字幕 | ⬜ WS7 |
+| 影片數字與 evidence 一致 | ⬜ WS7 錄前確認 |
 | 提交後 `--min-instances=0` | ⬜ 留到 WS8 之後 |
 
-**架構圖是提交硬性要求，目前完全沒開始。** 建議 8/30 用 Mermaid 畫，內容就是 §3 "What it does" 的五個步驟 + 四條路由。
+## 誠實聲明清單（評審會查，先自己對一遍）
+
+| 聲明 | 位置 | 是否誠實 |
+|---|---|---|
+| model-based evaluator = deferred 非造假 | §3 What I learned | ✅ 且 demo 腳本 v2 已同步移除該畫面 |
+| 分流數字為合成語料 | §3 Measured / Non-goals | ✅ |
+| 2.4 min/item 為估計非實測 | §3 + `metrics.py` 常數 | ✅ 結構上不可省略 |
+| OWASP 僅宣稱 ASI01 / ASI03 | §3 Non-goals | ✅ |
+| 不宣稱法遵認證 | §3 Non-goals | ✅ |
+| Fortified 三項：sovereignty 已寫但未接入 live chain | README | ✅ WS6-2 已寫入 |
+| ADK graph workflow **未使用** | §3 Stack（已移除該詞）| ✅ 2026-08-31 修正 |
+
+> **最後一項是今天發現的。** 架構圖與 Stack 行都曾宣稱使用 ADK Graph Workflow，
+> 實際路由是 `policy.py::route_item()` 的純 Python if/elif 鏈。兩處皆已修正。
