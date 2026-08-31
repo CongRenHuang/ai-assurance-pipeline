@@ -55,7 +55,7 @@ planner 那兩段指令、`resolve`、Cloud Run 的 curl 都不會。
 
 三個都先跑：
 ```bash
-cd ~/Project/ai-assurance-pipeline && source .venv/bin/activate && export PYTHONPATH=. && export PS1='$ '
+cd ~/Project/ai-assurance-pipeline && source .venv/bin/activate && export PYTHONPATH=. && export PS1='$ ' && export PROMPT='$ ' && export VIRTUAL_ENV_DISABLE_PROMPT=1
 ```
 
 ### A-3 · 確認 ASMT-034 的 planner 行為仍成立

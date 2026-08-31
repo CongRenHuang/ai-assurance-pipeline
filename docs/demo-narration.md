@@ -13,7 +13,7 @@
 3. **不念 AUTO / SAMPLE 的絕對值。** 那兩個數字逐跑不同，念了就跟 README 對不上
 4. **S3 一定要說出 "on the live service"。** 批次裡沒有 R4 item，不講清楚就是把兩件事混為一談
 
-**標記：** 【停 N 秒】= 完全不出聲　·　*斜體* = 重音　·　⏎ = 換氣，不是停頓
+**標記：** 【停 N 秒】= 完全不出聲　·　*斜體* = 重音　·　 = 換氣，不是停頓
 
 ---
 
@@ -42,14 +42,14 @@
 
 Generative AI made producing answers cheap.
 It did not make *approving* them cheap.
-⏎
+
 This is a queue of one hundred AI-generated answers
 from a bank's internal knowledge assistant.
 Today, a compliance reviewer reads every one of them
 before any can be released.
-⏎
+
 That's the bottleneck. Not generation — *verification*.
-⏎
+
 Let's give the queue to the agent.
 
 ---
@@ -60,15 +60,15 @@ Let's give the queue to the agent.
 > 畫面：批次串流 → planner span（ASMT-034）→ queue 那一行 → 無 key 對照 → 計數定格
 
 The agent doesn't run a fixed pipeline.
-⏎
+
 For each item, a Gemini planner decides which checks are warranted —
 here it ran citation coverage, content integrity and source freshness,
 and skipped the numeric check,
 because this answer makes no numeric claim.
-⏎
+
 The planner *advises*.
 It never decides whether an answer may be released.
-⏎
+
 And when the planner fails — here I've pulled its API key —
 it does not fall back to *fewer* checks.
 It falls back to *all* of them.
@@ -94,7 +94,7 @@ Nine were blocked.
 Three of them never even reached the planner —
 they carry sensitive data,
 so the sovereignty gate stopped them before any model saw the content.
-⏎
+
 Now the hard case, **on the live service**.
 This is a prohibited operation, and I have approval authority.
 Watch.
@@ -104,7 +104,7 @@ Watch.
 The system still refused.
 This policy accepts no human override —
 and the attempt is now part of the record.
-⏎
+
 Note the trajectory.
 It proves the block came from the R4 policy gate,
 not from an earlier check that happened to fire.
@@ -123,7 +123,7 @@ The agent prepares a packet:
 what it concluded, which policy applies,
 the evidence that mattered,
 and the path it took to get there.
-⏎
+
 The reviewer isn't reading an AI answer from scratch.
 They're picking one of three options
 against a decision the agent has already justified —
@@ -131,7 +131,7 @@ against a decision the agent has already justified —
 【這句要在切到第二個終端機的那一刻說】
 and the resolution is written from a *separate process*,
 to a store that outlives the batch.
-⏎
+
 That's the shift.
 The human stays in the loop,
 but only where judgment is actually required.
@@ -147,17 +147,17 @@ Nine escalated, nine blocked — and eighty-two released.
 I've run this batch three separate times,
 once with no planner API key at all,
 and by assessment id those three numbers never change.
-⏎
+
 What does move is how many of the eighty-two
 get sampled for audit versus auto-released outright —
 that boundary depends on which checks the planner picked,
 not on who gets escalated or blocked.
-⏎
+
 The time figure next to it is an estimate
 on a two-point-four minute baseline
 with no timed pilot behind it —
 and it says so on screen.
-⏎
+
 The point isn't the number.
 It's that the number is auditable,
 
@@ -176,15 +176,15 @@ and so is every one of those eighty-two releases.
 
 All of this runs on Google Cloud Run,
 built with Gemini and the Agent Development Kit.
-⏎
+
 Every policy decision emits an OpenTelemetry guardrail span.
 Here it is in Cloud Logging, from the request you just saw —
 the policy, the decision,
 and which plugin in the chain made it.
-⏎
+
 An auditor can ask not just *what* the agent decided,
 but *which control* decided it.
-⏎
+
 【念慢】 Evidence, not assurances.
 
 【停 2 秒再結束】
