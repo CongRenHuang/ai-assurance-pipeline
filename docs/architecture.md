@@ -82,7 +82,9 @@ flowchart TB
 評審會看你在哪裡用 LLM。虛線 + `reasoning only` 明確表示：**模型選工具，政策引擎做決定**。這一眼就把你和「LLM 決定一切」的作品區分開。
 
 **② 無法識別的 data_class 用虛線指向 Hard block（fail-closed fallback）**
-這是 fail-closed 拓撲。**未匹配的風險等級不會靜默通過，因為圖上沒有那條邊。** S3 的第 5 項測試證明了移除它會 fail-open。
+這是 fail-closed 拓撲。**未匹配的風險等級不會靜默通過。** `route_item()` 的第一個分支就
+拒絕任何無法識別的 `data_class`（`assurance/policy.py`）——不是最後的 fallback，是最先檢查的
+條件。100 筆批次的每一筆都帶著路由它的 `policy_id`，見 `evidence/S2-batch-run.json`。
 
 **③ 人類在圖的下半部，且有回饋箭頭**
 Taskmaster 賽道要看 "sends the right info to the right places"——**核准包 → reviewer → 回寫 evidence** 這條線就是它。

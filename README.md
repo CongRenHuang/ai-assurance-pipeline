@@ -25,14 +25,15 @@ release even when a human with approval authority says yes.
   all evaluators   low-confidence    evaluator      evaluator FAIL
   PASS, high conf   PASS, sampled     WARN           or SENSITIVE
  ─────────────────────────────────────────────────────────────────────
-  18 of 100 items reached a person.       ← measured: count of routes
+  82 of 100 items never reached a person. ← MEASURED: count of routes
   Estimated review time 240 → 43.2 min.   ← ESTIMATE, see below
  ─────────────────────────────────────────────────────────────────────
-  Synthetic corpus. The 82% time reduction is an ESTIMATE derived from
-  a 2.4 min/item baseline that has no timed-pilot backing; it is not a
-  measured 82% reduction in human effort. The measured figure is the
-  routing itself: 18 items escalated, 82 released or sampled with
-  committed ControlEvidence. See docs/baseline-estimate.md.
+  Synthetic corpus. Two different 82s appear here and they are not the
+  same quantity. "82 of 100 items" is a MEASURED count of routes. The
+  240→43.2 min figure is an ESTIMATE built on a 2.4 min/item baseline
+  with no timed-pilot backing; that it also works out near 82% is a
+  coincidence of this corpus, not a second measurement.
+  See docs/baseline-estimate.md.
 ```
 
 Counts are reproducible: `python -m assurance.batch --queue data/queue.jsonl`,
