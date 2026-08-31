@@ -1,107 +1,109 @@
-## 我查證的結果（含一處文章沒說清楚的地方）
+# Analysis of Taiwan's Artificial Intelligence Basic Act
 
-| 項目 | 查證結果 |
+## Verification Findings (Including an Unclear Point in External Articles)
+
+| Item | Verification Finding |
 |---|---|
-| 三讀通過 | ✅ 2025/12/23 |
-| 七大原則 | ✅ 完全正確，逐字相符 |
-| 沒有罰則 | ✅ 全法 20 條無罰則條文 |
-| 兩年期限 | ✅ **第 18 條**：施行後兩年內完成相關法規之制定、修正或廢止 |
-| 風險分級框架 | ✅ **第 16 條**授權數位發展部建立 |
-| **主管機關** | ⚠️ **文章從頭到尾沒提**：第 2 條明定是**國科會**，不是數發部 |
+| Passed 3rd Reading | ✅ 2025-12-23 |
+| Seven Statutory Principles | ✅ Fully verified, verbatim concordance |
+| Penalty Provisions | ✅ Entire act (20 articles) contains no penalty provisions |
+| Two-Year Implementation Timeline | ✅ **Article 18**: Relevant regulations must be enacted, amended, or repealed within 2 years of enforcement |
+| Risk Classification Framework | ✅ **Article 16** authorizes the Ministry of Digital Affairs (MODA) to establish |
+| **Competent Authority** | ⚠️ **Omitted in most marketing articles**: Article 2 designates the **National Science and Technology Council (NSTC)** as central competent authority, not MODA |
 
-最後一項值得注意。文章講了數發部負責風險分級框架（正確），但**通篇沒提國科會才是中央主管機關**。這在法規解讀文裡是個顯著遺漏——如果你之後要引用這部法，記得主管機關是國科會，數發部只負責風險分級那一塊。
+The last point is critical. Marketing articles frequently mention MODA handling the risk classification framework (which is accurate), but **completely omit that NSTC is the primary competent authority**. This is a significant omission in legal analysis — if you reference this statute, remember that NSTC is the governing agency, while MODA is responsible solely for the risk classification framework component.
 
-順帶一提，文章自己引用的法條連結是 `law.nstc.gov.tw`——nstc 就是國科會。它的來源就在告訴讀者答案，但文章沒寫出來。
+Incidentally, the statutory link referenced by these articles is `law.nstc.gov.tw` — nstc stands for the National Science and Technology Council. The source URL gave the answer, yet the articles failed to state it.
 
 ---
 
-## 真訊號：三件事值得吸收
+## True Signals: Three Insights Worth Absorbing
 
-### ① 七大原則裡有四條是你的專案在做的事
+### ① Four of the Seven Principles Map Directly to Your Project Components
 
-這是最直接的價值。你的專案不是「順便符合」這些原則，而是**逐條可對應**：
+This represents immediate, direct value. Your project does not merely "incidentally comply" with these principles; it maps **one-to-one**:
 
-| 法定原則 | 你的元件 |
+| Statutory Principle | Your System Component |
 |---|---|
-| **二、人類自主**（允許人類監督） | ApprovalDecision、S5 HITL |
-| **五、透明與可解釋**（產出應揭露、讓人理解決策依據） | EvaluationResult、decision trace |
-| **七、問責**（確保承擔相應責任） | **ControlEvidence + trajectory** |
-| **三、隱私保護與資料治理**（資料最小化、避免外洩） | Stage 1 的 fail-closed egress governance |
+| **2. Human Autonomy** (Mandating human oversight) | `ApprovalDecision`, S5 HITL (Human-in-the-Loop) |
+| **5. Transparency & Explainability** (Outputs disclosed, decision rationale understandable) | `EvaluationResult`, Decision Trace |
+| **7. Accountability** (Ensuring appropriate responsibility is borne) | **`ControlEvidence` + Trajectory** |
+| **3. Privacy Protection & Data Governance** (Data minimization, breach prevention) | Stage 1 fail-closed egress governance |
 
-**特別是「問責」。** 文章把它白話成「每一套 AI 系統都該有明確的負責人，出了問題知道該找誰」。這正是你 `ApprovalDecision` 記錄 reviewer、`ControlEvidence` 記錄 requirement → control → test → evidence 的理由。
+**Particularly "Accountability":** In plain terms, this means "every AI system must have an identifiable accountable party, so if issues arise, responsibility is clear." This is the exact rationale behind `ApprovalDecision` recording the reviewer and `ControlEvidence` maintaining the chain: requirement → control → test → evidence.
 
-**這比你引用 EU AI Act 更有力**，因為它是台灣本地的、你目標市場適用的法源。
+**This is more compelling than citing the EU AI Act**, because it is the local, statutory source of authority directly applicable to your target market.
 
-### ② 2027 年底這個時間窗，對你的職涯定位是真訊號
+### ② The Late-2027 Statutory Window is a Concrete Signal for Positioning
 
-第 18 條的兩年期限意味著：**2027 年底前，金管會會針對金融業訂出 AI 相關作用法。**
+The two-year mandate under Article 18 means: **By late 2027, the Financial Supervisory Commission (FSC) will issue concrete implementing regulations for financial AI.**
 
-換句話說，你選的題目——金融場域的 AI 放行決策與稽核證據——**在台灣有一個明確的、法定的需求出現時間**。你現在做的不是超前太多，是提早大約兩年。
+In other words, the problem you selected — AI release assessment and auditable evidence in financial environments — **has a definitive, statutory deadline for market demand in Taiwan**. You are not over-engineering for a distant future; you are roughly two years ahead of the curve.
 
-這對你的定位敘事有用，而且**不需要你改變任何技術決策**。
+This strengthens your narrative positioning without requiring any changes to your technical architecture.
 
-### ③ 一個你可以誠實使用的句子
+### ③ An Honest Sentence You Can Adopt
 
-文章有一句我認為寫得對：
+One point made by external commentary is genuinely accurate:
 
-> 真正的風險，從來不是「會不會被罰」，而是**「公司對自己的 AI，到底有沒有掌握度」**。
+> The real risk has never been "will we be fined", but **"does the organization truly have control over its own AI?"**
 
-這句話跟你的 North Star 是同一件事的不同說法。**可以吸收成你自己的論點**（用你的話重寫），但**不要引用這篇文章當來源**——內容行銷文不是可靠出處。要引用就引法條本身。
-
----
-
-## 雜訊：四件事必須過濾
-
-### ✂️ 「沒有罰則但你要害怕」是標準的恐懼行銷結構
-
-文章誠實承認基本法沒罰則，然後立刻用兩個東西補上急迫感：兩年後的作用法、還有個資法一直都有罰則。
-
-**個資法那段是真的**（資料治理原則確實與個資法重疊）。但把「基本法無罰則」和「個資法有罰則」黏在同一段，製造出「基本法讓你有新風險」的印象——**這是修辭，不是事實**。文章自己都寫了：「這些場景在基本法通過前就已經違法。」
-
-那就是說：**基本法沒有增加你的法律風險。** 這一點文章講對了，但整篇的情緒調度在暗示相反的事。
-
-### ✂️ 「三件事」對你完全不可執行
-
-盤點內部 AI、釐清責任歸屬、建立治理機制——**這三件都是組織行為，不是個人專案能做的**。你 README 的 non-goals 已經明列不做完整 GRC、不提供法遵認證。這一節對你是零。
-
-### ✂️ 產品置入的部分要能辨識
-
-「雙層 Guardrails」「Audit Trail」「人類監督機制」——這些詞跟你的專案概念重疊度很高，讀起來會有「別人已經做了」的錯覺。
-
-但注意：**那是一個商業平台的功能列表，不是一個可驗證的技術主張。** 它沒有回答你在做的問題——當人工核准與硬性政策衝突時誰贏、trajectory 怎麼被機器驗證。**功能名稱重疊不等於問題重疊。**
-
-### ✂️ 千萬不要開始做法規對照表
-
-這是這篇文章對你最大的風險——讀完之後手癢想在 README 加一張「七大原則 × 我的元件」對照表。
-
-**別做。** 理由跟我上次說 EU AI Act / NIST 那些徽章一樣：**法遵對齊是組織行為，個人專案宣稱不了。** 一旦開始做對照表，你就在往 GRC 平台漂移，那是你 Day 1 明確列為 30 天不做的東西。
+This statement aligns directly with your project's North Star. **You can assimilate this into your own perspective** (rephrased in your own voice), but **do not cite marketing articles as authoritative sources** — content marketing is not a formal legal citation. Cite the statutory text itself.
 
 ---
 
-## 具體建議：只做一件事，一句話
+## Noise: Four Things to Filter Out
 
-在 README 的 reference use case 段落，加一句話說明為什麼選金融場域，然後停：
+### ✂️ "No penalties, but you should be terrified" is classic fear-based marketing
+
+Articles acknowledge that the Basic Act lacks penalties, then immediately inject urgency through two angles: downstream sector-specific regulations coming in two years, and the Personal Data Protection Act having active penalties.
+
+**The data protection point is valid** (data governance principles overlap with the PDPA). However, conflating "the Basic Act lacks penalties" with "the PDPA has penalties" creates a misleading impression that "the Basic Act introduces new legal liabilities for you" — **this is rhetorical spin, not legal reality**. As articles themselves concede: "These scenarios were already illegal prior to the passage of the Basic Act."
+
+In short: **The Basic Act has not increased your immediate legal liability.** The text gets the fact right, but the emotional tone implies the opposite.
+
+### ✂️ The "Three Organizational Steps" are completely out of project scope
+
+Inventorying internal AI, clarifying accountability frameworks, establishing governance bodies — **these are organizational behaviors, not deliverable engineering scopes for an individual open-source project**. Your README Non-goals explicitly rule out building a full GRC platform or providing compliance certification. Disregard this section.
+
+### ✂️ Distinguish Commercial Product Placement from Technical Architecture
+
+Buzzwords like "Dual-layer Guardrails", "Audit Trail", and "Human Oversight Mechanism" overlap heavily with your project concepts, potentially creating an illusion that "commercial platforms have already solved this."
+
+However: **That is a commercial feature list, not a verifiable technical assertion.** It does not solve the core technical problems you address — such as deterministic conflict resolution when human approvals clash with hard policies, or automated machine verification of execution trajectories. **Overlapping feature names do not equate to overlapping problem solutions.**
+
+### ✂️ Do NOT Create a Compliance Mapping Matrix
+
+The biggest temptation after reading regulatory summaries is adding a "7 Principles × My Components" compliance badge matrix to the README.
+
+**Avoid this.** Just as with EU AI Act or NIST compliance claims: **Formal compliance alignment is an organizational audit process that an individual project cannot certify.** Once you start adding matrix tables, you drift toward positioning as a GRC platform — which was explicitly ruled out on Day 1.
+
+---
+
+## Actionable Recommendation: Exactly One Action, One Sentence
+
+In the README reference use case section, add a single sentence explaining why the financial domain was chosen, and stop there:
 
 > The financial domain is used as a high-accountability reference scenario. Taiwan's AI Basic Law (passed December 2025) establishes human autonomy, transparency, and accountability as statutory principles, and requires sectoral regulators to issue implementing rules within two years — making auditable AI approval decisions a concrete near-term requirement rather than a hypothetical one.
 >
 > This repository does not claim regulatory compliance or certification.
 
-**一句話說明時代背景，一句話免責，結束。** 不做對照表、不列條文、不宣稱符合。
+**One sentence establishing context, one sentence disclaiming legal certification. Done.** No compliance matrices, no statutory enumerations, no certification claims.
 
-這樣做的好處是：hackathon 評審看「Potential Impact」那一項時，你有一個**具體的、可查證的、有時間軸的**真實需求，而不是「企業應該關心 AI 治理」這種空話。而且成本是零——就一句話。
+The advantage: When hackathon judges evaluate "Potential Impact", you present a **concrete, verifiable, time-bound** real-world requirement rather than generic platitudes about enterprise AI governance. And the implementation cost is zero — exactly one concise sentence.
 
 ---
 
-## 最後一句提醒
+## Final Takeaway / Litmus Test
 
-這類文章你之後還會遇到很多，因為 2026–2027 是台灣 AI 治理內容行銷的黃金期。**判準很簡單：**
+You will encounter many similar articles as 2026–2027 becomes the peak period for AI governance content marketing in Taiwan. **Use this simple litmus test:**
 
-> **這篇文章教我一個我能親手驗證的事實，還是製造一種我需要買東西的感覺？**
+> **Does this article teach me a fact I can independently verify, or does it manufacture an urge to buy a product?**
 
-這一篇兩者都有。事實部分（法條、時程、原則）拿走，情緒部分（急迫感、產品是答案）丟掉。而且**事實要回到一手來源查**——這篇就漏掉了主管機關是國科會這件事，你如果直接引用就會跟著錯。
+Filter out emotional urgency and commercial vendor pitches. Retain verified facts (statutory articles, timelines, core principles). And **always verify facts against primary sources** — if an article omits NSTC as the competent authority, citing it blindly would propagate that error.
 
-**Sources:**
-- [立法院三讀通過《人工智慧基本法》｜數位發展部](https://moda.gov.tw/press/press-releases/18316)
-- [立院三讀人工智慧基本法 國科會為主管機關｜中央社](https://www.cna.com.tw/news/aipl/202512230036.aspx)
-- [台灣AI治理新紀元：《人工智慧基本法》通過後的產業實戰解讀（含法規全文）｜未來城市](https://futurecity.cw.com.tw/article/3909)
-- [人工智慧基本法三讀通過 明定政府推動 AI 應遵循 7 原則｜法源法律網](https://www.lawbank.com.tw/news/NewsContent.aspx?NID=211670.00)
+**Primary Sources:**
+- [Legislative Yuan Passes Third Reading of the Artificial Intelligence Basic Act | Ministry of Digital Affairs](https://moda.gov.tw/press/press-releases/18316)
+- [Third Reading of AI Basic Act: NSTC Designated as Competent Authority | Central News Agency (CNA)](https://www.cna.com.tw/news/aipl/202512230036.aspx)
+- [New Era of Taiwan AI Governance: Industry Practical Guide Post-Basic Act (with Full Text) | Future City](https://futurecity.cw.com.tw/article/3909)
+- [AI Basic Act Third Reading: 7 Principles Mandated for Government AI Promotion | LawBank](https://www.lawbank.com.tw/news/NewsContent.aspx?NID=211670.00)

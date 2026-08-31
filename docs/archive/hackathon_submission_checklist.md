@@ -1,91 +1,91 @@
-# 🏆 全能 Agent 駭客松（All Things Agentic Hackathon）提交前終極檢查清單 (Checklist)
+# 🏆 All Things Agentic Hackathon: Ultimate Pre-Submission Checklist
 
-這份檢查清單是根據 Google Cloud 與 Devpost 評審團隊在 Live Q&A 中透露的評分標準、評審習慣以及各賽道加分項整理而成。請在 **8 月 31 日截止日**前，逐項檢查並優化您的提交材料，以爭取最高榮譽與豐厚獎金！
-
----
-
-## 🎥 1. 展示影片 (Demonstration Video) — 關鍵 4 分鐘檢查
-*展示影片是評審接觸您專案的第一步，也是建立第一印象的關鍵 [8]。*
-
-- [ ] **黃金 30 秒法則：** 影片的前 30 秒是否包含一個能讓評審發出 "Wow" 驚嘆的吸睛亮點 [8]？（不要把最精彩的畫面放在最後，評審一開始就必須被吸引）
-- [ ] **嚴格控制在 4 分鐘內：** 影片總長度是否小於或等於 4 分鐘 [12, 13]？（**注意：** 評審設有嚴格的計時，超過 4 分鐘的內容評審**絕對不會**觀看 [13, 24]）
-- [ ] **切入點明確：** 是否清楚闡述了「痛點（問題）」以及您的 Agent「如何解決它」[26]？
-- [ ] **長時非同步任務的呈現（如適用）：** 
-  - 若您的 Agent 需運行數小時或數天（如 App 審核或背景監控），是否採用了「先說明概念 -> 展示最終成果 -> 快速滾動 Logs 日誌佐證背景運行」的呈現方式 [12]？
-- [ ] **不使用 AI 配音：** 影片是否由團隊成員**親自錄音配音** [10]？（評審非常看重參賽者的熱情（Energy），AI 語音聽起來較缺乏真實感，可能會失分 [10]）
-- [ ] **大眾傳播友善度：** 影片是否通俗易懂，適合在 Google Cloud 的官方社群媒體上推廣分享 [11]？
-- [ ] **避免過度陷入細節：** 是否避免在影片中花費過多時間講述瑣碎的程式碼細節 [13]？（將技術細節和完整成果留給 README，影片專注展示最厲害的核心成果 [13, 22]）
-- [ ] **GCP 運行證明：** 是否在展示影片中帶到了 UI 畫面，或展示了 Google Cloud 控制台（例如 Cloud Run Dashboard）以證明其在 GCP 上實際運行 [36]？
+This checklist is compiled directly from the judging criteria, evaluator habits, and track-specific bonus points revealed by the Google Cloud and Devpost judging teams during the Live Q&A sessions. Please inspect and refine your submission deliverables against each item before the **August 31 deadline** to maximize scoring potential and competitive edge.
 
 ---
 
-## 📄 2. README 專案說明文件 — 深度挖掘檢查
-*當評審看完影片產生好奇心後，會仔細閱讀您的 README [8]。這是展示影片裝不下的深度技術與見解的橋梁 [7, 38]。*
+## 🎥 1. Demonstration Video — Critical 4-Minute Inspection
+*The demonstration video is the first asset judges evaluate and serves as the foundation for their initial impression.*
 
-- [ ] **專案簡介 (Short Description)：** 是否在開頭提供了一段簡明扼要、能一目了然的專案核心目標說明 [38]？
-- [ ] **資料夾結構說明 (Folder Structure)：** 是否清楚標示並解釋了專案的資料夾與程式碼結構 [38]？（這能協助評審快速定位並檢驗您的程式碼 [7, 38]）
-- [ ] **開發發現與見解 (Insights)：** 是否記錄了您在開發/實作過程中獲得的有趣發現或獨特見解 [38]？
-- [ ] **宣稱功能與程式碼位置對照（極關鍵）：** 
-  - README 中是否有明確標示「您宣稱的技術亮點」對應在「程式碼的哪一個路徑或檔案」中 [7]？
-  - 是否詳細補充了展示影片中受限於 4 分鐘時間而無法完整呈現的技術細節、驕傲亮點或擴充功能 [22, 38]？
-- [ ] **完整披露與誠實宣告：** 
-  - 若有使用預先訓練好的模型產物、第三方非新增的程式碼等，是否已在 README 中如實披露並說明 [40]？
-
----
-
-## 🗺️ 3. 系統架構圖 (Architecture Diagram) — 一目了然的設計檢查
-*架構圖是評審評估「架構設計 (Architecture Design)」與「技術棧 (Text Stack)」的重要依據 [7]。*
-
-- [ ] **保持 consumable（易於消化）：** 架構圖是否簡單、清晰，讓人一眼就能看懂 [23]？
-- [ ] **元件與協調關係明確：** 能否從圖中一眼看出：Agent 被部署在哪裡？各元件之間如何連接？多 Agent 之間如何進行協調與通訊 [7, 23]？
-- [ ] **拒絕長篇大論：** 架構圖是否避免了塞滿如論文般、密密麻麻的冗長文字說明 [23]？（保持簡潔，文字說明留給 README）
-- [ ] **架構真實性：** 架構圖是否精準反映了您專案的實際架構，而非僅僅是概念上的虛構 [7, 8]？（如果是 AI 輔助生成的架構圖也是可以的，但前提是必須準確反映實際架構 [7, 8]）
+- [ ] **The Golden 30-Second Rule:** Does the first 30 seconds of the video feature a compelling "Wow" hook that immediately grabs the judges' attention? (Do not save the best part for the end; judges must be engaged from second one.)
+- [ ] **Strict 4-Minute Cap:** Is the total video duration strictly ≤ 4 minutes? (**Warning:** Judges use automated timers and will **never** watch content past the 4-minute mark.)
+- [ ] **Clear Problem Framing:** Does the video clearly articulate the core pain point (the problem) and how your agent resolves it?
+- [ ] **Presentation of Long-Running / Async Tasks (if applicable):**
+  - If your agent executes tasks over hours or days (e.g., app reviews or background monitoring), did you adopt the recommended flow: "Explain concept → Showcase final output → Fast-scroll execution logs to verify real background runtime"?
+- [ ] **No AI Voiceovers:** Is the video narrated **personally by team members**? (Judges place high value on authentic engineering energy and passion; AI-generated voices lack authenticity and risk point deductions.)
+- [ ] **Public Social Shareability:** Is the presentation accessible, well-paced, and suitable for Google Cloud's official social media channels to feature?
+- [ ] **Avoid Getting Bogged Down in Minor Details:** Did you avoid spending excessive video time on trivial code line walkthroughs? (Leave detailed syntax to the README; focus the video on core capabilities and high-impact outcomes.)
+- [ ] **Proof of Google Cloud Execution:** Does the video capture live UI interactions or show the Google Cloud Console (e.g., Cloud Run Dashboard / Cloud Logs) to conclusively prove live cloud execution?
 
 ---
 
-## 🛠️ 4. 程式碼與運作可行性 (Code & Operational Utility)
-*評審會使用專門的工具系統來運行、測試您的專案，並深入研究您的程式碼 [9, 24]。*
+## 📄 2. README Documentation — Deep Technical Inspection
+*Once the video sparks interest, judges perform deep-dive technical reviews of your README. This serves as the primary bridge for technical depth and architecture insights that could not fit into the 4-minute video.*
 
-- [ ] **真實可運行性：** 提交的程式碼是否真的能跑起來 [9]？程式碼是否與您在影片和 README 中宣稱的功能完全相符（拒絕造假）[9]？
-- [ ] **長時運作 Agent 的健壯性設計（如適用）：**
-  - 是否包含失敗恢復步驟（Recovery Steps）[9]？
-  - 是否包含 Token 耗盡/重試機制（Retrying Tokens）[9]？
-  - 是否選擇了合適的 Persistent Storage（持久化資料儲存方案），並能清楚說明為什麼選擇此方案 [9]？
-  - 是否有處理衝突狀態更新（Conflicting State Updates）的邏輯 [19]？（例如：在多 Agent 異步寫入同一個事件上下文時，是否有利用匯總合併、引入評估/排序 Agent 等機制來避免衝突 [19]）
-
----
-
-## ☁️ 5. Google Cloud 服務與技術棧整合（強制性指標）
-*這是獲得評審基本分與參賽資格的硬性要求。*
-
-- [ ] **Gemini 模型與 Google ADK 的整合：** 是否使用了 Gemini 系列模型、Google ADK 或其對應技術 [1, 14, 26]？
-- [ ] **至少使用一項 Google Cloud 服務：** 專案是否實際導入了至少一項 Google Cloud 服務 [10]？
-  - 例如：部署在 **Cloud Run** 上 [10]；資料儲存在 **Cloud SQL**、**Firestore** [10]；或是採用 **Pub/Sub** 來實現事件驅動架構等 [10]。
-- [ ] **多模態（Multimodal）擴充（強烈建議）：** 專案是否結合了多模態（不限於文字，包含圖像、聲音或視訊）[28]？（評審強調，真實世界是多模態的，善用聲音或視覺能大幅提升吸引力與潛在得分 [28, 36]）
+- [ ] **Concise Project Overview (Short Description):** Does the README begin with a crisp, clear summary that immediately communicates the project's core mission?
+- [ ] **Directory Structure Diagram (Folder Structure):** Is the project's folder and code layout explicitly documented and annotated? (This enables judges to quickly locate and verify implementation files.)
+- [ ] **Engineering Insights & Lessons Learned:** Does the README record unique revelations, architectural lessons, and technical discoveries encountered during development?
+- [ ] **Claimed Capabilities vs. Code File Path Mapping (Critical):**
+  - Does the README explicitly map each claimed technical feature to its exact file path and function in the repository?
+  - Does it thoroughly document the architectural highlights, technical innovations, and edge-case protections that could not be fully showcased in the 4-minute video?
+- [ ] **Full Disclosure & Honest Attribution:**
+  - Are pre-existing models, external packages, synthetic data generators, and non-novel third-party code transparently disclosed with clear attribution?
 
 ---
 
-## 🎯 6. 賽道特定指標與加分項 (Track-Specific)
-*請根據您報名的賽道，確認是否滿足該賽道的致勝核心：*
+## 🗺️ 3. Architecture Diagram — Clear Visual Design Inspection
+*The architecture diagram is a primary artifact used by judges to assess "Architecture Design" and "Tech Stack Integration".*
 
-### 🏆 賽道 A：Taskmaster (任務大師)
-- [ ] **拒絕普通的聊天機器人（Chatbot）：** 您的 Agent 是否超越了簡單的問答，能真正自動化替人類執行複雜且耗時的任務 [4, 5]？
-- [ ] **專注於一個 "Wow" 的端到端完整工作流：** 影片中是否展示了一個最具技術難度、最能驚艷評審的端到端實戰流程 [21, 22]？（**策略：** 不要為了展示通用性而塞入多個簡單、平淡的 Happy Path 流程 [22]；其餘的廣泛應用場景，請詳細寫在 README 中即可 [22]）
-- [ ] **注重深度而非運行時長：** 您的 Agent 是否展現了足夠的執行深度與聰明度 [36, 37]？（評審澄清：並非一定要讓 Agent 在雲端不關機跑好幾天，即使它在數秒內就快速執行完一整天份的工作（如抓取、分類、備份與信件分發），只要展現了任務執行的深度與聰明才智，依然是完美的 Taskmaster [36, 37]）
-- [ ] **具備規劃能力 (Planning Loop)：** 您的 Agent 是否擁有真正的「規劃循環（Planning Loop）」與動態工具選擇能力，能根據用戶特性提供客製化且深思熟慮的執行計劃，而非僅是執行寫死的自動化工作流 [17, 18]？
-
-### 🏆 賽道 B：Collaborative Partner (協同合作夥伴)
-- [ ] **數據的智慧與生命週期管理：** 您的 Agent 是否能夠非常聰明地收集、管理、攝取（Ingestion）以及維護數據的生命週期 [5]？
-- [ ] **避免 context rot（上下文/記憶老化）：** 您的專案是否解決了市面上聊天機器人常見的「記憶老化（Memory Rot）」問題 [35]？
-- [ ] **自我優化 (Self-Improving) 能力：** 您的 Agent 是否會利用收集到的歷史記憶，進行自我優化並改善後續與用戶或外部世界的互動品質 [5, 35]？（如果僅僅是透過向量檢索 policy 來回答，會被視為只是「帶記憶的檢索系統」[25, 35]）
-- [ ] **（額外加分項 🌟）觸發外部操作：** 您的 Agent 除了記憶管理與決策優化外，是否能將其延伸，主動觸發額外的外部操作（Additional External Action）[15]？（**評審強調：能觸發外部操作可獲得額外加分！[15]**）
-
-### 🏆 賽道 C：Fortified Enterprise Fleet (強化企業艦隊)
-- [ ] **企業級安全與治理（核心中的核心）：** 面對多 Agent 協同（Swarms），您是否設計了健全的安全控制（Security Controls）、可審計的工作流（Auditable Trail/Audit Log）與治理機制 [6, 33]？
-- [ ] **應對安全威脅的韌性設計：** 如果 Agent 面臨毒化發票（Poisoned Invoices）或惡意竄改的供應商帳戶等威脅，您的系統是否具備相應的隔離與恢復機制 [20]？（例如：Hisara AI 專案採用的「先隔離工作流 -> 用專屬 ADK 重新建構信任上下文 -> 引入單次人類確認 -> 由確定性閘門（而非 LLM）執行單次沙盒寫入」之設計，就是很好的評分重點 [20]）
-- [ ] **整合 Google Cloud Agent Platform：** 您的專案是否使用了 Google Cloud 官方推薦的 **Agent Registry** 來進行多 Agent 的註冊與協同管理 [39]？（**評審透露：雖然自己寫 Registry 也行，但在評選獲勝者時，評審會更偏好有直接實作 Google Cloud Agent Platform 內建 Agent Registry 的專案 [39]**）
+- [ ] **Keep It Consumable:** Is the architecture diagram clean, intuitive, and understandable within seconds?
+- [ ] **Explicit Components & Coordination:** Can a reviewer instantly discern: Where is the agent deployed? How do components connect? How do workflows coordinate and communicate?
+- [ ] **Reject Text-Heavy "Mini-Essays":** Does the diagram avoid dense paragraphs and cluttered textual explanations? (Keep diagrams visual; elaborate in the README.)
+- [ ] **Architectural Authenticity:** Does the diagram accurately depict the physical and logical system as deployed, rather than being an idealized conceptual fantasy? (Mermaid / AI-assisted diagrams are fully welcome provided they truthfully reflect real implementation.)
 
 ---
 
-### 💡 評審的心靈雞湯
-> 「不要過度糾結完美，在截止日前**『先提交就對了（Submit first）』**。Wherever that you are, submit it! 你永遠不知道自己有沒有機會得獎，一定要提交！最重要的是，**保持樂趣（Have fun）**！」 [42]
+## 🛠️ 4. Code & Operational Utility
+*Judges utilize automated test tooling and inspect code repositories to verify that claimed functionalities actually execute.*
+
+- [ ] **True Executability:** Does the submitted repository run cleanly end-to-end? Does the implementation strictly match what is claimed in the video and README (zero fabrication)?
+- [ ] **Robustness for Long-Running Agents (if applicable):**
+  - Are error recovery and fault-tolerance steps implemented?
+  - Are token limits and retry mechanisms handled properly?
+  - Is persistent storage selected and justified with clear architectural rationale?
+  - Is there explicit logic to handle conflicting state updates (e.g., asynchronous multi-agent writes to shared contexts resolved via deterministic evaluation, summarization, or ordering)?
+
+---
+
+## ☁️ 5. Google Cloud Service & Tech Stack Integration (Mandatory Criterion)
+*Mandatory baseline requirement to qualify for judging and scoring.*
+
+- [ ] **Gemini Models & Google ADK Integration:** Does the solution actively utilize the Gemini model family, Google Agent Development Kit (ADK), or corresponding official frameworks?
+- [ ] **At Least One Google Cloud Service:** Does the project integrate at least one active Google Cloud service?
+  - Examples: Hosted on **Cloud Run**; data persisted in **Cloud SQL** or **Firestore**; asynchronous event messaging via **Cloud Pub/Sub**.
+- [ ] **Multimodal Capability (Strongly Recommended):** Does the project leverage multimodal inputs/outputs (text, images, audio, video)? (Judges emphasize that real-world workflows are multimodal; effective multimodal usage significantly boosts competitive standing.)
+
+---
+
+## 🎯 6. Track-Specific Metrics & Bonus Criteria
+*Confirm alignment with the specific evaluation focus of your chosen track:*
+
+### 🏆 Track A: Taskmaster
+- [ ] **Beyond Basic Chatbots:** Does the agent transcend simple conversational Q&A to autonomously execute and resolve complex, time-consuming multi-step tasks on behalf of humans?
+- [ ] **Focus on ONE "Wow" End-to-End Workflow:** Does the video showcase a single, formidable end-to-end operational workflow that dazzles judges? (**Strategy:** Avoid diluting impact across multiple trivial "happy paths"; document secondary use cases in the README.)
+- [ ] **Prioritize Depth and Intelligence Over Raw Runtime:** Does the agent exhibit deep execution logic and decision intelligence? (Judges clarified: An agent does not need to run continuously for days on end; executing an entire day's batch workload in seconds with deterministic rigor is an ideal Taskmaster submission.)
+- [ ] **Autonomous Planning & Dynamic Tooling:** Does the agent feature a genuine planning loop that reasons over context to construct deliberate execution strategies rather than following hardcoded, static scripts?
+
+### 🏆 Track B: Collaborative Partner
+- [ ] **Intelligent Data & Lifecycle Management:** Does the agent intelligently ingest, structure, maintain, and manage data across its operational lifecycle?
+- [ ] **Mitigating Context / Memory Rot:** Does the architecture resolve common memory degradation and context dilution problems prevalent in naive chatbots?
+- [ ] **Self-Improving Capabilities:** Does the agent leverage historical interaction logs to self-optimize and improve subsequent user collaborations? (Simple vector search over policies is viewed merely as "retrieval with memory.")
+- [ ] **(Bonus 🌟) Triggering External Downstream Actions:** Does the agent extend beyond memory management to proactively initiate downstream operational actions in external systems? (**Judges noted: Triggering external actions yields significant bonus points!**)
+
+### 🏆 Track C: Fortified Enterprise Fleet
+- [ ] **Enterprise Security & Governance (Core Pillar):** In multi-agent swarms, are there robust security controls, immutable audit trails (Audit Logs), and verifiable governance boundaries?
+- [ ] **Threat Resilience & Isolation:** When exposed to adversarial inputs (poisoned invoices, prompt injections, unauthorized overrides), does the system maintain structural isolation and clean recovery boundaries?
+- [ ] **Google Cloud Agent Platform Integration:** Does the system integrate with official Google Cloud Agent Platform capabilities like the **Agent Registry** for registration and discovery? (**Judges revealed: While custom registries are accepted, direct implementation of Google Cloud's built-in Agent Registry is strongly favored during winner selection.**)
+
+---
+
+### 💡 Final Encouragement from the Judges
+> "Do not get trapped in perfectionism. Before the deadline, **'Submit first!'** Wherever you are, submit your project! You never know your chances until you submit. Most importantly, **have fun!**"

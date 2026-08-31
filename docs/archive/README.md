@@ -15,12 +15,10 @@ the repository README, `docs/architecture.md`, and `docs/decision-log.md`.
 | `final-22-hours-plan.md` | The sprint plan for the last day, including its stop-loss gates |
 | `devpost-submission.md` | Working draft of the Devpost submission, with revision notes |
 | `demo-script.md` | Word-for-word video script, including a v1→v2 record of cutting a feature that was never built |
-| `positioning-vs-industry.md` | Comparison against two industry conference talks |
 | `artificial-intelligence-basic-law.md` | Fact-check notes on Taiwan's AI Basic Act |
-| `all-things-agentic-hackthon.md` | Notes from choosing between three hackathons |
+| `all-things-agentic-hackathon-summary-notes.md` | Notes and track selection analysis for the hackathon |
 | `hackathon_submission_checklist.md` | Submission checklist derived from the judges' live Q&A |
-| `iThome-Day2-draft.md` | Draft for an unrelated writing series |
-| `_to_delete/` | Superseded duplicates, staged for removal |
+| `how-to-win-the-all-things-agentic-hackathon.md` | Key takeaways, scoring rubric breakdown, and strategic insights from the official Google Cloud Live Q&A session |
 
 ## One that is worth reading
 

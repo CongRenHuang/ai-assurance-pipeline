@@ -1,76 +1,76 @@
-# Devpost 提交草稿 — Release Assessment Agent
+# Devpost Submission Draft — Release Assessment Agent
 
-**建立：** 2026-08-23 ｜ **交件：** 2026-09-01 08:00 台北
-**原則：** 每個數字、ID、政策編號都取自 repo 內的 evidence 檔案。**沒有一個是為了提交而編造的。**
+**Created:** 2026-08-23 | **Submission Deadline:** 2026-09-01 08:00 Taipei  
+**Principle:** Every number, ID, and policy identifier is derived directly from evidence files in the repo. **Not a single one was fabricated for submission.**
 
 ---
 
-## 已查證的事實（本文件所有內容的來源）
+## Verified Facts (Source of Truth for All Content in This Document)
 
-| 項目 | 值 |
+| Item | Value |
 |---|---|
 | Repo | `https://github.com/CongRenHuang/ai-assurance-pipeline` |
 | Live URL | `https://assurance-agent-6eqpujphvq-de.a.run.app` |
-| Cloud Run revision | `assurance-agent-00005-qnc`（`--min-instances=1`，`data-residency=asia-east1`）|
-| 真實 assessment ID | `ASMT-001`, `ASMT-R4-777`, `ASMT-R4-LIVE`（S8）；`ASMT-001`~`ASMT-100`（批次）|
-| 政策編號 | FIN-AI-000~004（source/egress/override）· FIN-AI-005~010（router）· FIN-AI-011（sovereignty）|
-| 測試結果 | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 · S10 planner 一致率 100% |
-| 批次分佈 | `A54 S28 H9 B9`（100 筆），18 筆需人工，240→43.2 分鐘 |
-| 法源 | 人工智慧基本法 2025/12/23 三讀，第 18 條兩年期限 |
+| Cloud Run Revision | `assurance-agent-00005-qnc` (`--min-instances=1`, `data-residency=asia-east1`) |
+| Real Assessment IDs | `ASMT-001`, `ASMT-R4-777`, `ASMT-R4-LIVE` (S8); `ASMT-001`~`ASMT-100` (Batch) |
+| Policy IDs | FIN-AI-000~004 (source/egress/override) · FIN-AI-005~010 (router) · FIN-AI-011 (sovereignty) |
+| Test Results | S1 6/6 · S6 6/6 · S7 8/8 · S9 12/12 · S10 Planner Concordance 100% |
+| Batch Distribution | `A54 S28 H9 B9` (100 items), 18 items require human touch, 240 → 43.2 min |
+| Statutory Basis | Taiwan Artificial Intelligence Basic Act passed 3rd reading 2025-12-23; Article 18 2-year mandate |
 
-> ✅ **批次層已完成並重跑兩次修正語料 bug（WS5）。** 最終分佈
-> `A54 S28 H9 B9`（100 筆），240→43.2 分鐘。舊的 87/9/2/2 與
-> `24 BLOCK` 版本已作廢——`24 BLOCK` 中 16 筆是 `source_ttl` 產生器
-> 參數 bug（`max_age_days` 與 `SOURCE_TTL_DAYS` 未對齊），非設計流量。
-> §4 已用新數字填入。
+> ✅ **Batch layer completed and rerun twice to fix corpus parameter bugs (WS5).** Final distribution:
+> `A54 S28 H9 B9` (100 items), 240 → 43.2 min. Previous 87/9/2/2 and `24 BLOCK` versions are deprecated —
+> 16 of the `24 BLOCK` items were due to a `source_ttl` generator parameter bug
+> (`max_age_days` not aligned with `SOURCE_TTL_DAYS`), not designed traffic.
+> §4 is updated with current numbers.
 
 ---
 
-# 1. Project name（60 字元上限）
+# 1. Project Name (60 character limit)
 
 ```
 Release Assessment Agent
 ```
-**24 字元。**
+**24 characters.**
 
-備選（若想更明確標示領域）：
+Alternative (if domain specialization should be explicit):
 ```
 Release Assessment Agent for Financial AI
 ```
-**41 字元。**
+**41 characters.**
 
-> 建議用短版。長版把 "Financial" 放進標題會限縮評審對適用範圍的想像，而 elevator pitch 已經說清楚領域。
+> Recommended: Use the shorter version. Including "Financial" in the title narrows the judges' perception of general applicability, whereas the elevator pitch already clarifies the domain.
 
 ---
 
-# 2. Elevator pitch（200 字元上限）
+# 2. Elevator Pitch (200 character limit)
 
-**主推：**
+**Primary Recommendation:**
 
 ```
 When AI answers a customer's question, someone must prove why it was allowed to. This agent turns AI evidence into auditable decisions — and refuses release even when an approver says yes.
 ```
-**186 字元。**
+**186 characters.**
 
-備選 A（更強調自主批次）：
+Alternative A (Stronger emphasis on autonomous batching):
 ```
 An agent that reviews a queue of AI answers, decides which checks each one needs, and escalates only what needs a human — refusing release even when someone with approval authority says yes.
 ```
-**189 字元。**
+**189 characters.**
 
-備選 B（最短、最尖銳）：
+Alternative B (Shortest, sharpest):
 ```
 A release agent for AI output in regulated work. It approves, samples, escalates, or blocks — and a human with approval authority cannot override a hard policy.
 ```
-**158 字元。**
+**158 characters.**
 
-> **選主推。** 第一句給場景（有人要證明），第二句給機制（可稽核）+ 反直覺鉤子（拒絕核准）。反直覺那半句是評審點進來的理由。
+> **Selected: Primary Recommendation.** The first sentence establishes the scenario (someone must prove release rationale), and the second delivers the mechanism (auditability) plus a counter-intuitive hook (refusing release despite human approval). That counter-intuitive clause is why judges click through to read more.
 
 ---
 
-# 3. Project Story（About the project）
+# 3. Project Story (About the project)
 
-> 以下為完整 Markdown，可直接貼上。**所有 `<<FILL>>` 已填完**，數字來自 `evidence/S2-batch-run.json`。
+> The following is the complete submission text ready for Devpost. All numbers are drawn from `evidence/S2-batch-run.json`.
 
 ---
 
@@ -237,60 +237,58 @@ Review-time figures are **estimates against a synthetic corpus**, stated as such
 
 ---
 
-**Live service:** https://assurance-agent-6eqpujphvq-de.a.run.app
-**Source:** https://github.com/CongRenHuang/ai-assurance-pipeline
+**Live service:** https://assurance-agent-6eqpujphvq-de.a.run.app  
+**Source:** https://github.com/CongRenHuang/ai-assurance-pipeline  
 
 ---
 
-# 4. 數字來源對照（已填完，供查核）
+# 4. Data Source Traceability (Verified against artifacts)
 
-| 出現在 | 值 | 來源 |
+| Appears In | Value | Source Artifact |
 |---|---|---|
 | §3 Measured on a synthetic queue | `54 / 28 / 9 / 9` | `evidence/S2-batch-run.json` → `counts` |
-| 同上 | `18` human-touched | `HUMAN_REVIEW + BLOCK` |
-| 同上 | `240 → 43.2` 分鐘 | `assurance.metrics.render_table()` 逐字輸出 |
-| §3 override 拒絕 | `FIN-AI-004` / `OVERRIDE_REJECTED` | `evidence/S8-e2e-r4-block.json` |
-| 事實表 | planner 一致率 100% | `evidence/S10-results.json` |
+| Same as above | `18` human-touched items | `HUMAN_REVIEW + BLOCK` |
+| Same as above | `240 → 43.2` minutes | `assurance.metrics.render_table()` output |
+| §3 Override rejection | `FIN-AI-004` / `OVERRIDE_REJECTED` | `evidence/S8-e2e-r4-block.json` |
+| Fact Sheet | Planner Concordance 100% | `evidence/S10-results.json` |
 
-> **語料修正紀錄（WS5，兩次 commit）：** 初版分佈 `A39 S18 H19 B24` 中，
-> 24 筆 BLOCK 有 16 筆源自 `make_queue.py` 的 `max_age_days` 與
-> `evaluators.py` 的 `SOURCE_TTL_DAYS` 未對齊，屬產生器參數 bug 而非設計流量。
-> 第一次修正（110→75）清掉 FAIL 線但遺漏 WARN 線（90×0.7=63d），
-> 第二次（75→55）補齊。修正後 9 筆 BLOCK **全部**可追溯到刻意植入的
-> R4 樣本或 SENSITIVE 主權阻擋。舊的 `87/9/2/2` 從未真實存在，是早期敘事假設。
+> **Corpus Correction Log (WS5, 2 commits):** In the initial distribution `A39 S18 H19 B24`,
+> 16 of the 24 BLOCK items originated from `make_queue.py`'s `max_age_days` not being aligned
+> with `evaluators.py`'s `SOURCE_TTL_DAYS`, which was a generator parameter bug rather than designed traffic.
+> The first fix (110 → 75) cleared the FAIL threshold but missed the WARN threshold (90 × 0.7 = 63d);
+> the second fix (75 → 55) resolved it completely. After corrections, all 9 BLOCK items **strictly**
+> trace back to intentionally planted R4 samples or SENSITIVE sovereignty blocks. The older `87/9/2/2`
+> distribution never physically existed; it was an early narrative assumption.
 
 ---
 
-# 5. 提交前檢查
+# 5. Pre-submission Checklist
 
-| 項目 | 狀態 |
+| Item | Status |
 |---|---|
-| LICENSE（Apache-2.0） | ✅ |
-| Repo 為 public | ✅ |
-| Category 選 **The Taskmaster** | ⬜ WS8 |
-| Project URL = Cloud Run 網址 | ✅ `assurance-agent-00005-qnc` |
+| LICENSE (Apache-2.0) | ✅ |
+| Repository is Public | ✅ |
+| Category selected: **The Taskmaster** | ⬜ WS8 |
+| Project URL = Cloud Run Live URL | ✅ `assurance-agent-00005-qnc` |
 | Cloud Run `--min-instances=1` | ✅ WS6-1 |
-| `/.well-known/agent.json` 可存取 | ✅ WS6-1（200 OK）|
-| README 前 10 行看得懂 | ✅ WS6-2 |
-| 架構圖 | ✅ `docs/assets/architecture.png`（WS6-3）|
-| 4 分鐘影片，公開，英文字幕 | ⬜ WS7 |
-| 影片數字與 evidence 一致 | ⬜ WS7 錄前確認 |
-| 提交後 `--min-instances=0` | ⬜ 留到 WS8 之後 |
+| `/.well-known/agent.json` accessible | ✅ WS6-1 (200 OK) |
+| README first 10 lines clear and readable | ✅ WS6-2 |
+| Architecture diagram | ✅ `docs/assets/architecture.png` (WS6-3) |
+| 4-minute demo video (public, English captions) | ⬜ WS7 |
+| Video numbers match committed evidence | ⬜ WS7 Pre-recording check |
+| Set `--min-instances=0` after submission | ⬜ After WS8 |
 
-## 誠實聲明清單（評審會查，先自己對一遍）
+## Honesty Checklist (Self-audit against judge inspection)
 
-| 聲明 | 位置 | 是否誠實 |
+| Statement | Location | Verified Honest |
 |---|---|---|
-| model-based evaluator = deferred 非造假 | §3 What I learned | ✅ 且 demo 腳本 v2 已同步移除該畫面 |
-| 分流數字為合成語料 | §3 Measured / Non-goals | ✅ |
-| 2.4 min/item 為估計非實測 | §3 + `metrics.py` 常數 | ✅ 結構上不可省略 |
-| OWASP 僅宣稱 ASI01 / ASI03 | §3 Non-goals | ✅ |
-| 不宣稱法遵認證 | §3 Non-goals | ✅ |
-| sovereignty 已寫但未接入 live chain | README「What runs where」| ✅ |
-| 批次跑在本機、非 Cloud Run | README + Devpost「Why Taskmaster」| ✅ 2026-08-31 修正 |
-| agent card 不是 Agent Registry | 兩處皆明寫 | ✅ 2026-08-31 修正 |
-| 未使用 ADK Graph Workflow / DEFAULT_ROUTE | 架構圖 + README + Devpost | ✅ 2026-08-31 修正 |
-| ADK graph workflow **未使用** | §3 Stack（已移除該詞）| ✅ 2026-08-31 修正 |
-
-> **最後一項是今天發現的。** 架構圖與 Stack 行都曾宣稱使用 ADK Graph Workflow，
-> 實際路由是 `policy.py::route_item()` 的純 Python if/elif 鏈。兩處皆已修正。
+| Model-based evaluator = deferred, not faked | §3 What I learned | ✅ Demo script v2 also removed the placeholder frame |
+| Routing numbers are from synthetic corpus | §3 Measured / Non-goals | ✅ |
+| 2.4 min/item baseline is an estimate, not empirical | §3 + `metrics.py` constant | ✅ Structurally cannot be omitted from output |
+| OWASP claims limited to ASI01 / ASI03 | §3 Non-goals | ✅ |
+| No claim of legal/regulatory certification | §3 Non-goals | ✅ |
+| Sovereignty plugin implemented but omitted from live chain | README "What runs where" | ✅ |
+| Batch pipeline runs locally, not on Cloud Run | README + Devpost "Why Taskmaster" | ✅ Updated 2026-08-31 |
+| Agent card is metadata, not an Agent Registry | Stated explicitly in both places | ✅ Updated 2026-08-31 |
+| ADK Graph Workflow / DEFAULT_ROUTE not used | Architecture diagram + README + Devpost | ✅ Updated 2026-08-31 |
+| ADK Graph Workflow **not in stack** | §3 Stack (term removed) | ✅ Updated 2026-08-31 |
