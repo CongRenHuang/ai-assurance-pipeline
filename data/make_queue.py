@@ -92,7 +92,7 @@ def make_r2_item(item_id: str, rng: random.Random) -> dict:
 def make_random_item(item_id: str, rng: random.Random) -> dict:
     """Not steered toward any tier -- rules decide where it lands."""
     item = _base_item(item_id, rng)
-    item["source_fetched_at"] = _fresh_sources(rng, item["claimed_sources"], max_age_days=110)
+    item["source_fetched_at"] = _fresh_sources(rng, item["claimed_sources"], max_age_days=75)
     if rng.random() < 0.15:
         item["citations"] = rng.sample(item["claimed_sources"],
                                         k=max(0, len(item["claimed_sources"]) - 1))

@@ -50,12 +50,18 @@ NOT WIRED  deploy_agent 未呼叫 tracing.setup()
 | **WS2** | 批次核心 | 3.0h | `schema/evaluators/batch.py`、語料 | WS3, WS5 |
 | **WS3** | 決策產出 | 1.5h | `metrics.py`、`packet.py` | WS5 |
 | **WS4** | Fortified 三項 | 2.0h | card / store / sovereignty | — |
-| **WS5** | 部署與文件 | 2.0h | 重新部署、README、架構圖 | WS6 |
-| **WS6** | 影片 | 5.5h | 錄影、剪接、上傳 | WS7 |
-| **WS7** | 提交 | 1.0h | Devpost | — |
-| | **合計** | **16.5h** | | |
+| **WS5** | 語料校正與重跑 ★ | 1.0h | 修正 TTL 參數、重生 evidence | WS6, WS8 |
+| **WS6** | 部署與文件 | 2.0h | 重新部署、README、架構圖 | WS7 |
+| **WS7** | 影片 | 5.5h | 錄影、剪接、上傳 | WS8 |
+| **WS8** | 提交 | 1.0h | Devpost | — |
+| | **合計** | **17.5h** | | |
 
-**22 小時 − 16.5 小時 = 5.5 小時緩衝**（含睡眠）。
+**22 小時 − 17.5 小時 = 4.5 小時緩衝**（含睡眠）。
+
+> WS5 是 8/31 實查後新增的。`evidence/S2-batch-run.json` 的分流分佈
+> （A39 S18 H19 B24）與敘事嚴重不符，根因已定位為語料產生器的參數
+> bug。**它必須排在 WS6 重新部署之前**——因為重跑會覆寫 evidence，
+> 而 Devpost 與影片的所有數字都來自那份 evidence。順序顛倒就要重來。
 
 ---
 
@@ -197,7 +203,7 @@ python -m assurance.batch --queue data/queue.jsonl
 - [x] `public/.well-known/agent.json`：purpose / policy_scope / owner / data_classes / hard_policies_not_overridable / deployment.region
 - [x] Cloud Run 開 `/.well-known/agent.json` 路由（`deploy_agent/serve.py` 包住 `get_fast_api_app()` 加一條 route；`Dockerfile` CMD 已改指到它；本地起服務驗證 200 OK，`/dev-ui/` 仍是 200）
 
-**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致（本地 curl 驗證通過；實際 Cloud Run 上瀏覽器驗證留給 WS5-1 重新部署後做）
+**DoD：** 瀏覽器打得開，且 `enforces` 清單與 `policy_ids.ALL` 一致（本地 curl 驗證通過；實際 Cloud Run 上瀏覽器驗證留給 WS6-1 重新部署後做）
 
 ### WS4-2 · Approval Store（60 分）
 - [x] `assurance/approval_store.py`，**SQLite**（不開 Cloud SQL）
@@ -216,38 +222,160 @@ python -m assurance.resolve ASMT-042 --decision APPROVE --reviewer dennis
 ### WS4-3 · Data Sovereignty（30 分）
 - [x] `assurance/sovereignty.py`：`DOMAIN_POLICY`，`UNKNOWN` fail closed
 - [x] 接在 `EgressGatePlugin` **前面**當前置判斷，不重寫既有邏輯（ADK 層：`SovereigntyGatePlugin` plugin_index=0 早於 EgressGatePlugin；批次層：`batch.py` 在呼叫 planner/evaluators 前先做 `check_sovereignty()`）
-- [ ] `gcloud run services update --update-labels=data-residency=asia-east1`（留給 WS5-1 實際部署時做，屬雲端變更不在本階段執行）
+- [ ] `gcloud run services update --update-labels=data-residency=asia-east1`（留給 WS6-1 實際部署時做，屬雲端變更不在本階段執行）
 
 **DoD：** SENSITIVE 項目在批次中被 domain 檢查擋下並留下證據 —
 驗證：`ASMT-067`（`data_class=SENSITIVE`）→ `BLOCK` / `FIN-AI-011`，
 trajectory 與 evidence 見 `evidence/S2-batch-run.json`。
 
 ### 🚦 GATE 2 · 18:00
-**功能與文件是否完成？**
-❌ → **停止一切開發，帶著現有功能去錄影。**
+**功能是否完成？**
+❌ → **停止一切新功能開發。**
 影片的時間不可以借給功能——**沒有影片就沒有提交，功能少一項只是扣分。**
 
 降級順序：砍 WS4-2 → 砍 WS4-3 → 保留 WS1 + WS4-1 + README 聲明
 
+> ⚠️ **WS5 不在降級範圍內。** 它不是新功能，是修正既有證據的
+> 正確性——帶著一份自己都解釋不了的分佈去錄影，比少一個功能更糟。
+> 它只花 1 小時，且失敗有明確的回退路徑（GATE 2.5）。
+
 ---
 
-## WS5 · 部署與文件 ｜ 2.0h ｜ 18:00–20:00
+## WS5 · 語料校正與重跑 ★ ｜ 1.0h ｜ 18:00–19:00
 
-### WS5-1 · 重新部署（45 分）
+> **這一段是 8/31 實查後新增的，且必須在 WS6 重新部署之前完成。**
+> 重跑會覆寫 `evidence/S2-batch-run.json`，而影片與 Devpost 的每個數字
+> 都從那份檔案來。先部署再改語料 = 部署與證據不同步，兩件事都要重做。
+
+### WS5-0 · 問題陳述（實查結果，非推測）
+
+`evidence/S2-batch-run.json` 的實際分流：
+
+```
+AUTO 39   SAMPLE 18   HUMAN_REVIEW 19   BLOCK 24
+```
+
+24 筆 BLOCK 的組成（`control_id` 逐筆統計）：
+
+| policy_id | 規則 | 筆數 | 是否設計內 |
+|---|---|---|---|
+| FIN-AI-005 | `source_ttl` FAIL | **15** | ❌ **非設計內** |
+| FIN-AI-005 | `content_integrity` FAIL | 3 | ✅ 植入 |
+| FIN-AI-005 | `citation_coverage` FAIL | 2 | ✅ 植入 |
+| FIN-AI-005 | `numeric_claim_check` FAIL | 1 | ✅ 植入 |
+| FIN-AI-011 | SENSITIVE 主權阻擋 | 3 | ✅ 植入 |
+
+刻意植入的只有 5（`make_r4_item` variant 0–3）+ 3（SENSITIVE）= 8 筆。
+**其餘 16 筆全部來自 `source_ttl`**，而且不是政策設計問題。
+
+### WS5-1 · 根因（一行參數不一致）
+
+`data/make_queue.py` 的 `make_random_item()`：
+
+```python
+item["source_fetched_at"] = _fresh_sources(rng, item["claimed_sources"], max_age_days=110)
+```
+
+但 `assurance/evaluators.py`：
+
+```python
+SOURCE_TTL_DAYS = 90
+if oldest_age > SOURCE_TTL_DAYS:
+    return _record("source_ttl", 0.0, "FAIL", ...)   # FAIL 不是 WARN
+```
+
+85 筆 random item 的來源年齡是 `uniform(0, 110)` 均勻分布，每筆 1–3 個
+來源且**取最舊的那個**。單一來源超過 90 天的機率 ≈ 18%，取 max 之後：
+
+| 來源數 | FAIL 機率 |
+|---|---|
+| 1 | ~18% |
+| 2 | ~33% |
+| 3 | ~45% |
+
+平均約 32%，85 × 0.32 ≈ 27 筆落在 FAIL/WARN 區，實測 15 筆 FAIL。
+
+`max_age_days=110` 沒有任何設計意圖支撐它——產生器自己的 docstring
+就寫著「counts are not tuned to hit a target ratio」，它確實沒調過，
+但也沒對齊 TTL。**這是參數 bug，不是政策太嚴。**
+
+### WS5-2 · 決策：改語料，不動 evaluator
+
+| 方案 | 動作 | 結果 | 採用 |
+|---|---|---|---|
+| A | `max_age_days: 110 → 75` | random item 預設乾淨，植入樣本不受影響 | ✅ |
+| B | `source_ttl` FAIL 改 WARN | BLOCK 24→9，但 HUMAN_REVIEW 暴增到 34 | ❌ |
+| C | 提高 `SOURCE_TTL_DAYS` | 動到產品主張本身 | ❌ |
+
+**理由：** evaluator 的嚴格度是產品主張，語料參數只是測試輸入。
+動輸入比動主張安全。且 75 < 90，`make_r2_item`（40–62 天）仍落在
+WARN/低分區、`make_r4_item` 仍 FAIL——**每一條 route 都還有樣本**，
+正是產生器 docstring 宣稱的目標。
+
+### WS5-3 · 執行步驟（40 分）
+
+- [x] `data/make_queue.py`：`max_age_days=110` → `max_age_days=75`
+- [x] 備份舊證據：`evidence/S2-batch-run.json` → `.old`（保留對照，**不 commit**）
+- [x] `python data/make_queue.py > data/queue.jsonl`
+- [x] `python -m assurance.batch --queue data/queue.jsonl`
+- [x] 重跑 `tests/test_s10_planner.py` → 更新 `evidence/S10-results.json`（GO，consistency 100%、fail-closed 皆通過）
+- [x] 確認四條 route 都仍有樣本（實測 `AUTO 39 / SAMPLE 26 / HUMAN_REVIEW 27 / BLOCK 8`，皆 > 0）
+- [x] `data/approvals.db` 清空重建（`rm` 後隨批次重跑自動重建，escalation 對應新 item id）
+
+### WS5-4 · Commit 誠信要求（10 分）
+
+```
+fix(data): align make_queue max_age_days with SOURCE_TTL_DAYS
+
+make_random_item generated sources up to 110d old while evaluators.py
+enforces a 90d TTL as a hard FAIL, producing 15 blocks that were not
+part of the planted R2/R3/R4 design. Aligns the generator to 75d so
+random items are clean by default; planted samples are unaffected.
+```
+
+> **必須寫清楚是什麼、為什麼。** 評審看 git history 時，
+> 「修 bug 的 commit」和「調數字的 commit」在外觀上幾乎一樣，
+> 差別只在有沒有把理由留下來。
+
+### WS5-5 · 停手條件（自我約束）
+
+> 改完跑一次就結束。**如果發現自己在反覆微調 `max_age_days` 直到
+> 分佈好看，立刻停手**，把 110 改回去，改用「壓力測試語料」的敘事
+> （誠實但 40% 那條故事線變弱）。這條線很細，越線就不誠實了。
+
+**DoD：**
+- [x] 四類計數總和 == 100，四類皆 > 0（`A39 S26 H27 B8`）
+- [x] BLOCK 的每一筆都能對應到 `make_r4_item` 或 SENSITIVE 植入（逐筆核對 8 筆：5 筆 evaluator FAIL + 3 筆 SENSITIVE，無 stray `source_ttl`）
+- [x] `evidence/S2-batch-run.json` 與 `data/queue.jsonl` 同一次產生
+- [ ] 影片腳本與 Devpost 草稿的 `<<FILL>>` 數字**全部改用新證據**（留待 WS7/WS8）
+
+### 🚦 GATE 2.5 · 19:00
+**新分佈是否讓「人只需看少數幾筆」的敘事成立？**
+❌ → 恢復 110，改用壓力測試語料敘事，**不再調參**，直接進 WS6。
+
+**結果：PASS。** 一次調整（110→75）即達標，未反覆微調。BLOCK 24→8，
+且全部對應設計內植入（5 R4 + 3 SENSITIVE），`source_ttl` 造成的雜訊
+歸零。
+
+---
+
+## WS6 · 部署與文件 ｜ 2.0h ｜ 19:00–21:00
+
+### WS6-1 · 重新部署（45 分）
 - [ ] `gcloud run deploy --source .`（`adk deploy` 不打包 sibling package）
 - [ ] `app_name` 用**資料夾名** `deploy_agent`，不是 `App(name=...)`
 - [ ] 冒煙測試：R4 在雲端仍回 `OVERRIDE_REJECTED`
 - [ ] `--min-instances=1`
 - [ ] 保留前一版供回滾
 
-### WS5-2 · README（45 分）
+### WS6-2 · README（45 分）
 - [ ] 開頭 5–8 行摘要，不用捲動
 - [ ] **宣稱 ↔ 程式碼路徑對照表**（評審明說會看）
 - [ ] 三段 What I learned
 - [ ] **Fortified 三項誠實聲明**（實作 / 部分 / 未實作）
 - [ ] `How to run locally / deploy`
 
-### WS5-3 · 架構圖（30 分）
+### WS6-3 · 架構圖（30 分）
 - [ ] 降密度：保留 Gemini 虛線、`DEFAULT_ROUTE` → HardBlock、人類迴圈
 - [ ] 標上企業模組名：Gateway / Runtime / HardPolicyPlugin / Observability
 - [ ] mermaid.live 匯出高解析 PNG
@@ -255,11 +383,11 @@ trajectory 與 evidence 見 `evidence/S2-batch-run.json`。
 
 ---
 
-## WS6 · 影片 ｜ 5.5h ｜ 20:00–01:30
+## WS7 · 影片 ｜ 5.5h ｜ 21:00–02:30
 
 > **自己配音，不用 AI 語音。** 評審明說看重 energy。
 
-### WS6-1 · 錄影（4.0h）· 20:00–24:00
+### WS7-1 · 錄影（4.0h）· 21:00–01:00
 
 **★ 場景順序已依評審回饋調整——R4 移到冷開場**
 
@@ -273,28 +401,30 @@ trajectory 與 evidence 見 `evidence/S2-batch-run.json`。
 | 6 | 3:30–4:00 | Trace + 指標表（含免責聲明停留 5 秒）|
 
 - [ ] **場景 1 第一個錄**——它已經是真的，不依賴任何待建功能
+- [ ] 場景 4（批次實跑）**必須用 WS5 重跑後的語料**，不可用舊錄好的畫面
 - [ ] APPROVE 按下後**停 2 秒不說話**
 - [ ] 終端機字體 ≥ 16pt，關閉所有通知
 - [ ] 畫面不得出現 API key、`.env`、個資
 
-### WS6-2 · 剪接上傳（1.5h）· 24:00–01:30
+### WS7-2 · 剪接上傳（1.5h）· 01:00–02:30
 - [ ] 總長 **≤ 4:00**（評審嚴格計時，超過不看）
 - [ ] 英文字幕
 - [ ] YouTube 公開
 - [ ] **無痕視窗驗證真的可存取**
 
-### 🚦 GATE 3 · 01:30
+### 🚦 GATE 3 · 02:30
 **影片已上傳且可公開？**
 ❌ → 現有素材直出，**先把 Devpost 送出**。送出後仍可更新影片連結。
 
 ---
 
-## WS7 · 提交 ｜ 1.0h ｜ 01:30–02:30
+## WS8 · 提交 ｜ 1.0h ｜ 02:30–03:30
 
 - [ ] Category = **The Fortified Enterprise Fleet**
 - [ ] Project name：`Release Assessment Agent`
 - [ ] Elevator pitch（≤200 字元，主推版）
-- [ ] Project Story：**所有 `<<FILL>>` 換成 `evidence/S10-results.json` 的真實數字**
+- [ ] Project Story：**所有 `<<FILL>>` 換成 WS5 重跑後的 `evidence/S2-batch-run.json`
+      與 `evidence/S10-results.json` 的真實數字**（舊的 A39/S18/H19/B24 一律作廢）
 - [ ] 明列 Google stack：Gemini 3.5 Flash via ADK · Cloud Run · OpenTelemetry/OpenInference
 - [ ] Repo URL · Live URL · 影片 URL · 架構圖 PNG
 - [ ] **送出**
@@ -310,8 +440,9 @@ trajectory 與 evidence 見 `evidence/S2-batch-run.json`。
 | 時間 | 檢查 | 沒過就做 |
 |---|---|---|
 | **14:30** | 批次跑完並印四類計數 | 佇列縮到 20 筆 |
-| **18:00** | 功能與文件完成 | **停止開發去錄影** |
-| **01:30** | 影片上傳且可公開 | **直出，先送 Devpost** |
+| **18:00** | 功能完成 | **停止新功能開發** |
+| **19:00** | 新分佈讓敘事成立 | 恢復 110，改壓力測試敘事 |
+| **02:30** | 影片上傳且可公開 | **直出，先送 Devpost** |
 
 ---
 
@@ -342,4 +473,4 @@ trajectory 與 evidence 見 `evidence/S2-batch-run.json`。
 > 八個 spike 已經證明「框架能不能承載」。
 > 接下來 22 小時要證明的是「它能不能被拍出來」。
 >
-> **18:00 之後，任何功能都不值得用影片的時間去換。**
+> **19:00 之後，任何功能都不值得用影片的時間去換。**
