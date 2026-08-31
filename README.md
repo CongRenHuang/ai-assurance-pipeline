@@ -90,7 +90,11 @@ deploy_agent/           what actually runs on Cloud Run (App + plugin chain + se
 data/                   make_queue.py (seeded generator) -> queue.jsonl (100 items, committed)
 evidence/               committed JSON from every spike -- every number in this README is here
 tests/                  S1..S10 spikes
-docs/                   demo script, submission draft, architecture, baseline-estimate.md
+docs/
+  architecture.md       the diagram source (mermaid) and what each element means
+  decision-log.md       what was decided during the nine spikes, and why
+  baseline-estimate.md  where the 2.4 min/item estimate comes from
+  archive/              development records -- planning, drafts, research notes
 ```
 
 **Start here:** `assurance/policy.py::route_item` is the decision. Everything

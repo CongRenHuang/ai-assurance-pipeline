@@ -4,67 +4,131 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Pre-implementation validation phase for **AI Assurance Pipeline** — a deterministic-control layer for AI agents, targeting the All Things Agentic Hackathon (deadline 2026-09-01 Taipei time). No application code exists yet; this repo currently holds the Go/No-Go technical validation plan and its supporting docs. Python/uv project scaffolding (`.venv`, `.env`) is set up but `assurance/`, `spike_agent/`, `tests/` are not yet created.
+**Release Assessment Agent** — a deterministic-control layer that turns AI evidence into
+defensible release/no-release decisions for financial AI outputs. Built for the All Things
+Agentic Hackathon (Taskmaster track). Not governance (doesn't define policy boundaries) and
+not observability (doesn't just produce signals) — this is the decision layer: it decides
+what gets released, on what basis, with what evidence, and it refuses release even when a
+human with approval authority says yes.
 
-**North Star:** "How do we turn AI evidence into defensible decisions?" — not governance (defining boundaries) and not observability (producing signals), but the layer that decides what gets approved, on what basis, with what evidence.
+**Central claim:** release decisions belong to a deterministic policy engine, not a model.
+Gemini only triages which checks an item warrants (`assurance/planner.py`); it never decides
+the outcome. `assurance/policy.py::route_item` is the decision — everything else feeds it or
+records it.
 
-## Key documents (read in this order)
+Live deploy: https://assurance-agent-6eqpujphvq-de.a.run.app
 
-1. `docs/tasks/00-READ-FIRST.md` — corrections to the checklist below, verified against actual ADK 2.7.1 source (not docs). Read this before `ADK-go-no-go-checklist.md`.
-2. `docs/ADK-go-no-go-checklist.md` — the full S0–S9 validation plan, pass/fail criteria, decision matrix.
-3. `docs/tasks/S0-environment.md` + `docs/tasks/S0-PATCH-dotenv.md` — environment setup steps and a known `load_dotenv()` bug fix.
-4. `docs/positioning-vs-industry.md` — competitive/positioning analysis (governance platforms vs. observability vs. this project).
-5. `adk-go-no-go.md` — top-level scratch/working copy (check for drift against `docs/ADK-go-no-go-checklist.md`).
+## Commands
 
-## Stack
+```bash
+# setup
+uv venv --python 3.14 && source .venv/bin/activate
+uv pip install -r requirements.txt
+cp .env.example .env && $EDITOR .env        # Gemini API key for the planner only
 
-- Python 3.14, managed with `uv` (`.venv` already created via `uv venv`)
-- Google ADK 2.7.1 (`google-adk`), Gemini API (`google-genai`)
-- OpenTelemetry + `openinference-instrumentation-google-adk` for tracing
-- Pydantic for domain objects
+# run
+python -m assurance.batch --queue data/queue.jsonl   # end-to-end batch, 100 items
+adk web spike_agent                                    # interactive dev UI
 
-## Environment setup gotcha
+# test — standalone scripts, not a pytest suite; run individually from repo root
+python tests/test_s1_fail_closed.py
+python tests/test_s6_override.py
+python tests/test_s10_planner.py
+# ... test_s<N>_<area>.py for each spike; some refresh files under evidence/, check diffs before committing
 
-`load_dotenv()` (no args) fails with `AssertionError` when run via `python - <<EOF` (stdin), because `__file__` becomes the literal string `"<stdin>"` and python-dotenv's frame-walk to locate `.env` breaks. **Never run env-dependent code via heredoc/stdin** — write a real `.py` file. Once created, use `assurance/env.py` (see `docs/tasks/S0-PATCH-dotenv.md` for its contents) which locates `.env` by walking up from `cwd` instead of relying on `__file__`.
-
-`.gitignore` must be created **before** `.env` gets a real API key in it — order matters, never commit `.env`.
-
-## Planned structure (per S0)
-
-```
-assurance/
-├── env.py             # unified .env loading (works under stdin/pytest/REPL)
-├── policy.py           # pure-function policy engine (S1)
-├── plugin.py           # HardPolicyPlugin — before_tool_callback / before_model_callback (S1/S2)
-├── schema.py            # Pydantic domain objects: EvaluationResult, RiskDecision, ControlEvidence (S4)
-└── trajectory.py         # trajectory extraction from OpenInference span tree (S9)
-spike_agent/
-└── agent.py             # root_agent — entry point for `adk web` / `adk deploy`
-tests/
-evidence/                 # per-spike output evidence (versions, otel checks, deprecation logs)
+# deploy — `adk deploy cloud_run` does NOT bundle sibling packages (assurance/ won't reach
+# the container that way). Use gcloud with the repo's own Dockerfile:
+gcloud run deploy assurance-agent --source . --region=asia-east1 --min-instances=1
 ```
 
-## Core architectural decisions (already validated by source-reading, not yet by running code)
+No formatter/linter configured — match nearby style. No API key? The batch still runs
+end-to-end: the planner fails closed and every item gets all four evaluators (this is the
+path verified in `evidence/S10-results.json`).
 
-- **Hard policy enforcement belongs in the ADK Plugin layer, not the Agent layer.** Plugin `before_tool_callback` uses `is not None` to short-circuit (empty dict `{}` blocks); Agent-layer callbacks use truthy checks (empty dict `{}` does **not** block and is a silent-bypass trap). Confirmed at `plugins/plugin_manager.py:307` vs `flows/llm_flows/functions.py:621` in the ADK wheel source.
-- **Graph Workflow routing is fail-open on unmatched routes with no `DEFAULT_ROUTE` edge** — it logs a warning and silently ends the branch (no exception, no evidence). `DEFAULT_ROUTE → HardBlock` is therefore a required safety net, not an enhancement. See `workflow/_graph.py:174-181`.
-- **Python graph API differs from ADK's Go docs.** Use `from google.adk.workflow import Workflow, Edge, FunctionNode, START, DEFAULT_ROUTE`; routes are set via `Edge(from_node=..., to_node=..., route=...)`, not `workflow.StringRoute(...)`.
-- **Plugin tool callbacks are keyword-only**: `before_tool_callback(self, *, tool, tool_args, tool_context)` — the arg is `tool_args`, not `args`.
-- Design principle for trajectory assertions (S9): **constrain invariants, not paths** — forbidden transitions, required predecessors, side-effect cardinality, mandatory checkpoints — not `actual_path == golden_path` (combinatorially infeasible).
-- OWASP coverage is intentionally narrow: only **ASI01** (Agent Goal Hijack, via S1 prompt-injection test) and **ASI03** (Identity & Privilege Abuse, via S6 override-rejection test). Do not claim broader OWASP ASI Top 10 coverage. Note: "Excessive Agency" is old LLM Top 10's LLM08, not ASI09.
+## Architecture
 
-## Validation workflow (S0–S9)
-
-Spikes run in dependency order; S1, S2, S6 are the GO/NO-GO decisive items (see `ADK-go-no-go-checklist.md` Part 3 decision matrix). Each spike's evidence goes in `evidence/`. When running spike scripts, always write them as real `.py` files (see dotenv gotcha above) so they persist as artifacts — the project's stated principle is "every article needs an engineering artifact," and heredoc runs leave nothing behind.
+Pipeline, in order: **sovereignty check → planner (Gemini triage) → evaluators (deterministic)
+→ router → evidence**.
 
 ```
-S0 (env, 30m) → S1★ (fail-closed plugin gate, 60m) → S2★ (egress gate, 30m) → S3 (risk router, 60m)
-S4 (structured output, 60m) → S5 (human approval via REST, 90m) → S6★ (hard policy overrides human, 45m)
-→ S7 (OpenInference tracing, 45m) → S8 (Cloud Run deploy, 60m) → S9★ (trajectory assertions, 60m)
+assurance/              the pipeline — no ADK dependency except plugin.py/sovereignty.py
+  policy.py             risk router: evaluator results + data_class -> route  (FIN-AI-005..010)
+  policy_ids.py         single source of truth for every policy id
+  evaluators.py         4 pure functions, zero LLM, deterministic
+  planner.py            Gemini triage: picks which evaluators to run, never decides release
+  batch.py              queue runner: sovereignty -> planner -> evaluators -> route -> evidence
+  hard_policy.py        HardPolicyGate — R4 refuses human override            (FIN-AI-004)
+  plugin.py             HardPolicyPlugin / EgressGatePlugin                   (FIN-AI-000..003)
+  sovereignty.py        data_class egress check + ADK plugin                  (FIN-AI-011)
+  approval_store.py     SQLite escalation store, survives process exit
+  packet.py             approval packet: gives the reviewer A/B/C options, not a report
+  metrics.py            time estimate; the ESTIMATE disclaimer is a module constant
+  tracing.py            OpenInference guardrail_span / evaluator_span
+  trajectory.py         5 invariant assertions incl. assert_decided_by
+deploy_agent/           what actually runs on Cloud Run (App + plugin chain + serve.py)
+spike_agent/            local ADK experimentation, not deployed
+data/                   make_queue.py (seeded generator) -> queue.jsonl (100 items, committed)
+evidence/               committed JSON from every spike — every number in README/docs traces here
+tests/                  S1..S10 verification scripts
+docs/archive/tasks/     per-spike design notes (S0-S9), read 00-READ-FIRST.md first
+scripts/                gen_agent_card.py, resolve.py — small CLI helpers
+runbooks/, skills/      adk-cloud-run-deploy skill + its eval runbook
 ```
+
+### Two enforcement layers, not one
+
+- **ADK Plugin layer** (`assurance/plugin.py`, `assurance/sovereignty.py`) — `before_tool_callback`
+  short-circuits on `is not None` (an empty dict `{}` still blocks). This is where hard policy
+  enforcement belongs.
+- **ADK Agent layer** — callbacks there use truthy checks, so an empty dict `{}` does **not**
+  block. It's a silent-bypass trap; verified against ADK 2.7.1 wheel source
+  (`plugins/plugin_manager.py:307` vs `flows/llm_flows/functions.py:621`), not docs. Don't put
+  hard policy there.
+
+The Plugin chain also stops at the **first non-`None` return** — a plugin that returns a wrong
+reason produces the same visible block as a right one, which is why the pipeline treats
+execution trajectory as part of the evaluation contract (`assurance/trajectory.py::assert_decided_by`),
+not just the final `result` field.
+
+### Fail-closed is the design principle, everywhere
+
+Framework defaults sit on the unsafe side of the line (verified against source, not docs):
+Agent-layer tool callbacks short-circuit on truthy (not `is not None`), and unmatched Graph
+Workflow routes log a warning and silently end the branch. Because of this, `route_item()` is
+a plain `if`/`elif` chain whose first branch rejects any unrecognized `data_class` — same
+fail-closed guarantee as ADK's `DEFAULT_ROUTE`, expressed in code that's testable without the
+framework. Any new routing logic should preserve this: unknown inputs take the most
+restrictive path and always produce a policy ID plus evidence.
+
+### What's deployed vs. local-only
+
+| Component | Where it runs |
+|---|---|
+| `release_assessment` agent + `HardPolicyGate` (R4 override rejection) | **Deployed** on Cloud Run |
+| `/.well-known/agent.json` (generated from `policy_ids.py`) | **Deployed** on Cloud Run |
+| `assurance.batch` 100-item pipeline | **Local only** — `python -m assurance.batch` |
+| `SovereigntyGatePlugin` | **Written, not registered** in `deploy_agent/agent.py` |
+
+The batch pipeline deliberately doesn't call the deployed agent per item — the plugin-layer
+guarantee is already proven end-to-end by S1/S6/S8, and running 100 items through it would add
+LLM cost without adding evidence. Keep this split in mind before assuming a change to
+`assurance/` is live — check whether it's wired into `deploy_agent/agent.py`.
+
+### Cloud Run deploy gotchas
+
+- `app_name` in the REST API is the folder name (`deploy_agent`), not whatever is passed to
+  `App(name=...)`.
+- `load_dotenv()` with no args breaks under `python - <<EOF` (stdin) because `__file__`
+  becomes `"<stdin>"`. Use `assurance/env.py` (locates `.env` by walking up from `cwd`), and
+  always write env-dependent code as a real `.py` file, never a heredoc.
 
 ## Conventions
 
-- Docs and analysis prose: Traditional Chinese (ZH-TW), per existing docs in `docs/`.
-- Code and commits: English (per global CLAUDE.md).
-- No git repo initialized yet in this directory — if starting one, add `.gitignore` first (already present) and verify `.env` is excluded before the first commit.
+- Docs/analysis prose: Traditional Chinese (ZH-TW) in `docs/`. Code and commits: English.
+- Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`), optional scopes (e.g.
+  `fix(data): align thresholds`). Small, imperative commits.
+- Test files: `test_s<N>_<area>.py`, assertions on both the decision *and* its execution path
+  (not just the final result).
+- `CLAUDE-STALE.md` and `adk-go-no-go.md` at repo root are pre-implementation planning
+  artifacts, kept for history — not current architecture. Prefer this file, `README.md`, and
+  `docs/archive/tasks/00-READ-FIRST.md` over them.
